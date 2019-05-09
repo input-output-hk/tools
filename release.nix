@@ -24,10 +24,10 @@ let
   #
   jobs = rec {
     # a very simple job. All it does is call a shell script that print Hello World.
-    hello-world = derivation {
+    hello-world = let script = pkgs.writeShellScriptBin "helloWorld" "echo Hello World"; in derivation {
       name = "Hello World";
       builder = "${pkgs.bash}/bin/bash";
-      args = [ pkgs.writeShellScriptBin "helloWorld" "echo Hello World" ];
+      args = [ script ];
       system = builtins.currentSystem;
     };
     
