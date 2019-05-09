@@ -24,7 +24,7 @@ let
   #
   jobs = rec {
     # a very simple job. All it does is call a shell script that print Hello World.
-    hello-world = let script = pkgs.writeShellScriptBin "helloWorld" "echo Hello World"; in derivation {
+    hello-world = let script = pkgs.writeScript "helloWorld.sh" ''echo Hello World''; in derivation {
       name = "Hello World";
       builder = "${pkgs.bash}/bin/bash";
       args = [ script ];
