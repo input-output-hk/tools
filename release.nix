@@ -27,13 +27,16 @@ let
     hello-world = derivation {
       name = "hello-world";
       builder = "${pkgs.bash}/bin/bash";
-      args = [ pkgs.writeScript "helloWorld.sh" ''
-        ${pkgs.coreutils}/bin/mkdir $out
-        echo Hello World > $out/hello
-      '' ];
+      args = [
+        (pkgs.writeScript "helloWorld.sh"
+          ''
+          ${pkgs.coreutils}/bin/mkdir $out
+          echo "Hello World" > $out/hello
+          '')
+      ];
       system = builtins.currentSystem;
     };
-    
   };
+
 in
   jobs
