@@ -42,7 +42,7 @@ let
           # https://github.com/nixos/hydra/blob/master/src/root/product-list.tt
           #
           ${pkgs.coreutils}/bin/mkdir -p $out/nix-support
-          echo "file binary-dist \"$out/test\"" \
+          echo "file binary-dist \"$out/hello\"" \
             > $out/nix-support/hydra-build-products
           '')
       ];
