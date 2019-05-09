@@ -3,7 +3,7 @@ let
   # like those provided in ./pins
   fetchTarballFromJson = jsonFile: with builtins;
     let spec = fromJSON (readFile jsonFile); in fetchTarball {
-      inherit (spec) sha256; url = "${spec.url}/archive/${spec.rev}.tar.gz"; }
+      inherit (spec) sha256; url = "${spec.url}/archive/${spec.rev}.tar.gz"; };
   
   # Allow overriding the fetch with a name on the command line so we can use -I
   fetchTarballFromJsonWithOverride = override: srcJson: with builtins;
