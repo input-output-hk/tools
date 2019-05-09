@@ -26,7 +26,8 @@ let
     # a very simple job. All it does is call a shell script that print Hello World.
     hello-world = derivation {
       name = "Hello World";
-      builder = pkgs.writeShellScriptBin "helloWorld" "echo Hello World";
+      builder = "${pkgs.bash}/bin/bash";
+      args = [ pkgs.writeShellScriptBin "helloWorld" "echo Hello World" ];
       system = builtins.currentSystem;
     };
     
