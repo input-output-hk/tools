@@ -32,6 +32,14 @@ let
           ''
           ${pkgs.coreutils}/bin/mkdir $out
           echo "Hello World" > $out/hello
+          
+          # this will allow us to download the "test"
+          # build artifact from hydra. Note the special
+          # $out/nix-support folder and the 
+          # hydra-build-products file.
+          mkdir -p $out/nix-support
+          echo "file binary-dist \"test\"" \
+            > $out/nix-support/hydra-build-products
           '')
       ];
       system = builtins.currentSystem;
