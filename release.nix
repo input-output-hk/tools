@@ -13,7 +13,7 @@ let
 
   # fetch nixpkgs. iohk hydra doesn't provide <nixpkgs>, so we'll have to use
   # a pinned one.
-  pkgs = fetchTarballFromJsonWithOverride "nixpkgs" ./pins/nixpkgs-src.json;
+  pkgs = import (fetchTarballFromJsonWithOverride "nixpkgs" ./pins/nixpkgs-src.json) {};
 
   # jobs contain a key -> value mapping that tells hydra which
   # derivations to build.  There are some predefined helpers in 
@@ -24,10 +24,13 @@ let
   #
   jobs = rec {
     # a very simple job. All it does is call a shell script that print Hello World.
-    hello-world = let script = pkgs.writeScript "helloWorld.sh" ''echo Hello World''; in derivation {
-      name = "Hello World";
+    hello-world = derivation {
+      name = "hello-world";
       builder = "${pkgs.bash}/bin/bash";
-      args = [ script ];
+      args = [ pkgs.writeScript "helloWorld.sh" ''
+        ${pkgs.coreutils}/bin/mkdir $out
+        echo Hello World > $out/hello
+      '' ];
       system = builtins.currentSystem;
     };
     
