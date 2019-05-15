@@ -10,6 +10,7 @@ let
 
   # import iohk-nix with the same pin as the nixpkgs above.
   config = { allowUnfree = false; inHydra = true; allowUnsupportedSystem = true; };
+
   # linux packages
   x86_64-linux = importPinned "iohk-nix"
     { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-linux"; };
@@ -44,9 +45,8 @@ let
     ghc864.x86_64-macos = x86_64-macos.pkgs.haskell.compiler.ghc864;
 
     # linux -> win32
-    "${mingwW64.config}-hello".x86_64-linux = x86_64-mingw32.pkgs.hello;
-    "${mingwW64.config}-ghc864".x86_64-linux = x86_64-mingw32.pkgs.haskell.compiler.ghc864;
-
+    # Note: we want to build the cross-compiler. As such we want something from the buildPackages!
+    "${mingwW64.config}-ghc864".x86_64-linux = x86_64-mingw32.pkgs.buildPackages.haskell.compiler.ghc864;
   };
 in
   jobs
