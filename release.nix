@@ -9,18 +9,18 @@ let
   mingwW64 = pkgs.lib.systems.examples.mingwW64;
 
   # import iohk-nix with the same pin as the nixpkgs above.
-
+  config = { allowUnfree = false; inHydra = true; allowUnsupportedSystem = true; };
   # linux packages
   x86_64-linux = importPinned "iohk-nix"
-    { nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-linux"; };
+    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-linux"; };
 
   # macos packages
   x86_64-macos = importPinned "iohk-nix"
-    { nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-darwin"; };
+    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-darwin"; };
 
   # windows cross compiled on linux
   x86_64-mingw32 = importPinned "iohk-nix"
-    { nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-linux"; crossSystem = mingwW64; };
+    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-linux"; crossSystem = mingwW64; };
 
   # jobs contain a key -> value mapping that tells hydra which
   # derivations to build.  There are some predefined helpers in
@@ -44,6 +44,7 @@ let
     ghc864.x86_64-macos = x86_64-macos.pkgs.haskell.compiler.ghc864;
 
     # linux -> win32
+    "${mingwW64.config}-hello".x86_64-linux = x86_64-mingw32.pkgs.hello;
     "${mingwW64.config}-ghc864".x86_64-linux = x86_64-mingw32.pkgs.haskell.compiler.ghc864;
 
   };
