@@ -4,7 +4,7 @@ let
   fetchTarballFromJson = jsonFile: with builtins;
     let spec = fromJSON (readFile jsonFile); in fetchTarball {
       inherit (spec) sha256; url = "${spec.url}/archive/${spec.rev}.tar.gz"; };
-  
+
   # Allow overriding the fetch with a name on the command line so we can use -I
   fetchTarballFromJsonWithOverride = override: srcJson: with builtins;
     let try = tryEval (findFile nixPath override); in
@@ -16,7 +16,7 @@ let
   pkgs = import (fetchTarballFromJsonWithOverride "nixpkgs" ./pins/nixpkgs-src.json) {};
 
   # jobs contain a key -> value mapping that tells hydra which
-  # derivations to build.  There are some predefined helpers in 
+  # derivations to build.  There are some predefined helpers in
   # https://github.com/NixOS/nixpkgs/tree/master/pkgs/build-support/release
   # which can be accessed via `pkgs.releaseTools`.
   #
@@ -32,10 +32,10 @@ let
           ''
           ${pkgs.coreutils}/bin/mkdir $out
           echo "Hello World" > $out/hello
-          
+
           # this will allow us to download the "test"
           # build artifact from hydra. Note the special
-          # $out/nix-support folder and the 
+          # $out/nix-support folder and the
           # hydra-build-products file.
           #
           # For the list of supported types see
