@@ -7,6 +7,8 @@ let
 
   # cross system settings
   mingwW64 = pkgs.lib.systems.examples.mingwW64;
+  arm32 = pkgs.lib.systems.examples.raspberryPi;
+  arm64 = pkgs.lib.systems.examples.aarch64-multiplatform;
 
   # import iohk-nix with the same pin as the nixpkgs above.
   config = { allowUnfree = false; inHydra = true; allowUnsupportedSystem = true; };
@@ -22,6 +24,12 @@ let
   # windows cross compiled on linux
   x86_64-mingw32 = importPinned "iohk-nix"
     { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-linux"; crossSystem = mingwW64; };
+
+  arm32-linux = importPinned "iohk-nix"
+    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-linux"; crossSystem = arm32; };
+
+  arm64-linux = importPinned "iohk-nix"
+    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-linux"; crossSystem = arm64; };
 
   # jobs contain a key -> value mapping that tells hydra which
   # derivations to build.  There are some predefined helpers in
@@ -47,6 +55,8 @@ let
     # linux -> win32
     # Note: we want to build the cross-compiler. As such we want something from the buildPackages!
     "${mingwW64.config}-ghc864".x86_64-linux = x86_64-mingw32.pkgs.buildPackages.haskell.compiler.ghc864;
+    "${arm32.config}-ghc864".x86_64-linux = arm32-linux.pkgs.buildPackages.haskell.compiler.ghc864;
+    "${arm64.config}-ghc864".x86_64-linux = arm64-linux.pkgs.buildPackages.haskell.compiler.ghc864;
   };
 in
   jobs
