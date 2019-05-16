@@ -3,7 +3,7 @@ let
 
   # fetch nixpkgs. iohk hydra doesn't provide <nixpkgs>, so we'll have to use
   # a pinned one.
-  pkgs = importPinned "nixpkgs" {};
+  pkgs = importPinned "nixpkgs" { };
 
   # cross system settings
   mingwW64 = pkgs.lib.systems.examples.mingwW64;
