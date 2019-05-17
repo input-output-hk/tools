@@ -34,6 +34,8 @@ let
     # a very simple job. All it does is call a shell script that print Hello World.
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
+    asterius-boot = (importPinned "asterius" {}).nix-tools._raw.asterius-boot;
+
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
     # patches applied.
