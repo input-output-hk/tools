@@ -1,7 +1,7 @@
 {
   "url": "https://github.com/input-output-hk/asterius",
-  "rev": "bccb490347e66780c4adc02c190d393f86e64f2b",
-  "date": "2019-05-22T21:52:03+12:00",
-  "sha256": "0q0frysbv9w5k571nv87jk8kyc0b3c4jlg8vbaq6gywfm32zvc1i",
+  "rev": "206b7ffda7f913f5cc768962dd648c3a4d7aade5",
+  "date": "2019-05-22T22:41:16+08:00",
+  "sha256": "0pi09a1s14kr2gsmirih3kjq02w7687m3rb99ip09k1idrmxrbsb",
   "fetchSubmodules": false
 }
