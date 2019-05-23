@@ -37,8 +37,8 @@ let
 
     asterius-boot = (import (pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "b666255b1e32e56d6dfde8b7fe229686aa2c2dd1";
-      sha256 = "1lbrygkm8sca6l6w3xhw4wyh32sxb1xqk87pb0nhgr0l25inqg5k";
+      rev = "3591c064bba7b1e972d655d280d9ee9e12785b74";
+      sha256 = "0bwjp5hk80f5p3jlfcx50d2pwmvd6ws4vq8yrc0p454sac3brjbh";
       fetchSubmodules = true;
     }) {}).nix-tools._raw.asterius-boot;
 
