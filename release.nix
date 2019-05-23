@@ -35,7 +35,12 @@ let
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
 
-    asterius-boot = (importPinned "asterius" {}).nix-tools._raw.asterius-boot;
+    asterius-boot = (import (pkgs.fetchgit {
+      url = "https://github.com/input-output-hk/asterius";
+      rev = "83c437962e3b10d5f90b5367307f5ebb373a07f7";
+      sha256 = "1qh2ibnzycfkyfqzc6piwbamhr815p2wirhvgs7r783lfipali02";
+      fetchSubmodules = true;
+    }) {}).nix-tools._raw.asterius-boot;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
