@@ -43,7 +43,7 @@ let
 
 
     asterius-boot = asterius.nix-tools._raw.asterius-boot;
-    rsync = asterius.nix-tools._raw.pkgs.rsync;
+    asterius-plan-nix = asterius.nix-tools._raw.plan-nix;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
