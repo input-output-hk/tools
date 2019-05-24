@@ -50,7 +50,7 @@ let
     asterius-rsync = asterius.nix-tools._raw.pkgs.rsync;
     asterius-git = asterius.nix-tools._raw.pkgs.git;
     asterius-nix = asterius.nix-tools._raw.pkgs.nix;
-    asterius-boehm-gc = asterius.nix-tools._raw.pkgs.boehm-gc;    
+    asterius-boehmgc = asterius.nix-tools._raw.pkgs.boehmgc;    
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
