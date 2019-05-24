@@ -49,6 +49,7 @@ let
     asterius-cabal-install = asterius.nix-tools._raw.pkgs.cabal-install;
     asterius-rsync = asterius.nix-tools._raw.pkgs.rsync;
     asterius-git = asterius.nix-tools._raw.pkgs.git;
+    asterius-nix = asterius.nix-tools._raw.pkgs.nix;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
