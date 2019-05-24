@@ -25,8 +25,8 @@ let
 
   asterius = import (pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "3591c064bba7b1e972d655d280d9ee9e12785b74";
-      sha256 = "0bwjp5hk80f5p3jlfcx50d2pwmvd6ws4vq8yrc0p454sac3brjbh";
+      rev = "b939a8e63d71a63450605bb8d26ce247e7e16157";
+      sha256 = "12ykihra6siy87snvax4pq5m4d4d5iyjxyd6rn0fpi9j4lbglnrj";
       fetchSubmodules = true;
     }) {};
     
@@ -41,9 +41,14 @@ let
     # a very simple job. All it does is call a shell script that print Hello World.
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
-
     asterius-boot = asterius.nix-tools._raw.asterius-boot;
     asterius-plan-nix = asterius.nix-tools._raw.plan-nix;
+    asterius-nix-tools = asterius.nix-tools._raw.haskell.nix-tools;
+    asterius-ghc = asterius.nix-tools._raw.pkgs.haskell.compiler.ghc864;
+    asterius-hpack = asterius.nix-tools._raw.pkgs.haskellPackages.hpack;
+    asterius-cabal-install = asterius.nix-tools._raw.pkgs.cabal-install;
+    asterius-rsync = asterius.nix-tools._raw.pkgs.rsync;
+    asterius-git = asterius.nix-tools._raw.pkgs.git;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
