@@ -23,6 +23,13 @@ let
   x86_64-mingw32 = importPinned "iohk-nix"
     { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-linux"; crossSystem = mingwW64; };
 
+  asterius = import (pkgs.fetchgit {
+      url = "https://github.com/input-output-hk/asterius";
+      rev = "3591c064bba7b1e972d655d280d9ee9e12785b74";
+      sha256 = "0bwjp5hk80f5p3jlfcx50d2pwmvd6ws4vq8yrc0p454sac3brjbh";
+      fetchSubmodules = true;
+    }) {};
+    
   # jobs contain a key -> value mapping that tells hydra which
   # derivations to build.  There are some predefined helpers in
   # https://github.com/NixOS/nixpkgs/tree/master/pkgs/build-support/release
@@ -35,12 +42,8 @@ let
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
 
-    asterius-boot = (import (pkgs.fetchgit {
-      url = "https://github.com/input-output-hk/asterius";
-      rev = "3591c064bba7b1e972d655d280d9ee9e12785b74";
-      sha256 = "0bwjp5hk80f5p3jlfcx50d2pwmvd6ws4vq8yrc0p454sac3brjbh";
-      fetchSubmodules = true;
-    }) {}).nix-tools._raw.asterius-boot;
+    asterius-boot = asterius.nix-tools._raw.asterius-boot;
+    rsync = asterius.nix-tools._raw.pkgs.rsync;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
