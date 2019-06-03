@@ -25,8 +25,8 @@ let
 
   leksah = import (pkgs.fetchgit {
       url = "https://github.com/leksah/leksah";
-      rev = "b907f3d0d0a6d9e5fbfe64225e181518a4b49a56";
-      sha256 = "1mhnw79w5hdh8555d00n8v0q0jdc9xnnz332zlqyxmd7a44kk2q8";
+      rev = "499174a12536ae642d6b37827993a6f17539db5d";
+      sha256 = "1a1a3flyajlb07qpcpnk28bx9jsxv3mlmba2jnhnz53sjp4h5lwh";
       fetchSubmodules = true;
     }) {};
     
