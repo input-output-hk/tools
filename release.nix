@@ -25,8 +25,8 @@ let
 
   asterius = import (pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "d8e81de925022ec1f3c8c2f173502e6c9ee2c16b";
-      sha256 = "1jacphnjsrwryd35ik3aadxi855c38fvs3ffw9ksi12xh37j8126";
+      rev = "ec838317456eb661a694b5bb295294c37c333d21";
+      sha256 = "1n1h307jqsn01ps6nj01z8i18fazflyvid8amf2cg9ngw71zxfas";
       fetchSubmodules = true;
     }) {};
     
