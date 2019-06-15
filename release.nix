@@ -48,14 +48,14 @@ let
     # patches applied.
 
     # linux
-    ghc864.x86_64-linux = x86_64-linux.pkgs.haskell.compiler.ghc864;
+    ghc865.x86_64-linux = x86_64-linux.pkgs.haskell.compiler.ghc865;
 
     # macOS
-    ghc864.x86_64-macos = x86_64-macos.pkgs.haskell.compiler.ghc864;
+    ghc865.x86_64-macos = x86_64-macos.pkgs.haskell.compiler.ghc865;
 
     # linux -> win32
     # Note: we want to build the cross-compiler. As such we want something from the buildPackages!
-    "${mingwW64.config}-ghc864".x86_64-linux = x86_64-mingw32.pkgs.buildPackages.haskell.compiler.ghc864;
+    "${mingwW64.config}-ghc865".x86_64-linux = x86_64-mingw32.pkgs.buildPackages.haskell.compiler.ghc865;
   };
 in
   jobs
