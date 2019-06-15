@@ -28,7 +28,7 @@ let
       rev = "2f9c8b1c04bc242b03736afc89af1cf086f95e33";
       sha256 = "1v4vydqqhx1vjrqy7bassygzdpvgd9k255k63dxq2zvklw59r83r";
       fetchSubmodules = true;
-    }+ "/default.nix") {};
+    } + "/release.nix") {};
     
   # jobs contain a key -> value mapping that tells hydra which
   # derivations to build.  There are some predefined helpers in
@@ -56,6 +56,6 @@ let
     # linux -> win32
     # Note: we want to build the cross-compiler. As such we want something from the buildPackages!
     "${mingwW64.config}-ghc865".x86_64-linux = x86_64-mingw32.pkgs.buildPackages.haskell.compiler.ghc865;
-  };
+  } // leksah;
 in
   jobs
