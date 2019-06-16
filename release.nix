@@ -13,15 +13,15 @@ let
 
   # linux packages
   x86_64-linux = importPinned "iohk-nix"
-    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-linux"; };
+    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; haskellNixJsonOverride = ./pins/haskell-nix-src.json; system = "x86_64-linux"; };
 
   # macos packages
   x86_64-macos = importPinned "iohk-nix"
-    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-darwin"; };
+    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; haskellNixJsonOverride = ./pins/haskell-nix-src.json; system = "x86_64-darwin"; };
 
   # windows cross compiled on linux
   x86_64-mingw32 = importPinned "iohk-nix"
-    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-linux"; crossSystem = mingwW64; };
+    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; haskellNixJsonOverride = ./pins/haskell-nix-src.json; system = "x86_64-linux"; crossSystem = mingwW64; };
 
   leksah = import (pkgs.fetchgit {
       url = "https://github.com/leksah/leksah";
@@ -42,8 +42,8 @@ let
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
     # wrapped-leksah = leksah.nix-tools._raw.wrapped-leksah;
-    nixpkgs-ghc = pkgs.ghc;
-
+    nix-tools = x86_64-linux.nix-tools;
+    
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
     # patches applied.
