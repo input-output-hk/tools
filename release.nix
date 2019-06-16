@@ -29,12 +29,16 @@ let
   x86_64-mingw32 = importPinned "iohk-nix"
     { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; haskellNixJsonOverride = ./pins/haskell-nix-src.json; system = "x86_64-linux"; crossSystem = mingwW64; nixpkgsOverlays = [ selectGhc ]; };
 
-  leksah = import (pkgs.fetchgit {
+  leksah-src = pkgs.fetchgit {
       url = "https://github.com/leksah/leksah";
       rev = "5b991cd9e69ec149dd138fd94271e53aa9df6af4";
       sha256 = "056hcgfvnmmrnaz2xnxzk591gqqwbdwydkwdci7zq3c36g0gkpxm";
       fetchSubmodules = true;
-    } + "/release.nix") {};
+    };
+
+  leksah = import leksah-src {};
+
+  leksah-release = import (leksah-src + "/release.nix") {};
     
   # jobs contain a key -> value mapping that tells hydra which
   # derivations to build.  There are some predefined helpers in
@@ -47,8 +51,8 @@ let
     # a very simple job. All it does is call a shell script that print Hello World.
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
+    leksah-plan = leksah.nix-tools._raw.plan-nix;
     # wrapped-leksah = leksah.nix-tools._raw.wrapped-leksah;
-    # inherit leksah;
     
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
