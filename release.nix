@@ -11,17 +11,21 @@ let
   # import iohk-nix with the same pin as the nixpkgs above.
   config = { allowUnfree = false; inHydra = true; allowUnsupportedSystem = true; };
 
+  selectGhc = self: super: {
+    ghc = super.haskell.compiler.${haskellCompiler};
+  };
+
   # linux packages
   x86_64-linux = importPinned "iohk-nix"
-    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; haskellNixJsonOverride = ./pins/haskell-nix-src.json; system = "x86_64-linux"; };
+    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; haskellNixJsonOverride = ./pins/haskell-nix-src.json; system = "x86_64-linux"; nixpkgsOverlays = [ selectGhc ]; };
 
   # macos packages
   x86_64-macos = importPinned "iohk-nix"
-    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; haskellNixJsonOverride = ./pins/haskell-nix-src.json; system = "x86_64-darwin"; };
+    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; haskellNixJsonOverride = ./pins/haskell-nix-src.json; system = "x86_64-darwin"; nixpkgsOverlays = [ selectGhc ]; };
 
   # windows cross compiled on linux
   x86_64-mingw32 = importPinned "iohk-nix"
-    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; haskellNixJsonOverride = ./pins/haskell-nix-src.json; system = "x86_64-linux"; crossSystem = mingwW64; };
+    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; haskellNixJsonOverride = ./pins/haskell-nix-src.json; system = "x86_64-linux"; crossSystem = mingwW64; nixpkgsOverlays = [ selectGhc ]; };
 
   leksah = import (pkgs.fetchgit {
       url = "https://github.com/leksah/leksah";
