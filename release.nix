@@ -42,6 +42,7 @@ let
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
     # wrapped-leksah = leksah.nix-tools._raw.wrapped-leksah;
+    nixpkgs-ghc = pkgs.ghc;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
@@ -56,6 +57,6 @@ let
     # linux -> win32
     # Note: we want to build the cross-compiler. As such we want something from the buildPackages!
     "${mingwW64.config}-ghc865".x86_64-linux = x86_64-mingw32.pkgs.buildPackages.haskell.compiler.ghc865;
-  } // leksah;
+  };
 in
   jobs
