@@ -11,6 +11,8 @@ let
   # import iohk-nix with the same pin as the nixpkgs above.
   config = { allowUnfree = false; inHydra = true; allowUnsupportedSystem = true; };
 
+  haskellCompiler = "ghc865";
+  
   selectGhc = self: super: {
     ghc = super.haskell.compiler.${haskellCompiler};
   };
