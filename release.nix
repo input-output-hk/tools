@@ -48,7 +48,7 @@ let
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
     # wrapped-leksah = leksah.nix-tools._raw.wrapped-leksah;
-    nix-tools = x86_64-linux.nix-tools;
+    # nix-tools = x86_64-linux.nix-tools;
     
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
