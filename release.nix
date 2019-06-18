@@ -31,7 +31,7 @@ let
     };
     
   asterius = import asterius-git {};
-  asterius-release = import (asterius-git + "/release.nix") {};
+  asterius-release = import (asterius-git + "/release.nix") { inherit config; };
 
   # jobs contain a key -> value mapping that tells hydra which
   # derivations to build.  There are some predefined helpers in
