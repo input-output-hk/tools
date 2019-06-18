@@ -23,13 +23,16 @@ let
   x86_64-mingw32 = importPinned "iohk-nix"
     { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-linux"; crossSystem = mingwW64; };
 
-  asterius = import (pkgs.fetchgit {
+  asterius-git = pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "2de947d721436d6888553964aedb8a6f0cdb000f";
-      sha256 = "0ccac1pk4ysv1x5bg0xdpwpin4cxyg0zlpjib4nhknz69p90yqdn";
+      rev = "47eafd4925ad94aac36160c7c55c6f46bec3f473";
+      sha256 = "1a83y0c91r3nzlssfj3vlwfrfvj6iq3ghj6l6fwszy2k0nny5csd";
       fetchSubmodules = true;
-    }) {};
+    };
     
+  asterius = import asterius-git {};
+  asterius-release = import (asterius-git + "/release.nix") {};
+
   # jobs contain a key -> value mapping that tells hydra which
   # derivations to build.  There are some predefined helpers in
   # https://github.com/NixOS/nixpkgs/tree/master/pkgs/build-support/release
@@ -65,6 +68,6 @@ let
     # linux -> win32
     # Note: we want to build the cross-compiler. As such we want something from the buildPackages!
     "${mingwW64.config}-ghc864".x86_64-linux = x86_64-mingw32.pkgs.buildPackages.haskell.compiler.ghc864;
-  };
+  } // asterius-release;
 in
   jobs
