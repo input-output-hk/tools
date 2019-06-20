@@ -25,12 +25,13 @@ let
 
   asterius-git = pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "67eee5ef1ca7fe6bd72db3656ba375aab397b5a3";
-      sha256 = "05sgjmknjq7zljim7578jhdb4zwml8d1cmc3b51yz7na49r544ny";
+      rev = "d2484fc065763e106862572ad842324aa66030b1";
+      sha256 = "10j72nn5f2kgj8dfi2nqcign4j0hmhhr17b9xxbca1q36mia5kcr";
       fetchSubmodules = true;
     };
     
-  asterius = import asterius-git {};
+  asterius = import asterius-git { inherit config; system = "x86_64-linux"; };
+  asterius-macos = import asterius-git { inherit config; system = "x86_64-darwin"; };
   asterius-release = import (asterius-git + "/release.nix") { inherit config; };
 
   # jobs contain a key -> value mapping that tells hydra which
@@ -55,6 +56,7 @@ let
     asterius-nix = asterius.nix-tools._raw.pkgs.nix;
     asterius-boehmgc = asterius.nix-tools._raw.pkgs.boehmgc;
     asterius-test = asterius.nix-tools.tests.asterius;
+    asterius-test-macos = asterius-macos.nix-tools.tests.asterius;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
