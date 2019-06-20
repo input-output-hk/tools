@@ -56,7 +56,8 @@ let
     asterius-nix = asterius.nix-tools._raw.pkgs.nix;
     asterius-boehmgc = asterius.nix-tools._raw.pkgs.boehmgc;
     asterius-test = asterius.nix-tools.tests.asterius;
-    asterius-test-macos = asterius-macos.nix-tools.tests.asterius;
+    asterius-plan-nix-macos = asterius-macos.nix-tools._raw.plan-nix;
+    # asterius-test-macos = asterius-macos.nix-tools.tests.asterius;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
