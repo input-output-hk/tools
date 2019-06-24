@@ -25,8 +25,8 @@ let
 
   asterius-git = pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "37082ee62927a781140200337467c15e2bd4a8da";
-      sha256 = "1mqlcrxbr8c4f9gjmr1p9yh1mm75yhvrsdcpis8d3skhgjqm09h9";
+      rev = "a6786b8701686e733f680765f542321bb55ff2fe";
+      sha256 = "0jawvbjihp7im0smi3ikpxj40pyyc66qrfann4q2wmsq8667rag4";
       fetchSubmodules = true;
     };
     
@@ -58,7 +58,7 @@ let
     asterius-nix = asterius.nix-tools._raw.pkgs.nix;
     asterius-boehmgc = asterius.nix-tools._raw.pkgs.boehmgc;
     asterius-test = asterius.nix-tools.tests.asterius;
-    # asterius-test-macos = asterius-macos.nix-tools.tests.asterius;
+    asterius-test-macos = asterius-macos.nix-tools.tests.asterius;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
