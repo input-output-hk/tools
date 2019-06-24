@@ -45,9 +45,9 @@ let
     # a very simple job. All it does is call a shell script that print Hello World.
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
-    asterius-nix-tools = asterius.nix-tools-init;
+    asterius-nix-tools = asterius._lib.nix-tools;
     # asterius-boot = asterius.nix-tools._raw.asterius-boot;
-    # asterius-plan-nix = asterius.nix-tools._raw.plan-nix;
+    asterius-plan-nix = asterius.nix-tools._raw.plan-nix;
     # asterius-nix-tools = asterius.nix-tools._raw.haskell.nix-tools;
     # asterius-ghc = asterius.nix-tools._raw.pkgs.haskell.compiler.ghc864;
     # asterius-hpack = asterius.nix-tools._raw.pkgs.haskellPackages.hpack;
