@@ -25,8 +25,8 @@ let
 
   asterius-git = pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "1dbce48a4a03497aa19e14b51439b7ee54aac782";
-      sha256 = "0q5v0zcm8cr9qrsyqv09acmdh730m04yqrpbdg5xk08ja5xqasb2";
+      rev = "f471153c6bac99fc740fa4cc0a99eb6f119e638a";
+      sha256 = "0ndz0p3h0a451rbp5835783i5aihif8g4qafam5ljlc26r1mgvkq";
       fetchSubmodules = true;
     };
     
@@ -45,7 +45,6 @@ let
     # a very simple job. All it does is call a shell script that print Hello World.
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
-    asterius-nix-tools = asterius._lib.nix-tools;
     # asterius-boot = asterius.nix-tools._raw.asterius-boot;
     asterius-plan-nix = asterius.nix-tools._raw.plan-nix;
     # asterius-nix-tools = asterius.nix-tools._raw.haskell.nix-tools;
