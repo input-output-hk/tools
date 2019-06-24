@@ -25,8 +25,8 @@ let
 
   asterius-git = pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "f471153c6bac99fc740fa4cc0a99eb6f119e638a";
-      sha256 = "0ndz0p3h0a451rbp5835783i5aihif8g4qafam5ljlc26r1mgvkq";
+      rev = "5f82249006cd0ef1da942063fbdbeef91dc3e7ab";
+      sha256 = "09k5hzfqy5jhhff7xx024b0llf6b1imi946zwg3mxzhjkmsvf4s3";
       fetchSubmodules = true;
     };
     
@@ -46,7 +46,7 @@ let
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
     # asterius-boot = asterius.nix-tools._raw.asterius-boot;
-    asterius-plan-nix = asterius.nix-tools._raw.plan-nix;
+    asterius-plan-nix = asterius.plan-nix;
     # asterius-nix-tools = asterius.nix-tools._raw.haskell.nix-tools;
     # asterius-ghc = asterius.nix-tools._raw.pkgs.haskell.compiler.ghc864;
     # asterius-hpack = asterius.nix-tools._raw.pkgs.haskellPackages.hpack;
