@@ -25,8 +25,8 @@ let
 
   asterius-git = pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "a6786b8701686e733f680765f542321bb55ff2fe";
-      sha256 = "0jawvbjihp7im0smi3ikpxj40pyyc66qrfann4q2wmsq8667rag4";
+      rev = "58f12a365f1feb918a891a50d1a0bf7da18ac990";
+      sha256 = "0j618f3m5wmfkxmbdwp0r6lw6nwivv2f9k0nc8xlgkxa0fxi76c6";
       fetchSubmodules = true;
     };
     
@@ -49,6 +49,7 @@ let
     asterius-plan-nix-macos = asterius-macos.plan-nix;
     
     asterius-boot = asterius.nix-tools._raw.asterius-boot;
+    asterius-shells = asterius.shells;
     asterius-nix-tools = asterius.nix-tools._raw.haskell.nix-tools;
     asterius-ghc = asterius.nix-tools._raw.pkgs.haskell.compiler.ghc864;
     asterius-hpack = asterius.nix-tools._raw.pkgs.haskellPackages.hpack;
@@ -58,6 +59,8 @@ let
     asterius-nix = asterius.nix-tools._raw.pkgs.nix;
     asterius-boehmgc = asterius.nix-tools._raw.pkgs.boehmgc;
     asterius-test = asterius.nix-tools.tests.asterius;
+
+    asterius-shells-macos = asterius-macos.shells;
     asterius-test-macos = asterius-macos.nix-tools.tests.asterius;
 
     # this should give us our patched compiler. (e.g. the one
