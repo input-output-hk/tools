@@ -31,15 +31,14 @@ let
 
   leksah-src = pkgs.fetchgit {
       url = "https://github.com/leksah/leksah";
-      rev = "5b991cd9e69ec149dd138fd94271e53aa9df6af4";
-      sha256 = "056hcgfvnmmrnaz2xnxzk591gqqwbdwydkwdci7zq3c36g0gkpxm";
+      rev = "e27868d76cc170776cbe426dbad034ef58adb52c";
+      sha256 = "0k5nipygmiqfdq240r0b41wf1gd38d6diicqsqw55m0cw86dxfsr";
       fetchSubmodules = true;
     };
 
-  leksah = import leksah-src {};
+  leksah = import leksah-src { inherit config; system = "x86_64-linux"; };
+  leksah-macos = import leksah-src { inherit config; system = "x86_64-darwin"; };
 
-  leksah-release = import (leksah-src + "/release.nix") {};
-    
   # jobs contain a key -> value mapping that tells hydra which
   # derivations to build.  There are some predefined helpers in
   # https://github.com/NixOS/nixpkgs/tree/master/pkgs/build-support/release
@@ -51,9 +50,14 @@ let
     # a very simple job. All it does is call a shell script that print Hello World.
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
-    leksah-plan = leksah.nix-tools._raw.plan-nix;
-    # wrapped-leksah = leksah.nix-tools._raw.wrapped-leksah;
-    
+    leksah-plan-nix = leksah.plan-nix;
+    wrapped-leksah = leksah.nix-tools._raw.wrapped-leksah;
+    leksah-shells = leksah.shells;
+
+    leksah-plan-nix-macos = leksah-macos.plan-nix;
+    wrapped-leksah-macos = leksah-macos.nix-tools._raw.wrapped-leksah;
+    leksah-shells-macos = leksah-macos.shells;
+
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
     # patches applied.
