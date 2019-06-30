@@ -51,12 +51,12 @@ let
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
     leksah-plan-nix = leksah.plan-nix;
-    # wrapped-leksah = leksah.nix-tools._raw.wrapped-leksah;
-    # leksah-shells = leksah.shells;
+    wrapped-leksah = leksah.nix-tools._raw.wrapped-leksah;
+    leksah-shells = leksah.shells;
 
     leksah-plan-nix-macos = leksah-macos.plan-nix;
-    # wrapped-leksah-macos = leksah-macos.nix-tools._raw.wrapped-leksah;
-    # leksah-shells-macos = leksah-macos.shells;
+    wrapped-leksah-macos = leksah-macos.nix-tools._raw.wrapped-leksah;
+    leksah-shells-macos = leksah-macos.shells;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
