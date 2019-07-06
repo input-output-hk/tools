@@ -38,6 +38,7 @@ let
 
   leksah = import leksah-src { inherit config; system = "x86_64-linux"; };
   leksah-macos = import leksah-src { inherit config; system = "x86_64-darwin"; };
+  leksah-mingw32 = import leksah-src { inherit config; system = "x86_64-linux"; crossSystem = mingwW64; };
 
   # jobs contain a key -> value mapping that tells hydra which
   # derivations to build.  There are some predefined helpers in
@@ -57,6 +58,8 @@ let
     leksah-plan-nix-macos = leksah-macos.plan-nix;
     wrapped-leksah-macos = leksah-macos.nix-tools._raw.wrapped-leksah;
     leksah-shells-macos = leksah-macos.shells;
+
+    leksah-plan-nix-mingw32 = leksah-macos.plan-nix;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
