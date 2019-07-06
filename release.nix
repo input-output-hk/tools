@@ -59,7 +59,7 @@ let
     wrapped-leksah-macos = leksah-macos.nix-tools._raw.wrapped-leksah;
     leksah-shells-macos = leksah-macos.shells;
 
-    leksah-plan-nix-mingw32 = leksah-macos.plan-nix;
+    leksah-plan-nix-mingw32 = leksah-mingw32.plan-nix;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
