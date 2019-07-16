@@ -25,8 +25,8 @@ let
 
   asterius-git = pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "59be232aa43d31bc79b3bdfd620bcb005fddac3a";
-      sha256 = "00j80hsxbh6mycbnmmwrxhkzyg1i8c2azb7pv8jypnnc4kr7l3zp";
+      rev = "583df6a2e93c8b1641c2a353afd699fb9ddc7af2";
+      sha256 = "0gyng93awgblh1giqza9hxf3sk1cvdvswy21rxmb3ppdgfx5z62d";
       fetchSubmodules = true;
     };
     
@@ -48,20 +48,20 @@ let
     asterius-plan-nix = asterius.plan-nix;
     asterius-plan-nix-macos = asterius-macos.plan-nix;
     
-    # asterius-boot = asterius.nix-tools._raw.asterius-boot;
-    # asterius-shells = asterius.shells;
-    # asterius-nix-tools = asterius.nix-tools._raw.haskell.nix-tools;
-    # asterius-ghc = asterius.nix-tools._raw.pkgs.haskell.compiler.ghc864;
-    # asterius-hpack = asterius.nix-tools._raw.pkgs.haskellPackages.hpack;
-    # asterius-cabal-install = asterius.nix-tools._raw.pkgs.cabal-install;
-    # asterius-rsync = asterius.nix-tools._raw.pkgs.rsync;
-    # asterius-git = asterius.nix-tools._raw.pkgs.git;
-    # asterius-nix = asterius.nix-tools._raw.pkgs.nix;
-    # asterius-boehmgc = asterius.nix-tools._raw.pkgs.boehmgc;
-    # asterius-test = asterius.nix-tools.tests.asterius;
+    asterius-boot = asterius.nix-tools._raw.asterius-boot;
+    asterius-shells = asterius.shells;
+    asterius-nix-tools = asterius.nix-tools._raw.haskell.nix-tools;
+    asterius-ghc = asterius.nix-tools._raw.pkgs.haskell.compiler.ghc864;
+    asterius-hpack = asterius.nix-tools._raw.pkgs.haskellPackages.hpack;
+    asterius-cabal-install = asterius.nix-tools._raw.pkgs.cabal-install;
+    asterius-rsync = asterius.nix-tools._raw.pkgs.rsync;
+    asterius-git = asterius.nix-tools._raw.pkgs.git;
+    asterius-nix = asterius.nix-tools._raw.pkgs.nix;
+    asterius-boehmgc = asterius.nix-tools._raw.pkgs.boehmgc;
+    asterius-test = asterius.nix-tools.tests.asterius;
 
-    # asterius-shells-macos = asterius-macos.shells;
-    # asterius-test-macos = asterius-macos.nix-tools.tests.asterius;
+    asterius-shells-macos = asterius-macos.shells;
+    asterius-test-macos = asterius-macos.nix-tools.tests.asterius;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
