@@ -57,7 +57,7 @@ let
 
     leksah-plan-nix-macos = leksah-macos.plan-nix;
 #    wrapped-leksah-macos = leksah-macos.nix-tools._raw.wrapped-leksah;
-    jsaddle-dom-macos = leksah-macos.nix-tools.libs.jsaddle-dom;
+    jsaddle-dom-macos-2 = leksah-macos.nix-tools.libs.jsaddle-dom;
 #    leksah-shells-macos = leksah-macos.shells;
 
     leksah-plan-nix-mingw32 = leksah-mingw32.plan-nix;
