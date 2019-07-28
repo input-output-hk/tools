@@ -31,8 +31,8 @@ let
 
   leksah-src = pkgs.fetchgit {
       url = "https://github.com/leksah/leksah";
-      rev = "beec198a462faeeb2dc9326639320927f490a846";
-      sha256 = "193lswzp1wlabnafcmc7jhh5bryq64xrr8hvvzvxsjq9r63s4jb1";
+      rev = "bc1cebb25eb388c756556ccc64f958a39b23a2ef";
+      sha256 = "03fhgp1i1rh0xllilig2r4n11sj147g1ny4d1ri4wkbr3912wxcl";
       fetchSubmodules = true;
     };
 
@@ -56,12 +56,11 @@ let
     leksah-shells = leksah.shells;
 
     leksah-plan-nix-macos = leksah-macos.plan-nix;
-#    wrapped-leksah-macos = leksah-macos.nix-tools._raw.wrapped-leksah;
-    jsaddle-dom-macos-2 = leksah-macos.nix-tools.libs.jsaddle-dom;
-#    leksah-shells-macos = leksah-macos.shells;
+    wrapped-leksah-macos = leksah-macos.nix-tools._raw.wrapped-leksah;
+    leksah-shells-macos = leksah-macos.shells;
 
     leksah-plan-nix-mingw32 = leksah-mingw32.plan-nix;
-
+#    wrapped-leksah-mingw32 = leksah-mingw32.wrapped-leksah;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
