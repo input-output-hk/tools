@@ -7,6 +7,7 @@ let
 
   # cross system settings
   mingwW64 = pkgs.lib.systems.examples.mingwW64;
+  asterius32 = pkgs.lib.systems.examples.asterius32;
 
   # import iohk-nix with the same pin as the nixpkgs above.
   config = { allowUnfree = false; inHydra = true; allowUnsupportedSystem = true; };
@@ -36,7 +37,7 @@ let
 
   wasm = importPinned "iohk-nix" {
     haskellNixJsonOverride = ./pins/haskell-nix.json;
-    crossSystem = { config="wasm32-asterius"; };
+    crossSystem = asterius32;
     nixpkgsOverlays = [
       ( self: super: {
         stdenv = super.stdenv.override {
