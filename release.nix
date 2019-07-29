@@ -73,29 +73,29 @@ let
     asterius-plan-nix = asterius.plan-nix;
     asterius-plan-nix-macos = asterius-macos.plan-nix;
     
-    asterius-boot = asterius.nix-tools._raw.asterius-boot;
-    asterius-shells = asterius.shells;
-    asterius-nix-tools = asterius.nix-tools._raw.haskell.nix-tools;
-    asterius-ghc = asterius.nix-tools._raw.pkgs.haskell.compiler.ghc864;
-    asterius-hpack = asterius.nix-tools._raw.pkgs.haskellPackages.hpack;
-    asterius-cabal-install = asterius.nix-tools._raw.pkgs.cabal-install;
-    asterius-rsync = asterius.nix-tools._raw.pkgs.rsync;
-    asterius-git = asterius.nix-tools._raw.pkgs.git;
-    asterius-nix = asterius.nix-tools._raw.pkgs.nix;
-    asterius-boehmgc = asterius.nix-tools._raw.pkgs.boehmgc;
-    asterius-test = asterius.nix-tools.tests.asterius;
+#    asterius-boot = asterius.nix-tools._raw.asterius-boot;
+#    asterius-shells = asterius.shells;
+#    asterius-nix-tools = asterius.nix-tools._raw.haskell.nix-tools;
+#    asterius-ghc = asterius.nix-tools._raw.pkgs.haskell.compiler.ghc864;
+#    asterius-hpack = asterius.nix-tools._raw.pkgs.haskellPackages.hpack;
+#    asterius-cabal-install = asterius.nix-tools._raw.pkgs.cabal-install;
+#    asterius-rsync = asterius.nix-tools._raw.pkgs.rsync;
+#    asterius-git = asterius.nix-tools._raw.pkgs.git;
+#    asterius-nix = asterius.nix-tools._raw.pkgs.nix;
+#    asterius-boehmgc = asterius.nix-tools._raw.pkgs.boehmgc;
+#    asterius-test = asterius.nix-tools.tests.asterius;
 
-    asterius-shells-macos = asterius-macos.shells;
-    asterius-test-macos = asterius-macos.nix-tools.tests.asterius;
+#    asterius-shells-macos = asterius-macos.shells;
+#    asterius-test-macos = asterius-macos.nix-tools.tests.asterius;
 
-    hello-wasm = (((wasm.nix-tools.default-nix ({haskell, ...}: {inherit haskell;}) {
-        crossSystem = { config="wasm32-asterius"; };
-      }).nix-tools._raw.haskell.hackage-package {
-    	name = "hello";
-    	version = "1.0.0.2";
-    	cabal-install = x86_64-linux.pkgs.cabal-install;
-    	ghc = x86_64-linux.pkgs.haskell.compiler.ghc864;
-     })).components.exes.hello;
+#    hello-wasm = (((wasm.nix-tools.default-nix ({haskell, ...}: {inherit haskell;}) {
+#        crossSystem = { config="wasm32-asterius"; };
+#      }).nix-tools._raw.haskell.hackage-package {
+#    	name = "hello";
+#    	version = "1.0.0.2";
+#    	cabal-install = x86_64-linux.pkgs.cabal-install;
+#    	ghc = x86_64-linux.pkgs.haskell.compiler.ghc864;
+#     })).components.exes.hello;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
