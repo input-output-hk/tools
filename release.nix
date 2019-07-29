@@ -25,8 +25,8 @@ let
 
   asterius-git = pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "e1808f776eaf9f2cd21a415a75fc59180210780e";
-      sha256 = "1cg7v0z59g939qaqz2isvv8hajgw4y8gj3jx52bfpg1444sz42is";
+      rev = "d4b6982eafef9469f37b30ae22394c40e1c9bbca";
+      sha256 = "1gyicxy3ij2fjc51844wb53907gbh6ql4l9mri2hks7x98s7i2i8";
       fetchSubmodules = true;
     };
     
@@ -34,6 +34,31 @@ let
   asterius-macos = import asterius-git { inherit config; system = "x86_64-darwin"; };
   asterius-release = import (asterius-git + "/release.nix") { inherit config; };
 
+  wasm = importPinned "iohk-nix" {
+    haskellNixJsonOverride = ./pins/haskell-nix.json;
+    crossSystem = { config="wasm32-asterius"; };
+    nixpkgsOverlays = [
+      ( self: super: {
+        stdenv = super.stdenv.override {
+            cc = if super.stdenv.hostPlatform != super.stdenv.buildPlatform
+                      && super.stdenv.targetPlatform.isAsterius or false
+                   then null
+                   else super.stdenv.cc;
+          };
+        haskell =
+          super.haskell //
+            (if super.stdenv.targetPlatform.isAsterius or false
+              then {
+                compiler = super.haskell.compiler // {
+                  ghc864 = (import asterius-git { inherit config; system = "x86_64-linux"; })
+                    .nix-tools._raw.wasm-asterius-ghc;
+                };
+              }
+              else {});
+        }
+      )];
+  };
+  
   # jobs contain a key -> value mapping that tells hydra which
   # derivations to build.  There are some predefined helpers in
   # https://github.com/NixOS/nixpkgs/tree/master/pkgs/build-support/release
@@ -62,6 +87,15 @@ let
 
     asterius-shells-macos = asterius-macos.shells;
     asterius-test-macos = asterius-macos.nix-tools.tests.asterius;
+
+    hello-wasm = (((wasm.nix-tools.default-nix ({haskell, ...}: {inherit haskell;}) {
+        crossSystem = { config="wasm32-asterius"; };
+      }).nix-tools._raw.haskell.hackage-package {
+    	name = "hello";
+    	version = "1.0.0.2";
+    	cabal-install = x86_64-linux.pkgs.cabal-install;
+    	ghc = x86_64-linux.pkgs.haskell.compiler.ghc864;
+     })).components.exes.hello;
 
     # this should give us our patched compiler. (e.g. the one
     # from the pinned nixpkgs set with all the iohk-nix
