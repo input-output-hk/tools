@@ -1,9 +1,12 @@
 let
   nixpkgs = import ../nixpkgs {};
-  hercules-ci-info = nixpkgs.pkgs.lib.importJSON ../hercules-ci-agent.json;
-  hercules-ci-agent = nixpkgs.pkgs.fetchgit {
-    inherit (hercules-ci-info) url rev sha256;
-  };
+  # hercules-ci-info = nixpkgs.pkgs.lib.importJSON ../hercules-ci-agent.json;
+  # hercules-ci-agent = nixpkgs.pkgs.fetchgit {
+  #   inherit (hercules-ci-info) url rev sha256;
+  # };
+
+  # take latest master branch (not stable branch)
+  hercules-ci-agent = builtins.fetchTarball "https://github.com/hercules-ci/hercules-ci-agent/archive/master.tar.gz";
 in
 
 { config, pkgs, ... }:
