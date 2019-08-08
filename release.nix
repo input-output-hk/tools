@@ -26,8 +26,8 @@ let
 
   asterius-git = pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "6f91ec6b446e81a97e8d09bdabb28207bfd15083";
-      sha256 = "0qgpbb4cy4yvq0lzbx135a39xmrvyryy9zk9gyncvhpa5ib2npva";
+      rev = "d2ba966192abeb3459261a12005d34951e42941c";
+      sha256 = "009j3yr15k7qiismc1c2m1r24dnqza0j9ljnia9kd7vsfxn04rif";
       fetchSubmodules = true;
     };
     
@@ -92,10 +92,26 @@ let
     hello-wasm = (((wasm.nix-tools.default-nix ({haskell, ...}: {inherit haskell;}) {
         crossSystem = { config="wasm32-asterius"; };
       }).nix-tools._raw.haskell.hackage-package {
-    	name = "hello";
-    	version = "1.0.0.2";
-    	cabal-install = x86_64-linux.pkgs.cabal-install;
-    	ghc = x86_64-linux.pkgs.haskell.compiler.ghc864;
+        name = "hello";
+        version = "1.0.0.2";
+        cabal-install = x86_64-linux.pkgs.cabal-install;
+        ghc = x86_64-linux.pkgs.haskell.compiler.ghc864;
+        pkg-def-extras = [
+          (hackage: {
+            packages.Cabal.revision = (((hackage."Cabal")."2.4.0.1").revisions).default;
+          })
+        ];
+        modules = [
+          { nonReinstallablePkgs =
+             [ "ghc-boot" "binary" "bytestring" "filepath" "directory" "containers" "time" "unix" "Win32"
+               "ghci" "hpc" "process" "terminfo" "transformers" "mtl" "parsec" "text"
+             ];
+          }
+          ({config, ...}: {
+            packages.hello.package.setup-depends = [config.hsPkgs.buildPackages.Cabal];
+            packages.Cabal.patches = [ ./patches/Cabal.patch ];
+#            packages.Cabal.src = ../../haskell/cabal/Cabal;
+          }) ];
      })).components.exes.hello;
 
     # this should give us our patched compiler. (e.g. the one
