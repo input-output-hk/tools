@@ -16,4 +16,10 @@ in
 
   services.hercules-ci-agent.enable = true;
   services.hercules-ci-agent.concurrentTasks = 4; # Number of jobs to run
+
+  # In case we want to build hercules-ci from the agent itself.
+  nix = {
+    binaryCaches = [ "https://hercules-ci.cachix.org" ];
+    binaryCachePublicKeys = [ "hercules-ci.cachix.org-1:ZZeDl9Va+xe9j+KqdzoBZMFJHVQ42Uu/c/1/KMC5Lw0=" ];
+  };
 }
