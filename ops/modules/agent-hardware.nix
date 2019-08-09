@@ -8,6 +8,11 @@
     [ # <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
     ];
 
+  # ensure we build for x86_64-linux. This is important
+  # to prevent nixops to try tand build this configuration
+  # for `currentSystem`, which is x86_64-dsarwin on macOS>
+  nixpkgs.localSystem.system = "x86_64-linux";
+
   boot.initrd.availableKernelModules = [ "ahci" "nvme" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
