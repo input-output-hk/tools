@@ -46,6 +46,7 @@
   networking.firewall.allowPing = true;
   networking.firewall.trustedInterfaces = [ "lo" "docker0" ];
 
+  programs.mosh.enable = true;
   # services.udev.extraRules = ''
   #   # rename eno1 to eth0
   #   ACTION=="add", SUBSYSTEM=="net", ATTR{address}=="b4:2e:99:45:36:a2", NAME="eth0"
