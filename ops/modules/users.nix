@@ -16,4 +16,12 @@
     openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEAqpSYY0nJIaKaH1/HiwQzwMiqde6RF8T6FOEaMFb86hc76TjBODpP+klS+rpVge4a2Ew/2z3KYz+A2rAWRl1u3FBYuPua+B44xKeEz9+TWdUhkDu8Jubpy0oY5YYqR4MFV0UYoag+/2LD/Kcok82sSDMkccAoAak/4B840sUUD8E= hamish@hamish-mackenzies-computer-2.local" ];
   };
 
+  users.users.luite = {
+    isNormalUser = true;
+    home = "/home/luite";
+    description = "Luite Stegeman";
+    extraGroups = [ "wheel" ];
+    openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5w8VjXqqZ37vQ5CIiAksBydqbyde/rW1wW00wB6PLhIst0EjQjyFNmAchtD+nbZG0yqmSCTRlbx/gn5n/G8gL6swm8BhPPBwWu1LDBmpu1imiMZ27jKr+zPYehlcxP9EVPAbJw5+FpZi1hpsubeAMPF8t7mlFF7hBrpXgiVTTUUKdFpOtxk6isZs+yvrkS0zs9g+DmHuj9nC7Ww4k0fdV776xpXXSwbLNsLCQlOp353q3MBUFPy4Ckh2ES+3Tv6S7MTevJxoYlY/x6AIse78kQX+8afWPe1OcaOWzgIcpk2JmQcPURZH3UDI757QRVT8+Pw6TzgUQA3P7fWjRYrr/ stegeman@gmail.com" ];
+  };
+
 }
