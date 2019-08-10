@@ -10,9 +10,9 @@ export NIXOPS_DEPLOYMENT=hercules-ci-agents
 
 if [ $1 == "deploy" ]; then
   keys="hercules-ci.cachix.org-1:ZZeDl9Va+xe9j+KqdzoBZMFJHVQ42Uu/c/1/KMC5Lw0= $(nix show-config --json  | jq -r '.["trusted-public-keys"].value|join(" ")')"
-  cache="--option extra-substituters 'https://hercules-ci.cachix.org' --option trusted-public-keys '$keys'"
+  cache=("--option" "extra-substituters" "'https://hercules-ci.cachix.org'" "--option" "trusted-public-keys" "'$keys'")
 else
   cache=""
 fi
 
-eval nixops "$@" $cache
+exec nixops "$@" "${cache[@]}"
