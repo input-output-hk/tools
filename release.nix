@@ -26,8 +26,8 @@ let
 
   asterius-git = pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "d2ba966192abeb3459261a12005d34951e42941c";
-      sha256 = "009j3yr15k7qiismc1c2m1r24dnqza0j9ljnia9kd7vsfxn04rif";
+      rev = "cba41310d5bc999dbcf705af947e8b359ff7a1c1";
+      sha256 = "1zyi3g8dpd28vpflragh4g56zkbm0jhg4wsn1w61p6la1rbh4qfi";
       fetchSubmodules = true;
     };
     
@@ -51,7 +51,7 @@ let
             (if super.stdenv.targetPlatform.isAsterius or false
               then {
                 compiler = super.haskell.compiler // {
-                  ghc864 = (import asterius-git { inherit config; system = "x86_64-linux"; })
+                  ghc865 = (import asterius-git { inherit config; system = "x86_64-linux"; })
                     .nix-tools._raw.wasm-asterius-ghc;
                 };
               }
@@ -77,7 +77,7 @@ let
     asterius-boot = asterius.nix-tools._raw.asterius-boot;
     asterius-shells = asterius.shells;
     asterius-nix-tools = asterius.nix-tools._raw.haskell.nix-tools;
-    asterius-ghc = asterius.nix-tools._raw.pkgs.haskell.compiler.ghc864;
+    asterius-ghc = asterius.nix-tools._raw.pkgs.haskell.compiler.ghc865;
     asterius-hpack = asterius.nix-tools._raw.pkgs.haskellPackages.hpack;
     asterius-cabal-install = asterius.nix-tools._raw.pkgs.cabal-install;
     asterius-rsync = asterius.nix-tools._raw.pkgs.rsync;
@@ -95,7 +95,7 @@ let
         name = "hello";
         version = "1.0.0.2";
         cabal-install = x86_64-linux.pkgs.cabal-install;
-        ghc = x86_64-linux.pkgs.haskell.compiler.ghc864;
+        ghc = x86_64-linux.pkgs.haskell.compiler.ghc865;
         pkg-def-extras = [
           (hackage: {
             packages.Cabal.revision = (((hackage."Cabal")."2.4.0.1").revisions).default;
@@ -119,14 +119,14 @@ let
     # patches applied.
 
     # linux
-    ghc864.x86_64-linux = x86_64-linux.pkgs.haskell.compiler.ghc864;
+    ghc865.x86_64-linux = x86_64-linux.pkgs.haskell.compiler.ghc865;
 
     # macOS
-    ghc864.x86_64-macos = x86_64-macos.pkgs.haskell.compiler.ghc864;
+    ghc865.x86_64-macos = x86_64-macos.pkgs.haskell.compiler.ghc865;
 
     # linux -> win32
     # Note: we want to build the cross-compiler. As such we want something from the buildPackages!
-    "${mingwW64.config}-ghc864".x86_64-linux = x86_64-mingw32.pkgs.buildPackages.haskell.compiler.ghc864;
+    "${mingwW64.config}-ghc865".x86_64-linux = x86_64-mingw32.pkgs.buildPackages.haskell.compiler.ghc865;
   };
 in
   jobs
