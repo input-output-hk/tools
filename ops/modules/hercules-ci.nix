@@ -6,7 +6,7 @@ let
   # };
 
   # take latest master branch (not stable branch)
-  hercules-ci-agent = builtins.fetchTarball "https://github.com/hercules-ci/hercules-ci-agent/archive/510ed95c3d8631cc6f12ed021b417b7c9e36932c.tar.gz";
+  hercules-ci-agent = builtins.fetchTarball "https://github.com/hercules-ci/hercules-ci-agent/archive/05da1213155e84c4daea58076692b02d30c1d587.tar.gz";
 in
 
 { config, pkgs, ... }:
