@@ -52,12 +52,12 @@ let
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
     leksah-plan-nix = leksah.plan-nix;
-#    wrapped-leksah = leksah.wrapped-leksah;
-#    leksah-shells = leksah.shells;
+    wrapped-leksah = leksah.wrapped-leksah;
+    leksah-shells = leksah.shells;
 
     leksah-plan-nix-macos = leksah-macos.plan-nix;
-#    wrapped-leksah-macos = leksah-macos.wrapped-leksah;
-#    leksah-shells-macos = leksah-macos.shells;
+    wrapped-leksah-macos = leksah-macos.wrapped-leksah;
+    leksah-shells-macos = leksah-macos.shells;
 
     leksah-plan-nix-mingw32 = leksah-mingw32.plan-nix;
 #    wrapped-leksah-mingw32 = leksah-mingw32.wrapped-leksah;
