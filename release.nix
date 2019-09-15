@@ -31,8 +31,8 @@ let
 
   leksah-src = pkgs.fetchgit {
       url = "https://github.com/leksah/leksah";
-      rev = "79cd7c88c6e952c6c64c34fa720dfcb20d25a0fe";
-      sha256 = "18m92mafhx82si9g16yic0w5g8n781d38pk987j8h7x5jqqfha2c";
+      rev = "298b6a10aef96e2dc3b0186ed6330fa2224fa14e";
+      sha256 = "1l51wyb8pawc34xnkdphi24mcm40j858bx3q3lsbcavm8apalzj0";
       fetchSubmodules = true;
     };
 
@@ -52,12 +52,12 @@ let
     hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
 
     leksah-plan-nix = leksah.plan-nix;
-    wrapped-leksah = leksah.nix-tools._raw.wrapped-leksah;
-    leksah-shells = leksah.shells;
+#    wrapped-leksah = leksah.wrapped-leksah;
+#    leksah-shells = leksah.shells;
 
     leksah-plan-nix-macos = leksah-macos.plan-nix;
-    wrapped-leksah-macos = leksah-macos.nix-tools._raw.wrapped-leksah;
-    leksah-shells-macos = leksah-macos.shells;
+#    wrapped-leksah-macos = leksah-macos.wrapped-leksah;
+#    leksah-shells-macos = leksah-macos.shells;
 
     leksah-plan-nix-mingw32 = leksah-mingw32.plan-nix;
 #    wrapped-leksah-mingw32 = leksah-mingw32.wrapped-leksah;
