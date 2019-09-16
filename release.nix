@@ -31,8 +31,8 @@ let
 
   leksah-src = pkgs.fetchgit {
       url = "https://github.com/leksah/leksah";
-      rev = "19279aa417f81cabf1b53e6b3524d139d25f1eb8";
-      sha256 = "0wyz8nbdypvs18ly3qxaskjbkcjp1jkidd1cjzsl3rrnvsmsm10k";
+      rev = "5d360e6af2b92ca8af24be0be94f5f778548efcf";
+      sha256 = "049r2h6iy1y6bkj8vnirr5l1v11pqpq37416ldz3v3whbw2f12c0";
       fetchSubmodules = true;
     };
 
