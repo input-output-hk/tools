@@ -16,6 +16,14 @@
     openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEAqpSYY0nJIaKaH1/HiwQzwMiqde6RF8T6FOEaMFb86hc76TjBODpP+klS+rpVge4a2Ew/2z3KYz+A2rAWRl1u3FBYuPua+B44xKeEz9+TWdUhkDu8Jubpy0oY5YYqR4MFV0UYoag+/2LD/Kcok82sSDMkccAoAak/4B840sUUD8E= hamish@hamish-mackenzies-computer-2.local" ];
   };
 
+  users.users.josh = {
+    isNormalUser = true;
+    home = "/home/josh";
+    description = "Josh Meredith";
+    extraGroups = [ "wheel" ];
+    openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCW1cXh288++n0flJ+dGc7/V8OQCEHzcRrPC09ZaZQN9qCY1ZQRe8h/4Ceo0TwVrXbf87Ja9IbTlTCGcWwEWaWQfSLdjsmTeN/DK8GiunlyUk4AJLiiir9piKCz7QOObhgNinYdH2zMcGDeBxDMuHbiiYFa5XsZO/BJhIgce302XcR7OHXSVnKc8h57LWMLWds3iUyl1x8OmviJZOZ1rAMCvpBo6O9nMSPjSFGPx2SICoHbCs2pJY3vLfcG88GDiwvQIbrSZE1T1cK716nYGkZjIVQVZmYC4XN/ZDuwvZntdsTzXwD6J0WRV0yeabhu2V7T2m2fKZNcs0ci7isa9UKJ joshmeredith2008@gmail.com" ];
+  };
+
   users.users.luite = {
     isNormalUser = true;
     home = "/home/luite";
