@@ -23,6 +23,12 @@
       fsType = "btrfs";
     };
 
+  # this rendered the agent dead at some point
+  # fileSystems."/ramdisk" =
+  #   { fsType = "tmpfs";
+  #     options = ["size=8GB" "gid=1"];
+  #   };
+
   swapDevices = [ ];
 
   nix.maxJobs = lib.mkDefault 16;
