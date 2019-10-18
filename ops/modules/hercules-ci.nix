@@ -15,7 +15,7 @@ in
   imports = [ (hercules-ci-agent + "/module.nix") ];
 
   services.hercules-ci-agent.enable = true;
-  services.hercules-ci-agent.concurrentTasks = 4; # Number of jobs to run
+  services.hercules-ci-agent.concurrentTasks = 16; # Number of jobs to run
 
   # In case we want to build hercules-ci from the agent itself.
   nix = {
