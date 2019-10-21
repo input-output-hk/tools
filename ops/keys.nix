@@ -1,6 +1,6 @@
 {
   deployment.keys = {
     "cluster-join-token.key".keyFile = ./secrets/cluster-join-token.key;
+    "binary-caches.json".keyFile = ./secrets/binary-caches.json;
   };
-  services.hercules-ci-agent.binaryCachesFile = ./secrets/binary-caches.json;
 }
