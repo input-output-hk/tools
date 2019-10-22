@@ -31,14 +31,14 @@ let
 
   leksah-src = pkgs.fetchgit {
       url = "https://github.com/leksah/leksah";
-      rev = "a832148ee5f8f47e887b4552e2f2e17cac9d4b61";
-      sha256 = "0fsfkwr65nnidmib5l7rgjwjb6asyh011z20cxi1n25hfakqz49m";
+      rev = "90290b26a3067459bbff87186fb220d2850f25a1";
+      sha256 = "16v5m7czyhv66311srhfjx04iqd12qdbqw0nz4hvb8074dlqlpdw";
       fetchSubmodules = true;
     };
 
-  leksah = import leksah-src { inherit config; system = "x86_64-linux"; };
-  leksah-macos = import leksah-src { inherit config; system = "x86_64-darwin"; };
-  leksah-mingw32 = import leksah-src { inherit config; system = "x86_64-linux"; crossSystem = mingwW64; };
+  leksah = import leksah-src { system = "x86_64-linux"; };
+  leksah-macos = import leksah-src { system = "x86_64-darwin"; };
+  leksah-mingw32 = import leksah-src { system = "x86_64-linux"; crossSystem = mingwW64; };
 
   # jobs contain a key -> value mapping that tells hydra which
   # derivations to build.  There are some predefined helpers in
@@ -59,7 +59,7 @@ let
     wrapped-leksah-macos = leksah-macos.wrapped-leksah;
     leksah-shells-macos = leksah-macos.shells;
 
-    leksah-plan-nix-mingw32 = leksah-mingw32.plan-nix;
+#    leksah-plan-nix-mingw32 = leksah-mingw32.plan-nix;
 #    wrapped-leksah-mingw32 = leksah-mingw32.wrapped-leksah;
 
     # this should give us our patched compiler. (e.g. the one
