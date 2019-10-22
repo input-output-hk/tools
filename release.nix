@@ -26,14 +26,13 @@ let
 
   asterius-git = pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "cba41310d5bc999dbcf705af947e8b359ff7a1c1";
-      sha256 = "1zyi3g8dpd28vpflragh4g56zkbm0jhg4wsn1w61p6la1rbh4qfi";
+      rev = "c101915be839dede6864165e7ddb362241bb986e";
+      sha256 = "15561x60f0m8zcnrkb9a2mz2dzfrpq0k2hic9f5r8r2wf737pywx";
       fetchSubmodules = true;
     };
     
-  asterius = import asterius-git { inherit config; system = "x86_64-linux"; };
-  asterius-macos = import asterius-git { inherit config; system = "x86_64-darwin"; };
-  asterius-release = import (asterius-git + "/release.nix") { inherit config; };
+  asterius = import asterius-git { system = "x86_64-linux"; };
+  asterius-macos = import asterius-git { system = "x86_64-darwin"; };
 
   wasm = importPinned "iohk-nix" {
     haskellNixJsonOverride = ./pins/haskell-nix.json;
