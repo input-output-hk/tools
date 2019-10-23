@@ -80,7 +80,7 @@ let
     asterius-happy-plan-nix = asterius.pkgs.bootstrap.haskell.packages.happy-project.plan-nix;
     asterius-hscolour-plan-nix = asterius.pkgs.bootstrap.haskell.packages.hscolour-project.plan-nix;
 #    asterius-ghc = asterius.hsPkgs.haskell-nix.compiler.ghc865;
-#    asterius-hpack = asterius.hsPkgs.hpack;
+    asterius-hpack = asterius.hsPkgs.hpack.components.exes.hpack;
 #    asterius-cabal-install = asterius.nix-tools._raw.pkgs.cabal-install;
 #    asterius-rsync = asterius.nix-tools._raw.pkgs.rsync;
 #    asterius-git = asterius.nix-tools._raw.pkgs.git;
@@ -94,6 +94,7 @@ let
     asterius-alex-plan-nix-macos = asterius-macos.pkgs.bootstrap.haskell.packages.alex-project.plan-nix;
     asterius-happy-plan-nix-macos = asterius-macos.pkgs.bootstrap.haskell.packages.happy-project.plan-nix;
     asterius-hscolour-plan-nix-macos = asterius-macos.pkgs.bootstrap.haskell.packages.hscolour-project.plan-nix;
+    asterius-hpack-mocos = asterius-macos.hsPkgs.hpack.components.exes.hpack;
     asterius-test-macos = asterius-macos.hsPkgs.asterius.components.tests;
 
     hello-wasm = (((wasm.nix-tools.default-nix ({haskell, ...}: {inherit haskell;}) {
