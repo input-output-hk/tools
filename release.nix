@@ -26,8 +26,8 @@ let
 
   asterius-git = pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "c101915be839dede6864165e7ddb362241bb986e";
-      sha256 = "15561x60f0m8zcnrkb9a2mz2dzfrpq0k2hic9f5r8r2wf737pywx";
+      rev = "93ab0b4017febd14aac3fed839fcd7b24aea75b1";
+      sha256 = "0qc09hqy2xd8v7hmxki443x022n3phw93jfh01bpxgcaj8p3s60a";
       fetchSubmodules = true;
     };
     
@@ -73,20 +73,28 @@ let
     asterius-plan-nix = asterius.plan-nix;
     asterius-plan-nix-macos = asterius-macos.plan-nix;
     
-    asterius-boot = asterius.nix-tools._raw.asterius-boot;
+    asterius-boot = asterius.asterius-boot;
     asterius-shells = asterius.shells;
-    asterius-nix-tools = asterius.nix-tools._raw.haskell.nix-tools;
-    asterius-ghc = asterius.nix-tools._raw.pkgs.haskell.compiler.ghc865;
-    asterius-hpack = asterius.nix-tools._raw.pkgs.haskellPackages.hpack;
-    asterius-cabal-install = asterius.nix-tools._raw.pkgs.cabal-install;
-    asterius-rsync = asterius.nix-tools._raw.pkgs.rsync;
-    asterius-git = asterius.nix-tools._raw.pkgs.git;
-    asterius-nix = asterius.nix-tools._raw.pkgs.nix;
-    asterius-boehmgc = asterius.nix-tools._raw.pkgs.boehmgc;
-    asterius-test = asterius.nix-tools.tests.asterius;
+    asterius-nix-tools = asterius.pkgs.bootstrap.haskell.packages.nix-tools;
+    asterius-alex-plan-nix = asterius.pkgs.bootstrap.haskell.packages.alex-project.plan-nix;
+    asterius-happy-plan-nix = asterius.pkgs.bootstrap.haskell.packages.happy-project.plan-nix;
+    asterius-hscolour-plan-nix = asterius.pkgs.bootstrap.haskell.packages.hscolour-project.plan-nix;
+#    asterius-ghc = asterius.hsPkgs.haskell-nix.compiler.ghc865;
+#    asterius-hpack = asterius.hsPkgs.hpack;
+#    asterius-cabal-install = asterius.nix-tools._raw.pkgs.cabal-install;
+#    asterius-rsync = asterius.nix-tools._raw.pkgs.rsync;
+#    asterius-git = asterius.nix-tools._raw.pkgs.git;
+#    asterius-nix = asterius.nix-tools._raw.pkgs.nix;
+#    asterius-boehmgc = asterius.nix-tools._raw.pkgs.boehmgc;
+    asterius-test = asterius.hsPkgs.asterius.components.tests;
 
+    asterius-boot-macos = asterius-macos.asterius-boot;
     asterius-shells-macos = asterius-macos.shells;
-    asterius-test-macos = asterius-macos.nix-tools.tests.asterius;
+    asterius-nix-tools-macos = asterius-macos.pkgs.bootstrap.haskell.packages.nix-tools;
+    asterius-alex-plan-nix-macos = asterius-macos.pkgs.bootstrap.haskell.packages.alex-project.plan-nix;
+    asterius-happy-plan-nix-macos = asterius-macos.pkgs.bootstrap.haskell.packages.happy-project.plan-nix;
+    asterius-hscolour-plan-nix-macos = asterius-macos.pkgs.bootstrap.haskell.packages.hscolour-project.plan-nix;
+    asterius-test-macos = asterius-macos.hsPkgs.asterius.components.tests;
 
     hello-wasm = (((wasm.nix-tools.default-nix ({haskell, ...}: {inherit haskell;}) {
         crossSystem = { config="wasm32-asterius"; };
