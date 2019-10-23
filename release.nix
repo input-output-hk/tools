@@ -26,8 +26,8 @@ let
 
   asterius-git = pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "2011f0736e7793864e13b4ebee56ec4c1478a117";
-      sha256 = "0v36zqxcgr26rlhy8qqk9gz7blgcb9ga3b0zvwka7r6map3d5gz2";
+      rev = "fa8babf4e74c13fde6f2d9d2f1e31af547e6c75e";
+      sha256 = "1akbg5yl2kvcm9hi5c1n84hxc40ycf1n8qan346c5r25akfhdm26";
       fetchSubmodules = true;
     };
     
