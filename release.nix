@@ -67,7 +67,9 @@ let
     let asterius = import asterius-git { inherit system; };
     in builtins.mapAttrs (_: pkgs.recurseIntoAttrs) {
       asterius-plan-nix = asterius.plan-nix;
-      asterius-plan-nix-inputs = asterius.plan-nix.naitiveBuildInputs;
+      asterius-plan-nix-inputs = builtins.listToAttrs (
+      	builtins.map (i: { inherit (i) name; value = pkgs.recurseIntoAttrs i; })
+      	  asterius.plan-nix.nativeBuildInputs);
     
       asterius-boot = asterius.asterius-boot;
       asterius-shells = asterius.shells;
