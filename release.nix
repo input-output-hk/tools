@@ -31,9 +31,6 @@ let
       fetchSubmodules = true;
     };
     
-  asterius = import asterius-git { system = "x86_64-linux"; };
-  asterius-macos = import asterius-git { system = "x86_64-darwin"; };
-
   wasm = importPinned "iohk-nix" {
     haskellNixJsonOverride = ./pins/haskell-nix.json;
     crossSystem = asterius32;
@@ -66,38 +63,31 @@ let
   #
   # It is however not necessary to use those.
   #
-  jobs = rec {
-    # a very simple job. All it does is call a shell script that print Hello World.
-    hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
-
-    asterius-plan-nix = asterius.plan-nix;
-    asterius-plan-nix-macos = asterius-macos.plan-nix;
+  jobs = (builtins.mapAttrs (_: system:
+    let asterius = import asterius-git { inherit system; };
+    in builtins.mapAttrs (_: pkgs.recurseIntoAttrs) {
+      asterius-plan-nix = asterius.plan-nix;
+      asterius-plan-nix-inputs = asterius.plan-nix.naitiveBuildInputs;
     
-    asterius-boot = asterius.asterius-boot;
-    asterius-shells = asterius.shells;
-    asterius-nix-tools = asterius.pkgs.bootstrap.haskell.packages.nix-tools;
-    asterius-alex-plan-nix = asterius.pkgs.bootstrap.haskell.packages.alex-project.plan-nix;
-    asterius-happy-plan-nix = asterius.pkgs.bootstrap.haskell.packages.happy-project.plan-nix;
-    asterius-hscolour-plan-nix = asterius.pkgs.bootstrap.haskell.packages.hscolour-project.plan-nix;
-#    asterius-ghc = asterius.hsPkgs.haskell-nix.compiler.ghc865;
-    asterius-hpack = asterius.hsPkgs.hpack.components.exes.hpack;
-    asterius-build-hpack = asterius.pkgs.buildPackages.haskell-nix.haskellPackages.hpack.components.exes.hpack;
-#    asterius-cabal-install = asterius.nix-tools._raw.pkgs.cabal-install;
-#    asterius-rsync = asterius.nix-tools._raw.pkgs.rsync;
-#    asterius-git = asterius.nix-tools._raw.pkgs.git;
-#    asterius-nix = asterius.nix-tools._raw.pkgs.nix;
-#    asterius-boehmgc = asterius.nix-tools._raw.pkgs.boehmgc;
-    asterius-test = asterius.hsPkgs.asterius.components.tests;
-
-    asterius-boot-macos = asterius-macos.asterius-boot;
-    asterius-shells-macos = asterius-macos.shells;
-    asterius-nix-tools-macos = asterius-macos.pkgs.bootstrap.haskell.packages.nix-tools;
-    asterius-alex-plan-nix-macos = asterius-macos.pkgs.bootstrap.haskell.packages.alex-project.plan-nix;
-    asterius-happy-plan-nix-macos = asterius-macos.pkgs.bootstrap.haskell.packages.happy-project.plan-nix;
-    asterius-hscolour-plan-nix-macos = asterius-macos.pkgs.bootstrap.haskell.packages.hscolour-project.plan-nix;
-    asterius-hpack-macos = asterius-macos.hsPkgs.hpack.components.exes.hpack;
-    asterius-build-hpack-macos = asterius-macos.pkgs.buildPackages.haskell-nix.haskellPackages.hpack.components.exes.hpack;
-    asterius-test-macos = asterius-macos.hsPkgs.asterius.components.tests;
+      asterius-boot = asterius.asterius-boot;
+      asterius-shells = asterius.shells;
+      asterius-nix-tools = asterius.pkgs.bootstrap.haskell.packages.nix-tools;
+      asterius-alex-plan-nix = asterius.pkgs.bootstrap.haskell.packages.alex-project.plan-nix;
+      asterius-happy-plan-nix = asterius.pkgs.bootstrap.haskell.packages.happy-project.plan-nix;
+      asterius-hscolour-plan-nix = asterius.pkgs.bootstrap.haskell.packages.hscolour-project.plan-nix;
+#      asterius-ghc = asterius.hsPkgs.haskell-nix.compiler.ghc865;
+      asterius-hpack = asterius.hsPkgs.hpack.components.exes.hpack;
+      asterius-build-hpack = asterius.pkgs.buildPackages.haskell-nix.haskellPackages.hpack.components.exes.hpack;
+#      asterius-cabal-install = asterius.nix-tools._raw.pkgs.cabal-install;
+#      asterius-rsync = asterius.nix-tools._raw.pkgs.rsync;
+#      asterius-git = asterius.nix-tools._raw.pkgs.git;
+#      asterius-nix = asterius.nix-tools._raw.pkgs.nix;
+#      asterius-boehmgc = asterius.nix-tools._raw.pkgs.boehmgc;
+      asterius-test = asterius.hsPkgs.asterius.components.tests;
+    }) {
+      linux = "x86_64-linux";
+      macos = "x86_64-darwin";
+    }) // {
 
     hello-wasm = (((wasm.nix-tools.default-nix ({haskell, ...}: {inherit haskell;}) {
         crossSystem = { config="wasm32-asterius"; };
