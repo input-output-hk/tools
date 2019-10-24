@@ -66,7 +66,7 @@ let
   planNixWithInputs = plan-nix: {
     inherit plan-nix;
     inputs = builtins.listToAttrs (
-      	builtins.map (i: { name = builtins.replaceStrings ["."] ["_"] i.name; value = i; })
+      	builtins.concatMap (i: if i == null then [] else [{ name = builtins.replaceStrings ["."] ["_"] i.name; value = i; }])
       	  plan-nix.nativeBuildInputs);
   };
   
