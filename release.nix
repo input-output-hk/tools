@@ -68,7 +68,7 @@ let
     in builtins.mapAttrs (_: pkgs.recurseIntoAttrs) {
       asterius-plan-nix = asterius.plan-nix;
       asterius-plan-nix-inputs = builtins.listToAttrs (
-      	builtins.map (i: { name = builtins.replaceStrings ["."] ["_"] i.name; value = pkgs.recurseIntoAttrs i; })
+      	builtins.map (i: { name = builtins.replaceStrings ["."] ["_"] i.name; value = i; })
       	  asterius.plan-nix.nativeBuildInputs);
     
       asterius-boot = asterius.asterius-boot;
