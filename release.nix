@@ -26,8 +26,8 @@ let
 
   asterius-git = pkgs.fetchgit {
       url = "https://github.com/input-output-hk/asterius";
-      rev = "592e3b9ffba8355a1ed04e0ad4470a287001c567";
-      sha256 = "0fpxmnbbqy6678f4gdfhn7gmb3bidha8l9vqh1m2ssswdg04nn05";
+      rev = "b52124f01f86615424f466fccb951e373a3d82d5";
+      sha256 = "14y3854kv8d3fbzgzvlz5a4jmgzj06rgxfqbckccm2q82q47m4zb";
       fetchSubmodules = true;
     };
     
@@ -63,32 +63,14 @@ let
   #
   # It is however not necessary to use those.
   #
-  planNixWithInputs = plan-nix: {
-    inherit plan-nix;
-    inputs = builtins.listToAttrs (
-      	builtins.concatMap (i: if i == null then [] else [{ name = builtins.replaceStrings ["."] ["_"] i.name; value = i; }])
-      	  plan-nix.nativeBuildInputs);
-  };
-  
   jobs = (builtins.mapAttrs (_: system:
     let asterius = import asterius-git { inherit system; };
     in builtins.mapAttrs (_: pkgs.recurseIntoAttrs) {
-      asterius-plan-nix = planNixWithInputs asterius.plan-nix;
+      asterius-plan-nix = asterius.pkgs.haskell-nix.withInputs asterius.plan-nix;
     
       asterius-boot = asterius.asterius-boot;
       asterius-shells = asterius.shells;
-      asterius-nix-tools = asterius.pkgs.bootstrap.haskell.packages.nix-tools;
-      asterius-alex-plan-nix = planNixWithInputs asterius.pkgs.bootstrap.haskell.packages.alex-project.plan-nix;
-      asterius-happy-plan-nix = planNixWithInputs asterius.pkgs.bootstrap.haskell.packages.happy-project.plan-nix;
-      asterius-hscolour-plan-nix = planNixWithInputs asterius.pkgs.bootstrap.haskell.packages.hscolour-project.plan-nix;
-#      asterius-ghc = asterius.hsPkgs.haskell-nix.compiler.ghc865;
-      asterius-hpack = asterius.hsPkgs.hpack.components.exes.hpack;
-      asterius-build-hpack = asterius.pkgs.buildPackages.haskell-nix.haskellPackages.hpack.components.exes.hpack;
-#      asterius-cabal-install = asterius.nix-tools._raw.pkgs.cabal-install;
-#      asterius-rsync = asterius.nix-tools._raw.pkgs.rsync;
-#      asterius-git = asterius.nix-tools._raw.pkgs.git;
-#      asterius-nix = asterius.nix-tools._raw.pkgs.nix;
-#      asterius-boehmgc = asterius.nix-tools._raw.pkgs.boehmgc;
+      asterius-haskell-nix-roots = asterius.pkgs.haskell-nix.haskellNixRoots;
       asterius-test = asterius.hsPkgs.asterius.components.tests;
     }) {
       linux = "x86_64-linux";
