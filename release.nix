@@ -63,20 +63,24 @@ let
   #
   # It is however not necessary to use those.
   #
+  planNixWithInputs = plan-nix: {
+    inherit plan-nix;
+    inputs = builtins.listToAttrs (
+      	builtins.map (i: { name = builtins.replaceStrings ["."] ["_"] i.name; value = i; })
+      	  plan-nix.nativeBuildInputs);
+  };
+  
   jobs = (builtins.mapAttrs (_: system:
     let asterius = import asterius-git { inherit system; };
     in builtins.mapAttrs (_: pkgs.recurseIntoAttrs) {
-      asterius-plan-nix = asterius.plan-nix;
-      asterius-plan-nix-inputs = builtins.listToAttrs (
-      	builtins.map (i: { name = builtins.replaceStrings ["."] ["_"] i.name; value = i; })
-      	  asterius.plan-nix.nativeBuildInputs);
+      asterius-plan-nix = planNixWithInputs asterius.plan-nix;
     
       asterius-boot = asterius.asterius-boot;
       asterius-shells = asterius.shells;
       asterius-nix-tools = asterius.pkgs.bootstrap.haskell.packages.nix-tools;
-      asterius-alex-plan-nix = asterius.pkgs.bootstrap.haskell.packages.alex-project.plan-nix;
-      asterius-happy-plan-nix = asterius.pkgs.bootstrap.haskell.packages.happy-project.plan-nix;
-      asterius-hscolour-plan-nix = asterius.pkgs.bootstrap.haskell.packages.hscolour-project.plan-nix;
+      asterius-alex-plan-nix = planNixWithInputs asterius.pkgs.bootstrap.haskell.packages.alex-project.plan-nix;
+      asterius-happy-plan-nix = planNixWithInputs asterius.pkgs.bootstrap.haskell.packages.happy-project.plan-nix;
+      asterius-hscolour-plan-nix = planNixWithInputs asterius.pkgs.bootstrap.haskell.packages.hscolour-project.plan-nix;
 #      asterius-ghc = asterius.hsPkgs.haskell-nix.compiler.ghc865;
       asterius-hpack = asterius.hsPkgs.hpack.components.exes.hpack;
       asterius-build-hpack = asterius.pkgs.buildPackages.haskell-nix.haskellPackages.hpack.components.exes.hpack;
