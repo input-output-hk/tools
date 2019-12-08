@@ -16,8 +16,8 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
-  boot.supportedFilesystems = [ "zfs" ];
 
+  boot.supportedFilesystems = [ "zfs" ];
   networking.hostId = "eca0dea2"; # required for zfs use
 
   fileSystems."/" =
