@@ -42,12 +42,12 @@ set -o pipefail
 set -x
 
 # install zfs
-zpool --help || echo y | /root/.oldroot/nfs/tools/install_zfsonlinux.sh # zfsonlinux_install
+# zpool --help || echo y | /root/.oldroot/nfs/tools/install_zfsonlinux.sh # zfsonlinux_install
 
 umount /mnt/home /mnt/nix /mnt/boot /mnt || true
 zpool import tank || true
 zpool destroy tank || true
-swapoff ${ROOTDEVICE}p2 || true
+swapoff ${ROOTDEVICE}p3 || true
 
 # Inspect existing disks
 lsblk
@@ -55,44 +55,52 @@ lsblk
 # This is essentially what `justdoit` from the kexec install does.
 wipefs -a ${ROOTDEVICE}
 dd if=/dev/zero of=${ROOTDEVICE} bs=512 count=10000
-sfdisk ${ROOTDEVICE} <<EOF
-label: gpt
-device: ${ROOTDEVICE}
-unit: sectors
-1 : size=$((2048 * $BOOTSIZE)), type=0FC63DAF-8483-4772-8E79-3D69D8477DE4
-4 : size=4096, type=21686148-6449-6E6F-744E-656564454649
-2 : size=$((2048 * $SWAPSIZE)), type=0657FD6D-A4AB-43C4-84E5-0933C84B4F4F
-3 : type=0FC63DAF-8483-4772-8E79-3D69D8477DE4
-EOF
+# sfdisk ${ROOTDEVICE} <<EOF
+# label: gpt
+# device: ${ROOTDEVICE}
+# unit: sectors
+# 1 : size=$((2048 * $BOOTSIZE)), type=0FC63DAF-8483-4772-8E79-3D69D8477DE4
+# 4 : size=4096, type=21686148-6449-6E6F-744E-656564454649
+# 2 : size=$((2048 * $SWAPSIZE)), type=0657FD6D-A4AB-43C4-84E5-0933C84B4F4F
+# 3 : type=0FC63DAF-8483-4772-8E79-3D69D8477DE4
+# EOF
 
-export ROOT_DEVICE=${ROOTDEVICE}p3
-export SWAP_DEVICE=${ROOTDEVICE}p2
-export NIXOS_BOOT=${ROOTDEVICE}p1
+parted --script --align optimal /dev/nvme0n1 -- \
+mklabel gpt \
+mkpart 'BIOS-boot-partition' ext3 1MB 2MB set 1 bios_grub on \
+mkpart 'boot' ext3 2MB 257MB \
+mkpart 'swap' linux-swap 257MB 128GB \
+mkpart 'data' ext3 128GB '100%'
+
+partprobe
+
+export ROOT_DEVICE=${ROOTDEVICE}p4
+export SWAP_DEVICE=${ROOTDEVICE}p3
+export NIXOS_BOOT=${ROOTDEVICE}p2
 
 mkdir -p /mnt
 
-mkfs.ext4 $NIXOS_BOOT -L NIXOS_BOOT
+mkfs.ext3 $NIXOS_BOOT -L NIXOS_BOOT
+mkfs.ext3 $ROOT_DEVICE -L NIXOS_ROOT
 mkswap $SWAP_DEVICE -L NIXOS_SWAP
 
-zpool create -o ashift=12 -o altroot=/mnt ${POOLNAME} $ROOT_DEVICE
-zfs create -o mountpoint=legacy ${POOLNAME}/root
-zfs create -o mountpoint=legacy ${POOLNAME}/home
-zfs create -o mountpoint=legacy ${POOLNAME}/nix
+# zpool create -o ashift=12 -o altroot=/mnt ${POOLNAME} $ROOT_DEVICE
+# zfs create -o mountpoint=legacy ${POOLNAME}/root
+# zfs create -o mountpoint=legacy ${POOLNAME}/home
+# zfs create -o mountpoint=legacy ${POOLNAME}/nix
 
 swapon $SWAP_DEVICE
 
 # NixOS pre-installation mounts
 # Mount target root partition
-
-mount -t zfs ${POOLNAME}/root /mnt/
-mkdir /mnt/{home,nix,boot}
-mount -t zfs ${POOLNAME}/home /mnt/home/
-mount -t zfs ${POOLNAME}/nix /mnt/nix/
+mount $ROOT_DEVICE /mnt/
+mkdir -p /mnt/boot
 mount $NIXOS_BOOT /mnt/boot/
 
 # Installing nix
 
 # Install nix requires `sudo`; the Hetzner rescue mode doesn't have it.
+apt-get update
 apt-get install -y sudo
 
 # Allow installing nix as root, see
@@ -218,8 +226,7 @@ cat /mnt/etc/nixos/hardware-configuration.nix
 # Install NixOS
 PATH="$PATH" NIX_PATH="$NIX_PATH" `which nixos-install` --no-root-passwd --root /mnt --max-jobs 40
 
-umount /mnt/home /mnt/nix /mnt/boot /mnt
-zpool export ${POOLNAME}
+umount /mnt/boot /mnt
 swapoff $SWAP_DEVICE
 
 reboot
