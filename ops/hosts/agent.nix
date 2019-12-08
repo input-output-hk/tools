@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 {
-  networking.hostName = "agent";
+  networking.hostName = "loony-tools-agent";
 
   imports =
     [ ../modules/agent-hardware.nix

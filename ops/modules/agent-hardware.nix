@@ -5,9 +5,8 @@
 
 {
   imports =
-    [ # <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
+    [ <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
     ];
-
   # ensure we build for x86_64-linux. This is important
   # to prevent nixops to try tand build this configuration
   # for `currentSystem`, which is x86_64-dsarwin on macOS>
@@ -19,18 +18,19 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/nvme0n1p2";
-      fsType = "btrfs";
+    { device = "/dev/disk/by-uuid/11510778-0dc3-4fea-bd9e-ee8dab4757bb";
+      fsType = "ext3";
     };
 
-  # this rendered the agent dead at some point
-  # fileSystems."/ramdisk" =
-  #   { fsType = "tmpfs";
-  #     options = ["size=8GB" "gid=1"];
-  #   };
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/8bcb8eb1-9061-46d9-8d50-17f220c99641";
+      fsType = "ext3";
+    };
 
-  swapDevices = [ ];
+  swapDevices =
+    [ { device = "/dev/disk/by-uuid/6b20111e-fe9b-4b78-9322-431cd146a5da"; }
+    ];
 
-  nix.maxJobs = lib.mkDefault 4;
+  nix.maxJobs = lib.mkDefault 16;
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 }
