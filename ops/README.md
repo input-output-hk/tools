@@ -16,11 +16,17 @@
    They can be found on the agent machine at `/var/lib/hercules-ci-agent/secrets/`
 
 2. (First time) Set up the nixops deployment:
-
-       ./deploy.sh create hercules-ci-agents-target.nix network.nix
+   ```
+   ./deploy.sh create hercules-ci-agents-target.nix network.nix
+   ```
 
 3. Deploy:
+   ```
+   ./deploy.sh deploy
+   ```
+   from macOS, you likely want something like:
+   ```
+   ./deploy.sh deploy --option builders "ssh://root@88.99.0.251 x86_64-linux $HOME/.ssh/id_rsa 16 5"
+   ```
 
-       ./deploy.sh deploy
-
-       If you get `ssh` issues from nixops, nuke the nixops state: `rm secrets/state.nixops` and recreate the deployment.
+   Note: *If you get `ssh` issues from nixops, nuke the nixops state: `rm secrets/state.nixops` and recreate the deployment.*
