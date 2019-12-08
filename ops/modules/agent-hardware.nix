@@ -16,19 +16,32 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
+  boot.supportedFilesystems = [ "zfs" ];
+
+  networking.hostId = "eca0dea2"; # required for zfs use
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/11510778-0dc3-4fea-bd9e-ee8dab4757bb";
-      fsType = "ext3";
+    { device = "tank/root";
+      fsType = "zfs";
+    };
+
+  fileSystems."/home" =
+    { device = "tank/home";
+      fsType = "zfs";
+    };
+
+  fileSystems."/nix" =
+    { device = "tank/nix";
+      fsType = "zfs";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/8bcb8eb1-9061-46d9-8d50-17f220c99641";
+    { device = "/dev/disk/by-uuid/cd3f718b-9919-4218-99ea-db3c3ccc5acf";
       fsType = "ext3";
     };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/6b20111e-fe9b-4b78-9322-431cd146a5da"; }
+    [ { device = "/dev/disk/by-uuid/c9ec93c1-81a3-4a56-b7a8-5bca7468b502"; }
     ];
 
   nix.maxJobs = lib.mkDefault 16;
