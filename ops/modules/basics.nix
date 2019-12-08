@@ -27,7 +27,6 @@
     strace
     sysstat
     socat
-    btrfsProgs
   ];
 
   # Set your time zone.
