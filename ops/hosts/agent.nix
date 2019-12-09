@@ -9,5 +9,6 @@
       ../modules/iohk-binary-cache.nix
       ../modules/hercules-ci.nix
       ../modules/users.nix
+      ../modules/web-services.nix
     ];
 }

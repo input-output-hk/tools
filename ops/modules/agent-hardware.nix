@@ -5,7 +5,8 @@
 
 {
   imports =
-    [ <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
+    # the not-detected one confuses CI...
+    [ # <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
     ];
   # ensure we build for x86_64-linux. This is important
   # to prevent nixops to try tand build this configuration
