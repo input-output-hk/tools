@@ -33,10 +33,10 @@ let
       leksah-shells = leksah.shells;
       leksah-haskell-nix-roots = leksah.pkgs.haskell-nix.haskellNixRoots;
     }) {
-      linux-ghc865 { ssytem = "x86_64-linux"; haskellCompiler = "ghc865"; }
-      linux-ghc881 { ssytem = "x86_64-linux"; haskellCompiler = "ghc881"; }
-      macos-ghc865 { ssytem = "x86_64-darwin"; haskellCompiler = "ghc865"; }
-      macos-ghc881 { ssytem = "x86_64-darwin"; haskellCompiler = "ghc881"; }
+      linux-ghc865 = { system = "x86_64-linux"; haskellCompiler = "ghc865"; };
+      linux-ghc881 = { system = "x86_64-linux"; haskellCompiler = "ghc881"; };
+      macos-ghc865 = { system = "x86_64-darwin"; haskellCompiler = "ghc865"; };
+      macos-ghc881 = { system = "x86_64-darwin"; haskellCompiler = "ghc881"; };
     };
 in
   jobs
