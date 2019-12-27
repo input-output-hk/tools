@@ -10,8 +10,8 @@ let
 
   leksah-src = pkgs.fetchgit {
       url = "https://github.com/leksah/leksah";
-      rev = "d4c7a8e32d9819824746195eb9cc850b053633d6";
-      sha256 = "0qacf8lkzsb2dwx0bmaniix6yarabwryh8npahs4qhqcg17d8l60";
+      rev = "5a59e057380cc139c12b39ca0cba0953dcc3e4a4";
+      sha256 = "19wjrv8xy71wjpqxq4lc7bnipcyncma64qld53x97j9dm9qsxjdz";
       fetchSubmodules = true;
     };
 
@@ -24,8 +24,8 @@ let
   #
   # It is however not necessary to use those.
   #
-  jobs = builtins.mapAttrs (_: system:
-    let leksah = import leksah-src { inherit system; };
+  jobs = builtins.mapAttrs (_: args:
+    let leksah = import leksah-src args;
     in builtins.mapAttrs (_: pkgs.recurseIntoAttrs) {
       leksah-plan-nix = leksah.pkgs.haskell-nix.withInputs leksah.plan-nix;
     
@@ -33,8 +33,10 @@ let
       leksah-shells = leksah.shells;
       leksah-haskell-nix-roots = leksah.pkgs.haskell-nix.haskellNixRoots;
     }) {
-      linux = "x86_64-linux";
-      macos = "x86_64-darwin";
+      linux-ghc865 { ssytem = "x86_64-linux"; haskellCompiler = "ghc865"; }
+      linux-ghc881 { ssytem = "x86_64-linux"; haskellCompiler = "ghc881"; }
+      macos-ghc865 { ssytem = "x86_64-darwin"; haskellCompiler = "ghc865"; }
+      macos-ghc881 { ssytem = "x86_64-darwin"; haskellCompiler = "ghc881"; }
     };
 in
   jobs
