@@ -39,4 +39,12 @@
     extraGroups = [ "wheel" ];
     openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAX/rqYt9+PIB3HLORPK5vojRzC81WSP8qANpITUyxhQ rodney@blue" ];
   };
+
+  users.users.erikd = {
+    isNormalUser = true;
+    home = "/home/erikd";
+    description = "Erik de Castro Lopo";
+    extraGroups = [ "wheel" ];
+    openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC3EF0zDleld74EJhRFnDZH/CLPAI4Udsro5D5d9pMGA erikd@ada" ];
+  };
 }
