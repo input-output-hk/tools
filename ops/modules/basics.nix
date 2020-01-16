@@ -27,6 +27,12 @@
     strace
     sysstat
     socat
+
+    # nix-tools
+    nix
+    nix-prefetch-scripts
+    haskellPackages.nix-derivation
+    nix-diff
   ];
 
   # Set your time zone.
