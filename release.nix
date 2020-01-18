@@ -10,8 +10,8 @@ let
 
   leksah-src = pkgs.fetchgit {
       url = "https://github.com/leksah/leksah";
-      rev = "9337d3b58eb6a4ed4064383faad2c9ea4598af16";
-      sha256 = "00ma84v01b3wr3qgdhwjbv24a6pb92idh29iwxa22s8i58z3d4jh";
+      rev = "5ef4ab6338eaa8601d9b2eeb145a1bd4a162917d";
+      sha256 = "115gm3slwmfbrn0rp3hz8lxn547rlhxxvjmbfz6jarliw3cphknh";
       fetchSubmodules = true;
     };
 
@@ -34,9 +34,9 @@ let
       leksah-haskell-nix-roots = leksah.pkgs.haskell-nix.haskellNixRoots;
     }) {
       linux-ghc865 = { system = "x86_64-linux"; haskellCompiler = "ghc865"; };
-      linux-ghc881 = { system = "x86_64-linux"; haskellCompiler = "ghc881"; };
+      linux-ghc882 = { system = "x86_64-linux"; haskellCompiler = "ghc882"; };
       macos-ghc865 = { system = "x86_64-darwin"; haskellCompiler = "ghc865"; };
-      macos-ghc881 = { system = "x86_64-darwin"; haskellCompiler = "ghc881"; };
+      macos-ghc882 = { system = "x86_64-darwin"; haskellCompiler = "ghc882"; };
     };
 in
   jobs
