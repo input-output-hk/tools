@@ -52,8 +52,15 @@
     isNormalUser = true;
     home = "/home/reactormonk";
     description = "Simon Hafner";
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "docker" ];
     openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCjBbQfZmqcJEmb8gowwDEyq26dmkFTHHBjH/Izba3UoWZsMmjntVRw+tNP29SliHb8n4vsB3KxGEypJ7aCfMm+q9RLNOqG0DsUGBS/fOcFBSvDDt846pAVFJLK37xNoT7IC3GS+YXe9VaL2IiXUlu6i55ErjUlv8U6I5vtplpX3cIxkLt9RVRYCpVvSFjDnYO6rEazPAnP2lfIGwc07EGmJq8lC+8VyGTaWQEiuDJ6zISOyBIeRQDbn61FLek5suilCSx2mHnSXoTqCVoE5mB530AkbZOcEOqDlw5bm6s299vz7UUMLRR5SpKrTcMer8lDxX64YkrVezb/YA1J9Nu1 tass@dynames" ];
   };
 
+  users.users.michaelpj = {
+    isNormalUser = true;
+    home = "/home/reactormonk";
+    description = "Michael Peyton Jones";
+    extraGroups = [ "wheel" "docker" ];
+    openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC3Xw/OJSqbbcKoG2/FtiGrLlLcgB6gWb0OEN3fIfYMTMtMiDpknDliNoRdDZl794FicFmgvvdLtG40ITrxfxxxufP15uD/0yXLL+pA3IavKmV7g5Xn35cKtVEoIm/fIiWh1oLmHgyrC49Op19OxilCSsrJhaJjIE2cj3KFqCOsTMG/p2UjSdrYVSns7PxCUHTMZ/5uF/n9K7nbcHTvYUMBWnsBSaHRmdTDHQWeIuEIg730kIeFjqCNydZX/XeDjXoBAsJuH3YzRvjvneXyZqw4agS1cXQEye843/8SB76PgeSqGU6xxSaXegVE35JqWpO0tlfQ6Rx4aDq8fD23mJYGl3JTuARgVizk7Ot3I2kBEzn9Bm8VUgV+NW16oQjfYKjB0045G6+94e+N9bJKglHxrvZyMVjhGgWY7fqSblRckvYUkpK0C8NB5473J3kH+a59L4jcoelqU0rHe44x0t/RNHkf1gJ5kSHyz5+bmDDSa1pkNxcoxDWvP8c+t9ckFuYSt+7pPLBN99S1Ue3X5Vf/a5MYfel1n9fip/WL6K26RYmsifpYkqJRdpX2/1V13q+ZX7NrLNomvP4zQRpYCUK997K3hLUAVhhftLh/j78gNbmHcBdHVYiYSVAsw9WSf1FPnUPi42Bjx4vAc2WDoHFEmXSGeH/+b/jVvoNKXPTmrQ== michaelpj@gmail.com" ];
+  };
 }
