@@ -13,7 +13,7 @@
    to the `agent-hardware.nix`. Where the `networking.hostId` is from `/etc/nixos/configuration.nix` on the server.
 
 1. Put the secrets in `./secrets` (don't check in to git).
-   They can be found on the agent machine at `/var/lib/hercules-ci-agent/secrets/`
+   They can be found on the agent machine at `/var/lib/hercules-ci-agent/secrets/` and `/var/lib/nix-serve/`
 
 2. (First time) Set up the nixops deployment:
    ```
