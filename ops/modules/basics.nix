@@ -64,6 +64,9 @@
     passwordAuthentication = false;
   };
 
+  # Enable docker
+  virtualisation.docker.enable = true;
+
   # Keep a reference to nixpkgs in /run/current-system/nixpkgs
   system.extraSystemBuilderCmds = ''
     ln -sv ${pkgs.path} $out/nixpkgs
