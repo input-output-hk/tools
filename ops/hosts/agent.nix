@@ -7,6 +7,7 @@
       ../modules/agent-system.nix
       ../modules/basics.nix
       ../modules/iohk-binary-cache.nix
+      ../modules/nix-serve.nix
     #  ../modules/hercules-ci.nix
       ../modules/users.nix
       ../modules/web-services.nix
