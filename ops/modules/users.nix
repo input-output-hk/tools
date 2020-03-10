@@ -47,4 +47,13 @@
     extraGroups = [ "wheel" "docker" ];
     openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC3EF0zDleld74EJhRFnDZH/CLPAI4Udsro5D5d9pMGA erikd@ada" ];
   };
+
+  users.users.reactormonk = {
+    isNormalUser = true;
+    home = "/home/reactormonk";
+    description = "Simon Hafner";
+    extraGroups = [ "wheel" ];
+    openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCjBbQfZmqcJEmb8gowwDEyq26dmkFTHHBjH/Izba3UoWZsMmjntVRw+tNP29SliHb8n4vsB3KxGEypJ7aCfMm+q9RLNOqG0DsUGBS/fOcFBSvDDt846pAVFJLK37xNoT7IC3GS+YXe9VaL2IiXUlu6i55ErjUlv8U6I5vtplpX3cIxkLt9RVRYCpVvSFjDnYO6rEazPAnP2lfIGwc07EGmJq8lC+8VyGTaWQEiuDJ6zISOyBIeRQDbn61FLek5suilCSx2mHnSXoTqCVoE5mB530AkbZOcEOqDlw5bm6s299vz7UUMLRR5SpKrTcMer8lDxX64YkrVezb/YA1J9Nu1 tass@dynames" ];
+  };
+
 }
