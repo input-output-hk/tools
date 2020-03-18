@@ -53,7 +53,7 @@
     home = "/home/reactormonk";
     description = "Simon Hafner";
     extraGroups = [ "wheel" "docker" ];
-    openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCjBbQfZmqcJEmb8gowwDEyq26dmkFTHHBjH/Izba3UoWZsMmjntVRw+tNP29SliHb8n4vsB3KxGEypJ7aCfMm+q9RLNOqG0DsUGBS/fOcFBSvDDt846pAVFJLK37xNoT7IC3GS+YXe9VaL2IiXUlu6i55ErjUlv8U6I5vtplpX3cIxkLt9RVRYCpVvSFjDnYO6rEazPAnP2lfIGwc07EGmJq8lC+8VyGTaWQEiuDJ6zISOyBIeRQDbn61FLek5suilCSx2mHnSXoTqCVoE5mB530AkbZOcEOqDlw5bm6s299vz7UUMLRR5SpKrTcMer8lDxX64YkrVezb/YA1J9Nu1 tass@dynames" ];
+    openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCj+0FtX7z6h/vVr476ekHsvioMeC3yCqpSiem1FK02C+dGmH5jd/UGFhnqTuJEB7yKWc2/G29/MEKpvBA+7Bpy1nhcUxE6eQL+6UDydB8Anz0JClECcogAKcckBkcYjjqbGwcP/Na7GP0jS+17aYZs7hSnnEgxIAGrxkCzWdje3dzUFrrVPuY1y4ltl5u/7i693Y5Cx8ei09L+18VHovmhlKrRIYoKA09D1ivZG6fv45WZAQCZW544h/8IqYOBQdSVT0fizOTdXisKo+zhnkV8InyzrVGSIgpejbS1cCAhdnFNzFPLohSmDXrAJPUvo5+vcEaz3siyKZVDUfwiGI4L tass@exia" ];
   };
 
   users.users.michaelpj = {
