@@ -13,6 +13,9 @@ in
 
     services.hokey-pokey.enable = true;
 
+    security.acme.email = "moritz.angermann@iohk.io";
+    security.acme.acceptTerms = true;
+
     services.nginx = {
         enable = true;
         virtualHosts = {
@@ -24,7 +27,6 @@ in
                 # proxyWebsockets = true;
             };
             "cache.loony-tools.dev.iohkdev.io" = {
-                serverAliases = [ "cache" ];
                 enableACME = true;
                 locations."/".extraConfig = ''
                     proxy_pass http://localhost:${toString config.services.nix-serve.port};
