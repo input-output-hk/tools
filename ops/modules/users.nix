@@ -32,6 +32,14 @@
     openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5w8VjXqqZ37vQ5CIiAksBydqbyde/rW1wW00wB6PLhIst0EjQjyFNmAchtD+nbZG0yqmSCTRlbx/gn5n/G8gL6swm8BhPPBwWu1LDBmpu1imiMZ27jKr+zPYehlcxP9EVPAbJw5+FpZi1hpsubeAMPF8t7mlFF7hBrpXgiVTTUUKdFpOtxk6isZs+yvrkS0zs9g+DmHuj9nC7Ww4k0fdV776xpXXSwbLNsLCQlOp353q3MBUFPy4Ckh2ES+3Tv6S7MTevJxoYlY/x6AIse78kQX+8afWPe1OcaOWzgIcpk2JmQcPURZH3UDI757QRVT8+Pw6TzgUQA3P7fWjRYrr/ stegeman@gmail.com" ];
   };
 
+  users.users.hsyl20 = {
+    isNormalUser = true;
+    home = "/home/hsyl20";
+    description = "Sylvain Henry";
+    extraGroups = [ "wheel" "docker" ];
+    openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDE5PkhVIzJvhRqxZzCjHQQTV6v040uml8Fiy/W9HfDiuovjZT2QWgfSr+y63YnpFUXYJrWUekWAJh5BwWOJtZN43EXb7LlXluYsykOUbcRglzpD82w6BuLuI3lgcpKwDJWgzU+siqo8NuiZDKiYSho2A97uebJWXFyWBkmXqtcpOe70qygVqviB6+0WYjuOmDoa8tcmGjdY2Qq+IkwalX2mrlqfUosCdvzptexeF4vGshjce8v9G7Kyw3zpbqqZR6oAsNH5OcLZI5GYvzdXvWZobqV1TVpnr3zmavLwwZhULY/3lqbzKiHjheSQvMOmFnKhyzhFlNkNIFm+zLAZcKmZF77Wy/6crMniD3fQthoqhPz/pYW2PFSYlLUaQyHrOgbKDB96CIo9JwxqRuc8dNvk/Vo5ZGE0ki8Iyu6niAU+x4DZ3Go5Cma3A0LZWD61O1h44cpDTTfgygYyCdnlw5K274EUzj8rMYsiVoWkcvh1fDC5YTWyxkUnOAoCQIjfrWPM97ascT/AQkBNjGTo/45+Ui7fhor4PH88aeGzPAHCZOdDP4f4N5ubPJE7BiC9BIHdxvvUwGHcs8V4p4JNi3IPvp6VntMYQ89yroU18sbuiVbNNKJK2NIKNhn+0ex1+Tq/Z7OeJETfHrxTUNUlR/7niwUCxYfJRGV15wM0cZReQ== sylvain.henry@iohk.io" ];
+  };
+
   users.users.rodney = {
     isNormalUser = true;
     home = "/home/rodney";
