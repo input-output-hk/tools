@@ -11,5 +11,6 @@
     #  ../modules/hercules-ci.nix
       ../modules/users.nix
       ../modules/web-services.nix
+      ../modules/monitoring.nix
     ];
 }
