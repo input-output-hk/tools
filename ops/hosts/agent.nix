@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 {
   networking.hostName = "loony-tools-agent";
+  nixpkgs.overlays =
+    [
+        (import ../overlays/mosh.nix)
+    ];
 
   imports =
     [ ../modules/agent-hardware.nix
