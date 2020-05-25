@@ -82,9 +82,7 @@
   nix = {
     nixPath = [ "nixpkgs=/run/current-system/nixpkgs" ];
     useSandbox = true;
-    trustedUsers = [ "root" "@wheel"
-      "hercules-ci-agent"  # attempt to have hercules-ci use binary caches
-    ];
+    trustedUsers = [ "root" "@wheel" ];
     binaryCaches = [
       "https://cache.nixos.org"
     ];
