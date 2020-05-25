@@ -1,0 +1,25 @@
+diff --git a/src/Cardano/Config/GitRev.hs b/src/Cardano/Config/GitRev.hs
+index 4dbb9fd8..cffee028 100644
+--- a/src/Cardano/Config/GitRev.hs
++++ b/src/Cardano/Config/GitRev.hs
+@@ -10,6 +10,7 @@
+ {-# LANGUAGE RecordWildCards     #-}
+ {-# LANGUAGE ScopedTypeVariables #-}
+ {-# LANGUAGE TemplateHaskell     #-}
++{-# LANGUAGE CPP                 #-}
+ 
+ {-# OPTIONS_GHC -Wno-simplifiable-class-constraints #-}
+ 
+@@ -38,7 +39,12 @@ gitRev | gitRevEmbed /= zeroRev = gitRevEmbed
+ 
+         -- Git revision found during compilation by running git. If
+         -- git could not be run, then this will be empty.
++#if defined(arm_HOST_ARCH)
++        -- cross compiling to arm fails; due to a linker bug
++        fromGit = ""
++#else
+         fromGit = T.strip (T.pack $(gitRevFromGit))
++#endif
+ 
+ zeroRev :: Text
+ zeroRev = "0000000000000000000000000000000000000000"

@@ -1,0 +1,42 @@
+diff --git a/Data/ByteString/Streaming/Internal.hs b/Data/ByteString/Streaming/Internal.hs
+index 9eccf03..d84328a 100644
+--- a/Data/ByteString/Streaming/Internal.hs
++++ b/Data/ByteString/Streaming/Internal.hs
+@@ -79,6 +79,10 @@ import Control.Monad.Base
+ import Control.Monad.Trans.Resource
+ import Control.Monad.Catch (MonadCatch (..))
+ 
++#if __GLASGOW_HASKELL__ >= 708
++import GHC.Types ( SPEC(..) )
++#endif
++
+ -- | A space-efficient representation of a succession of 'Word8' vectors, supporting many
+ -- efficient operations.
+ --
+@@ -198,10 +202,12 @@ bracketByteString alloc free inside = do
+         Chunk bs rest  -> Chunk bs (loop rest)
+ {-#INLINABLE bracketByteString #-}
+ 
+-
++#if __GLASGOW_HASKELL__ < 708
+ data SPEC = SPEC | SPEC2
++#if __GLASGOW_HASKELL__ >= 700
+ {-# ANN type SPEC ForceSpecConstr #-}
+-
++#endif
++#endif
+ -- -- ------------------------------------------------------------------------
+ --
+ -- | Smart constructor for 'Chunk'.
+diff --git a/streaming-bytestring.cabal b/streaming-bytestring.cabal
+index 435acd4..e0fc447 100644
+--- a/streaming-bytestring.cabal
++++ b/streaming-bytestring.cabal
+@@ -201,6 +201,7 @@ library
+                      , transformers >=0.3 && <0.6
+                      , transformers-base
+                      , streaming >=  0.1.4.0 && < 0.3
++                     , ghc-prim
+   if impl(ghc < 7.8)
+     build-depends: bytestring < 0.10.4.0
+                  , bytestring-builder

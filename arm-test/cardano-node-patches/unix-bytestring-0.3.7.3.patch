@@ -1,0 +1,16 @@
+diff --git a/src/System/Posix/Types/Iovec.hsc b/src/System/Posix/Types/Iovec.hsc
+index 2753e3f..ac8f28d 100644
+--- a/src/System/Posix/Types/Iovec.hsc
++++ b/src/System/Posix/Types/Iovec.hsc
+@@ -63,9 +63,10 @@ data CIovec = CIovec
+     { iov_base :: {-# UNPACK #-} !(Ptr Word8) -- char* or void*
+     , iov_len  :: {-# UNPACK #-} !CSize       -- size_t
+     }
+-
++#if __GLASGOW_HASKELL__ < 800
+ #let alignment t = \
+     "%lu", (unsigned long) offsetof(struct {char x__; t (y__); }, y__)
++#endif
+
+ instance Storable CIovec where
+     alignment _ = #{alignment struct iovec}
