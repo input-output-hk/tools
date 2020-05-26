@@ -1,6 +1,6 @@
 let
   # Fetch the latest haskell.nix and import its default.nix
-  haskellNix = (builtins.fetchTarball https://github.com/input-output-hk/haskell.nix/archive/d94a579.tar.gz) {};
+  haskellNix = import (builtins.fetchTarball https://github.com/input-output-hk/haskell.nix/archive/a823ba4.tar.gz) {};
   # haskell.nix provides access to the nixpkgs pins which are used by our CI, hence
   # you will be more likely to get cache hits when using these.
   # But you can also just use your own, e.g. '<nixpkgs>'
@@ -104,7 +104,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           packages.byron-spec-ledger.patches = [ ./cardano-node-patches/byron-ledger-spec-no-goblins.patch ];
           packages.byron-spec-ledger.flags.goblins = false;
           # this one will disable gitRev; which fails (due to a linker bug) for armv7
-          packages.cardano-config.patches = [ ./cardano-node-patches/cardano-config-arm.patch ];
+          packages.cardano-config.patches = [ ./cardano-node-patches/1036.patch ];
 
           # Disable cabal-doctest tests by turning off custom setups
           packages.comonad.package.buildType = nativePkgs.lib.mkForce "Simple";

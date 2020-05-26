@@ -1,0 +1,35 @@
+From a9fb5349f024d08a9bc987b32abbdc1d1a391f91 Mon Sep 17 00:00:00 2001
+From: Moritz Angermann <moritz.angermann@gmail.com>
+Date: Mon, 25 May 2020 21:12:39 +0800
+Subject: [PATCH] Update GitRev.hs
+
+Disable fromGit on arm.
+---
+ src/Cardano/Config/GitRev.hs | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/src/Cardano/Config/GitRev.hs b/src/Cardano/Config/GitRev.hs
+index 4b6b79717..8cd351f59 100644
+--- a/src/Cardano/Config/GitRev.hs
++++ b/src/Cardano/Config/GitRev.hs
+@@ -1,5 +1,6 @@
+ {-# LANGUAGE OverloadedStrings #-}
+-{-# LANGUAGE TemplateHaskell #-}
++{-# LANGUAGE TemplateHaskell   #-}
++{-# LANGUAGE CPP               #-}
+
+ module Cardano.Config.GitRev (
+       gitRev
+@@ -27,7 +28,12 @@ gitRev | gitRevEmbed /= zeroRev = gitRevEmbed
+
+         -- Git revision found during compilation by running git. If
+         -- git could not be run, then this will be empty.
++#if defined(arm_HOST_ARCH)
++        -- cross compiling to arm fails; due to a linker bug
++        fromGit = ""
++#else
+         fromGit = T.strip (T.pack $(gitRevFromGit))
++#endif
+
+ zeroRev :: Text
+ zeroRev = "0000000000000000000000000000000000000000"
