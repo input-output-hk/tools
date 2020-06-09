@@ -2,18 +2,20 @@
 
 module Lib where
 
+a = 0
+b = a
 
-x, y :: Int
-x = 1
-y = x + 2
+-- x, y :: Int
+-- x = 1
+-- y = x + 2
 
-f = plus 1
-  where
-    plus = (+)
+-- f = plus 1
+--   where
+--     plus = (+)
 
-xs = ():xs
+-- xs = ():xs
 
-g :: Int -> Bool
-g 0 = True
-g _ = False
+-- g :: Int -> Bool
+-- g 0 = True
+-- g _ = False
 

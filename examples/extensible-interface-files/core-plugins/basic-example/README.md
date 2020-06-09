@@ -69,3 +69,26 @@ operates gives us access to other environment data that we require to load inter
   * For each external module that is being imported, the local enviroment must be initialised with
     its `Module` data structure, essentially setting that one as active. These `Module`s are able
     to be recovered from the module graph contained in the `HscEnv`
+
+## Building
+
+### GHC
+
+With https://gitlab.haskell.org/ghc/ghc/-/tree/wip/coreField run:
+
+./boot
+./configure
+make -j8
+sudo make install
+
+Then include /usr/local/bin in the path.
+
+### This Package
+
+To build, run:
+
+ghc Main.hs -package ghc -dynamic
+
+To use ghcid, run:
+
+ghcid --command='ghci Main.hs -package ghc'

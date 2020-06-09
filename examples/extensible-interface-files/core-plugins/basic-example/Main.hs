@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -fplugin=Example #-}
+{-# OPTIONS_GHC -fplugin Example -fwrite-core-field #-}
 
 module Main where
 
