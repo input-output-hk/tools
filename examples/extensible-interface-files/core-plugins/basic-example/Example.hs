@@ -1,3 +1,5 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module Example where
 
 import Bag
@@ -15,9 +17,32 @@ import GHC.Iface.Env
 import GHC.Iface.Binary
 import GHC.Core.InstEnv
 import GHC.Core.FamInstEnv
+import GHC.CoreToIface
 
 plugin :: Plugin
-plugin = defaultPlugin { typeCheckResultAction = corePlugin }
+plugin = defaultPlugin { typeCheckResultAction = corePlugin
+                       , interfaceWriteAction  = interfacePlugin
+                       }
+
+
+interfacePlugin :: [CommandLineOption] -> HscEnv -> ModDetails -> ModGuts -> PartialModIface -> IO PartialModIface
+interfacePlugin _ env _ guts iface = do
+  registerInterfaceDataWith "plutus/core-bindings" env $ \bh ->
+    putWithUserData (const $ return ()) bh (mg_loc guts, map toIfaceBind' $ mg_binds guts)
+  return iface
+
+
+isRealBinding (NonRec n _) = isExternalName (idName n)
+toIfaceBind' b = (isRealBinding b, toIfaceBind b)
+
+
+loadCoreBindings :: ModIface -> IfL (Maybe [Bind CoreBndr])
+loadCoreBindings iface@ModIface{mi_module = mod} = do
+  ncu <- mkNameCacheUpdater
+  (mbinds :: Maybe (SrcSpan, [(Bool, IfaceBinding)])) <- liftIO (readIfaceFieldWith "plutus/core-bindings" (getWithUserData ncu) iface)
+  case mbinds of
+    Just (loc, ibinds) -> sequence <$> mapM (tcIfaceBinding mod loc) ibinds
+    Nothing -> return Nothing
 
 
 corePlugin :: [CommandLineOption] -> ModSummary -> TcGblEnv -> TcM TcGblEnv

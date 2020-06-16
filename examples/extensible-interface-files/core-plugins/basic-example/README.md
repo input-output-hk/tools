@@ -76,12 +76,17 @@ operates gives us access to other environment data that we require to load inter
 
 With https://gitlab.haskell.org/ghc/ghc/-/tree/wip/coreField run:
 
+```
 ./boot
 ./configure
 make -j8
 sudo make install
+```
 
-Then include /usr/local/bin in the path.
+Then include export `/usr/local/bin` into the current session's path.
+
+Additionally, `configure` can be passed a `--prefix=/my/ghc/install/path` flag as an alternative
+to `/usr/local/bin`.
 
 ### This Package
 
@@ -89,6 +94,6 @@ To build, run:
 
 ghc Main.hs -package ghc -dynamic
 
-To use ghcid, run:
+To use ghcid for on-the-fly typechecking of this project, run:
 
 ghcid --command='ghci Main.hs -package ghc'
