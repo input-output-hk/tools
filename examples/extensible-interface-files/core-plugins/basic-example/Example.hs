@@ -19,6 +19,7 @@ import GHC.Core.InstEnv
 import GHC.Core.FamInstEnv
 import GHC.CoreToIface
 
+
 plugin :: Plugin
 plugin = defaultPlugin { typeCheckResultAction = corePlugin
                        , interfaceWriteAction  = interfacePlugin
@@ -32,17 +33,44 @@ interfacePlugin _ env _ guts iface = do
   return iface
 
 
+isRealBinding :: Bind Id -> Bool
 isRealBinding (NonRec n _) = isExternalName (idName n)
+isRealBinding _ = True
+
+
+toIfaceBind' :: Bind Id -> (Bool, IfaceBinding)
 toIfaceBind' b = (isRealBinding b, toIfaceBind b)
 
 
 loadCoreBindings :: ModIface -> IfL (Maybe [Bind CoreBndr])
 loadCoreBindings iface@ModIface{mi_module = mod} = do
+  liftIO $ putStrLn "loadCoreBindings"
   ncu <- mkNameCacheUpdater
-  (mbinds :: Maybe (SrcSpan, [(Bool, IfaceBinding)])) <- liftIO (readIfaceFieldWith "plutus/core-bindings" (getWithUserData ncu) iface)
+  mbinds <- liftIO (readIfaceFieldWith "plutus/core-bindings" (getWithUserData ncu) iface)
   case mbinds of
-    Just (loc, ibinds) -> sequence <$> mapM (tcIfaceBinding mod loc) ibinds
-    Nothing -> return Nothing
+    Just (loc, ibinds) -> Just . catMaybes <$> mapM (tcIfaceBinding mod loc) ibinds
+    Nothing            -> liftIO (print "no-loadCoreBindings") >> return Nothing
+
+
+lookupCore :: ModSummary
+           -> Name
+           -> IfL (Maybe (Bind CoreBndr))
+lookupCore summary n = do
+  iface <- loadPluginInterface (text "lookupCore") (ms_mod summary)
+  binds <- loadCoreBindings iface
+  return $ lookupName n =<< binds
+
+
+lookupName :: Name -> [Bind CoreBndr] -> Maybe (Bind CoreBndr)
+lookupName = undefined
+
+
+-- Load the dependencies from the environment, and return a function to lookup bindings:
+loadDependencies :: HscEnv
+                 -> ModSummary
+                 -> Name
+                 -> IfL (Maybe (Bind CoreBndr))
+loadDependencies = undefined
 
 
 corePlugin :: [CommandLineOption] -> ModSummary -> TcGblEnv -> TcM TcGblEnv
@@ -77,10 +105,10 @@ corePlugin _ _mod_summary gbl = initIfaceTcRn $ do
                  liftIO $ putStrLn "lcl"
                  liftIO $ putStrLn $ showSDoc (hsc_dflags hsc_env) (ppr (if_id_env lcl))
                  liftIO $ putStrLn "id_env"
-                 loadCore iface
+                 loadCoreBindings iface
              putStrLn $ "Loaded core:"
              case core of
-               Just c -> print $ showSDoc (hsc_dflags hsc_env) (ppr (mg_binds c))
+               Just binds -> print $ showSDoc (hsc_dflags hsc_env) (ppr binds)
                Nothing -> putStrLn "No core field"
 
   binds' <- inlineCore (tcg_binds gbl)
