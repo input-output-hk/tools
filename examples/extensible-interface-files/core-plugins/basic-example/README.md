@@ -90,10 +90,9 @@ to `/usr/local/bin`.
 
 ### This Package
 
-To build, run:
-
-ghc Main.hs -package ghc -dynamic
-
-To use ghcid for on-the-fly typechecking of this project, run:
-
-ghcid --command='ghci Main.hs -package ghc'
+Makefile targets:
+* diff (default): build both with and without the plugin, and compare the resulting core
+* vanilla: build without the plugin, and output the core to vanilla.core
+* core-inline: build with the plugin, and output the core to inlined.core
+* clean: clean build results
+* ghcid: run ghcid to provide instant-feedback type-checking

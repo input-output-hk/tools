@@ -20,12 +20,22 @@ import GHC.Core.FamInstEnv
 import GHC.CoreToIface
 
 
+-- We use the `interfaceWriteAction` to access the core bindings that are in the
+-- `ModGuts` as a result of the whole core pipeline. We then use serialise those
+-- bindings into the interface file using `registerInterfaceDataWith` to produce
+-- an extensible interface field from a plugin.
+
+-- We use the `typeCheckResultAction` to intercept the start of the core pipeline
+-- and perform our inlining step before any of the other core steps have run,
+-- including GHC's normal optimisation passes.
 plugin :: Plugin
 plugin = defaultPlugin { typeCheckResultAction = corePlugin
                        , interfaceWriteAction  = interfacePlugin
                        }
 
-
+-- Here we perform the serialisation of the `mg_binds` field from the `ModGuts`.
+-- Note, the deserialisation loading functions later require the `SrcSpan`, so
+-- we include it in the serialised data.
 interfacePlugin :: [CommandLineOption] -> HscEnv -> ModDetails -> ModGuts -> PartialModIface -> IO PartialModIface
 interfacePlugin _ env _ guts iface = do
   registerInterfaceDataWith "plutus/core-bindings" env $ \bh ->
@@ -42,6 +52,9 @@ toIfaceBind' :: Bind Id -> (Bool, IfaceBinding)
 toIfaceBind' b = (isRealBinding b, toIfaceBind b)
 
 
+-- Perform interface `typecheck` loading from this binding's extensible interface
+-- field within the deserialised `ModIface` to load the bindings that the field
+-- contains, if the field exists.
 loadCoreBindings :: ModIface -> IfL (Maybe [Bind CoreBndr])
 loadCoreBindings iface@ModIface{mi_module = mod} = do
   liftIO $ putStrLn "loadCoreBindings"
@@ -52,6 +65,8 @@ loadCoreBindings iface@ModIface{mi_module = mod} = do
     Nothing            -> liftIO (print "no-loadCoreBindings") >> return Nothing
 
 
+-- Locate the `.hi` file for a given `ModSummary`, load its bindings, then attempt
+-- to lookup the given name from those.
 lookupCore :: ModSummary
            -> Name
            -> IfL (Maybe (Bind CoreBndr))
@@ -66,6 +81,8 @@ lookupName = undefined
 
 
 -- Load the dependencies from the environment, and return a function to lookup bindings:
+-- This function is intended to load all-at-once and cache the result, whereas `lookupCore`
+-- works as more of a one-off call.
 loadDependencies :: HscEnv
                  -> ModSummary
                  -> Name
@@ -74,6 +91,7 @@ loadDependencies = undefined
 
 
 corePlugin :: [CommandLineOption] -> ModSummary -> TcGblEnv -> TcM TcGblEnv
+corePlugin _ _ gbl = return gbl
 corePlugin _ _mod_summary gbl = initIfaceTcRn $ do
   hsc_env <- getTopEnv
 
@@ -135,6 +153,8 @@ inlineBind x@PatSynBind{} = return x
 
 
 
+-------------------------------------------------------------------------------
+-- Interface loading for top-level bindings
 -------------------------------------------------------------------------------
 
 loadCore :: ModIface -> IfL (Maybe ModGuts)
