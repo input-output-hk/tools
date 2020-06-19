@@ -15,6 +15,21 @@ core-inline:
 		ghc -odir . -hidir . -fplugin Example -c ../Lib.hs -dynamic; \
 		ghc -odir . -hidir . -fplugin Example -c ../Main.hs -dynamic -o ../InlinedMain -ddump-prep > ../inlined.core
 
+# ghc -odir inlined -hidir inlined -fplugin Example -c Lib.hs -dynamic
+# <command line>: Could not find module ‘Example’
+core-inline-error1:
+	ghc -odir inlined -hidir inlined Example.hs -package ghc -dynamic
+	ghc -odir inlined -hidir inlined -fplugin Example -c Lib.hs -dynamic
+	ghc -odir inlined -hidir inlined -fplugin Example Main.hs -dynamic -o InlinedMain -ddump-prep > inlined.core
+
+# ghc -odir inlined -hidir inlined -fplugin Example -c Lib.hs -dynamic
+# Bad interface file: inlined/Example.hi
+#    inlined/Example.hi: openBinaryFile: does not exist (No such file or directory)
+core-inline-error2:
+	ghc Example.hs -package ghc -dynamic
+	ghc -odir inlined -hidir inlined -fplugin Example -c Lib.hs -dynamic
+	ghc -odir inlined -hidir inlined -fplugin Example Main.hs -dynamic -o InlinedMain -ddump-prep > inlined.core
+
 clean:
 	rm -rf vanilla inlined vanilla.core inlined.core VanillaMain InlinedMain
 
