@@ -18,6 +18,9 @@ import GHC.Iface.Binary
 import GHC.Core.InstEnv
 import GHC.Core.FamInstEnv
 import GHC.CoreToIface
+import GHC.Types.Name.Env
+import Control.Monad
+import GHC.Hs.Expr
 
 
 -- We use the `interfaceWriteAction` to access the core bindings that are in the
@@ -65,29 +68,35 @@ loadCoreBindings iface@ModIface{mi_module = mod} = do
     Nothing            -> liftIO (print "no-loadCoreBindings") >> return Nothing
 
 
--- Locate the `.hi` file for a given `ModSummary`, load its bindings, then attempt
--- to lookup the given name from those.
-lookupCore :: ModSummary
-           -> Name
+-- Attempt to load the binding for a given name directly from an interface file.
+lookupCore :: Name
            -> IfL (Maybe (Bind CoreBndr))
-lookupCore summary n = do
-  iface <- loadPluginInterface (text "lookupCore") (ms_mod summary)
+lookupCore n = do
+  iface <- loadPluginInterface (text "lookupCore") (nameModule n)
   binds <- loadCoreBindings iface
   return $ lookupName n =<< binds
 
 
 lookupName :: Name -> [Bind CoreBndr] -> Maybe (Bind CoreBndr)
-lookupName = undefined
+lookupName n bs = lookupNameEnv (mkNameEnvWith nameOf bs) n
+  where
+    nameOf (NonRec n _)     = idName n
+    nameOf (Rec ((n, _):_)) = idName n
 
 
 -- Load the dependencies from the environment, and return a function to lookup bindings:
 -- This function is intended to load all-at-once and cache the result, whereas `lookupCore`
 -- works as more of a one-off call.
 loadDependencies :: HscEnv
-                 -> ModSummary
                  -> Name
                  -> IfL (Maybe (Bind CoreBndr))
-loadDependencies = undefined
+loadDependencies env n = do
+  binds <- forM mods $ \m -> do
+    iface <- loadPluginInterface (text "lookupCore") (nameModule n)
+    loadCoreBindings iface
+  return $ lookupName n (join $ catMaybes binds)
+  where
+    mods = map ms_mod . mgModSummaries $ hsc_mod_graph env
 
 
 corePlugin :: [CommandLineOption] -> ModSummary -> TcGblEnv -> TcM TcGblEnv
@@ -145,12 +154,48 @@ inlineLocBind = mapM inlineBind
 
 -- The real binding, indexed by the `GhcPass 'TypeChecked` type
 inlineBind :: HsBind GhcTc -> IfG (HsBind GhcTc)
-inlineBind x@FunBind{}    = return x
-inlineBind x@PatBind{}    = return x
-inlineBind x@VarBind{}    = return x
 inlineBind x@AbsBinds{}   = return x
+inlineBind x@PatBind{}    = return x
 inlineBind x@PatSynBind{} = return x
+inlineBind (VarBind ext vid rhs) = VarBind ext vid <$> inlineLocExpr rhs
+inlineBind (FunBind ext fid matches tick) = do
+  matches' <- inlineMatches matches
+  return $ FunBind ext fid matches' tick
 
+
+inlineLocExpr :: Located (HsExpr GhcTc) -> IfG (Located (HsExpr GhcTc))
+inlineLocExpr = mapM inlineExpr
+
+
+-- The real RHS expressions
+inlineExpr :: HsExpr GhcTc -> IfG (HsExpr GhcTc)
+inlineExpr = undefined
+
+
+inlineMatches :: MatchGroup GhcTc (Located (HsExpr GhcTc)) -> IfG (MatchGroup GhcTc (Located (HsExpr GhcTc)))
+inlineMatches (MG ext alts origin) = do
+  alts' <- mapM (mapM (mapM inlineMatch)) alts
+  return (MG ext alts' origin)
+
+
+inlineMatch :: Match GhcTc (Located (HsExpr GhcTc)) -> IfG (Match GhcTc (Located (HsExpr GhcTc)))
+inlineMatch (Match ext ctxt pats grhss) = Match ext ctxt pats <$> inlineGuardedRHSs grhss
+
+
+inlineGuardedRHSs :: GRHSs GhcTc (Located (HsExpr GhcTc)) -> IfG (GRHSs GhcTc (Located (HsExpr GhcTc)))
+inlineGuardedRHSs (GRHSs ext grhss lclBinds) = GRHSs ext <$> mapM (mapM inlineGuardedRHS) grhss <*> mapM inlineWhereClause lclBinds
+
+
+inlineGuardedRHS :: GRHS GhcTc (Located (HsExpr GhcTc)) -> IfG (GRHS GhcTc (Located (HsExpr GhcTc)))
+inlineGuardedRHS (GRHS x guards body) = GRHS x guards <$> mapM inlineExpr body
+
+
+inlineWhereClause :: HsLocalBinds GhcTc -> IfG (HsLocalBinds GhcTc)
+inlineWhereClause x@HsIPBinds{}       = return x
+inlineWhereClause x@EmptyLocalBinds{} = return x
+inlineWhereClause (HsValBinds x (ValBinds xvbs binds sigs)) = do
+  binds' <- mapM (mapM inlineBind) binds
+  return $ HsValBinds x (ValBinds xvbs binds' sigs)
 
 
 -------------------------------------------------------------------------------
