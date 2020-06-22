@@ -1,5 +1,18 @@
 module Lib (f, xs, g, x, y, infinite, mapMyData, sumMyData, MyData(..)) where
 
+-- Prevent GHC from inlining the bindings from this module to demonstrate
+-- the plugin doing so.
+{-# NOINLINE a         #-}
+{-# NOINLINE b         #-}
+{-# NOINLINE x         #-}
+{-# NOINLINE y         #-}
+{-# NOINLINE f         #-}
+{-# NOINLINE xs        #-}
+{-# NOINLINE g         #-}
+{-# NOINLINE infinite  #-}
+{-# NOINLINE mapMyData #-}
+{-# NOINLINE sumMyData #-}
+
 -- Not exported, to test the serialised bindings
 a, b :: Int
 a = 0
