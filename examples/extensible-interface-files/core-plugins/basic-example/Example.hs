@@ -136,6 +136,7 @@ lookupName n bs = lookupNameEnv (mkNameEnvWith nameOf bs) n
 loadDependencies :: HscEnv
                  -> IO (Name -> Maybe (Bind CoreBndr))
 loadDependencies env = initIfaceLoad env $ do
+  liftIO $ print ("mods", length mods)
   binds <- forM mods $ \m -> do
     iface <- loadPluginInterface (text "lookupCore") m
     initIfaceLcl m (text "core") False $ loadCoreBindings iface
