@@ -21,7 +21,8 @@ import GHC.CoreToIface
 import GHC.Types.Name.Env
 import Control.Monad
 import GHC.Hs.Expr
-
+import GHC (getModuleGraph)
+import Data.IORef
 
 -- We use the `interfaceWriteAction` to access the core bindings that are in the
 -- `ModGuts` as a result of the whole core pipeline. We then use serialise those
@@ -34,13 +35,22 @@ import GHC.Hs.Expr
 plugin :: Plugin
 plugin = defaultPlugin { installCoreToDos      = install
                        , typeCheckResultAction = corePlugin
-                       , interfaceWriteAction  = interfacePlugin
                        }
 
 
 install :: [CommandLineOption] -> [CoreToDo] -> CoreM [CoreToDo]
-install args todos | elem "inline" args = return (CoreDoPluginPass "plutus" plutus : CoreDoPluginPass "printer" printer : todos)
-                   | otherwise          = return (                                   CoreDoPluginPass "printer" printer : todos)
+install args todos | elem "inline" args = return (CoreDoPluginPass "plutus" plutus : passes ++ [CoreDoPluginPass "serialiser" serialiser])
+                   | otherwise          = return                                     passes
+  where
+    passes = todos ++ [CoreDoPluginPass "epsPrint" epsPrint] -- CoreDoPluginPass "printer" printer : todos
+
+
+epsPrint :: ModGuts -> CoreM ModGuts
+epsPrint guts = do
+  env    <- getHscEnv
+  eps    <- liftIO . readIORef $ hsc_EPS env
+  liftIO $ putStrLn $ showSDoc (hsc_dflags env) (ppr ("eps-print" , moduleEnvKeys $ eps_PIT eps))
+  return guts
 
 
 printer :: ModGuts -> CoreM ModGuts
@@ -50,13 +60,26 @@ printer guts = do
   return guts
 
 
+serialiser :: ModGuts -> CoreM ModGuts
+serialiser guts = do
+  env <- getHscEnv
+  liftIO . registerInterfaceDataWith "plutus/core-bindings" env $ \bh ->
+    putWithUserData (const $ return ()) bh (mg_loc guts, map toIfaceBind' $ mg_binds guts)
+  return guts
+
+
 plutus :: ModGuts -> CoreM ModGuts
 plutus guts = do
   env    <- getHscEnv
+  eps    <- liftIO . readIORef $ hsc_EPS env
+  liftIO $ putStrLn $ showSDoc (hsc_dflags env) (ppr ("eps-plutus" , moduleEnvKeys $ eps_PIT eps))
+  liftIO $ putStrLn $ showSDoc (hsc_dflags env) $ ppr ("deps-plutus", dep_orphs (mg_deps guts))
+  liftIO $ print ("plutus", length $ dep_mods (mg_deps guts))
   lookup <- liftIO $ loadDependencies env
   return guts{ mg_binds = map (inlineCore lookup) binds }
   where
     binds = mg_binds guts
+
 
 inlineCore :: (Name -> Maybe (Bind CoreBndr)) -> Bind Id -> Bind Id
 inlineCore lookup (NonRec n expr) = NonRec n (inlineCoreExpr lookup expr)
@@ -139,7 +162,7 @@ loadDependencies env = initIfaceLoad env $ do
   liftIO $ print ("mods", length mods)
   binds <- forM mods $ \m -> do
     iface <- loadPluginInterface (text "lookupCore") m
-    initIfaceLcl m (text "core") False $ loadCoreBindings iface
+    initIfaceLcl (mi_semantic_module iface) (text "core") False $ loadCoreBindings iface
   liftIO $ print ("loadDependencies", length $ join $ catMaybes binds)
   return $ \n -> lookupName n (join $ catMaybes binds)
   where
@@ -147,46 +170,51 @@ loadDependencies env = initIfaceLoad env $ do
 
 
 corePlugin :: [CommandLineOption] -> ModSummary -> TcGblEnv -> TcM TcGblEnv
-corePlugin _ _ gbl = return gbl
--- corePlugin _ _mod_summary gbl = initIfaceTcRn $ do
---   hsc_env <- getTopEnv
+-- corePlugin _ _ gbl = do
+--   env <- getHscEnv
+--   liftIO $ putStrLn "corePlugin1"
+--   lookup <- liftIO $ loadDependencies env
+--   liftIO $ putStrLn "corePlugin2"
+--  return gbl
+corePlugin _ _mod_summary gbl = initIfaceTcRn $ do
+  hsc_env <- getTopEnv
 
---   liftIO $ putStrLn $ showSDoc (hsc_dflags hsc_env) (ppr (mgModSummaries $ hsc_mod_graph hsc_env))
+  liftIO $ putStrLn $ showSDoc (hsc_dflags hsc_env) (ppr (mgModSummaries $ hsc_mod_graph hsc_env))
 
---   let mod_summary = (mgModSummaries $ hsc_mod_graph hsc_env) !! 1
+  -- let mod_summary = (mgModSummaries $ hsc_mod_graph hsc_env) !! 1
 
---   do
---     let iface_path = msHiFilePath mod_summary
---     read_result <- readIface (ms_mod mod_summary) iface_path
---     case read_result of
---         M.Failed err -> liftIO $ putStrLn "No iface"
---         M.Succeeded iface -> do
---           liftIO $ do
---              core <- initIfaceLoad hsc_env $ do
---                gbl <- getGblEnv
---                case if_rec_types gbl of
---                  Just (mod, get_type_env) -> do
---                    liftIO $ putStrLn "get_type_env"
---                    env <- get_type_env
---                    liftIO $ putStrLn $ showSDoc (hsc_dflags hsc_env) (ppr mod)
---                    liftIO $ putStrLn $ showSDoc (hsc_dflags hsc_env) (ppr env)
---                  Nothing -> liftIO $ putStrLn "No get_type_env"
---                liftIO $ putStrLn $ showSDoc (hsc_dflags hsc_env) (ppr mod_summary)
---                liftIO $ putStrLn "Interface"
---                initIfaceLcl (ms_mod mod_summary) (text "CORE") False $ do
---                  liftIO $ putStrLn "init"
---                  lcl <- getLclEnv
---                  liftIO $ putStrLn "lcl"
---                  liftIO $ putStrLn $ showSDoc (hsc_dflags hsc_env) (ppr (if_id_env lcl))
---                  liftIO $ putStrLn "id_env"
---                  loadCoreBindings iface
---              putStrLn $ "Loaded core:"
---              case core of
---                Just binds -> print $ showSDoc (hsc_dflags hsc_env) (ppr binds)
---                Nothing -> putStrLn "No core field"
+  -- do
+  --   let iface_path = msHiFilePath mod_summary
+  --   read_result <- readIface (ms_mod mod_summary) iface_path
+  --   case read_result of
+  --       M.Failed err -> liftIO $ putStrLn "No iface"
+  --       M.Succeeded iface -> do
+  --         liftIO $ do
+  --            core <- initIfaceLoad hsc_env $ do
+  --              gbl <- getGblEnv
+  --              case if_rec_types gbl of
+  --                Just (mod, get_type_env) -> do
+  --                  liftIO $ putStrLn "get_type_env"
+  --                  env <- get_type_env
+  --                  liftIO $ putStrLn $ showSDoc (hsc_dflags hsc_env) (ppr mod)
+  --                  liftIO $ putStrLn $ showSDoc (hsc_dflags hsc_env) (ppr env)
+  --                Nothing -> liftIO $ putStrLn "No get_type_env"
+  --              liftIO $ putStrLn $ showSDoc (hsc_dflags hsc_env) (ppr mod_summary)
+  --              liftIO $ putStrLn "Interface"
+  --              initIfaceLcl (ms_mod mod_summary) (text "CORE") False $ do
+  --                liftIO $ putStrLn "init"
+  --                lcl <- getLclEnv
+  --                liftIO $ putStrLn "lcl"
+  --                liftIO $ putStrLn $ showSDoc (hsc_dflags hsc_env) (ppr (if_id_env lcl))
+  --                liftIO $ putStrLn "id_env"
+  --                loadCoreBindings iface
+  --            putStrLn $ "Loaded core:"
+  --            case core of
+  --              Just binds -> print $ showSDoc (hsc_dflags hsc_env) (ppr binds)
+  --              Nothing -> putStrLn "No core field"
 
---   binds' <- inlineCore (tcg_binds gbl)
---   return $ gbl { tcg_binds = binds' }
+  -- binds' <- inlineCore (tcg_binds gbl)
+  return gbl -- { tcg_binds = binds' }
 
 
 -- A `Bag` is an unordered collection with duplicates, and the module is included in GHC

@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fplugin Example -fplugin-opt Example:inline #-}
+
 module Lib (f, xs, g, x, y, infinite, mapMyData, sumMyData, MyData(..)) where
 
 -- Prevent GHC from inlining the bindings from this module to demonstrate
