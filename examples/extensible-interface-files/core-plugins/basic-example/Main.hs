@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -fplugin Example -fplugin-opt Example:inline #-}
-
 module Main where
 
 import Lib

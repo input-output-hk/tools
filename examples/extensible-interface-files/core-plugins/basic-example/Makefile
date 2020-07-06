@@ -18,7 +18,7 @@ vanilla:
 	mkdir -p vanilla
 	cd vanilla && $(HC) $(HC_FLAGS) -odir . -hidir . ../Example.hs -package ghc
 	cd vanilla && $(HC) $(HC_FLAGS) -odir . -hidir . -fplugin Example -c ../Lib.hs
-	cd vanilla && $(HC) $(HC_FLAGS) -odir . -hidir . -fplugin Example -c ../Main.hs -o ../VanillaMain > ../vanilla.core
+	cd vanilla && $(HC) $(HC_FLAGS) -odir . -hidir . -fplugin Example -c ../Main.hs -o ../VanillaMain | tee ../vanilla.core
 # I get a lot of errors with not being able to find modules properly if I use commands
 # like the vanilla version. This seems to work, but I would like to figure out what
 # causes the actual problem.
@@ -33,7 +33,7 @@ core-inline:
 	mkdir -p inlined
 	cd inlined && $(HC) $(HC_FLAGS) -odir . -hidir . ../Example.hs -package ghc
 	cd inlined && $(HC) $(HC_FLAGS) -odir . -hidir . -fplugin Example -fplugin-opt Example:inline -c ../Lib.hs
-	cd inlined && $(HC) $(HC_FLAGS) -odir . -hidir . -fplugin Example -fplugin-opt Example:inline -c ../Main.hs -o ../InlinedMain > ../inlined.core
+	cd inlined && $(HC) $(HC_FLAGS) -odir . -hidir . -fplugin Example -fplugin-opt Example:inline -c ../Main.hs -o ../InlinedMain | tee ../inlined.core
 clean:
 	rm -rf vanilla inlined vanilla.core inlined.core VanillaMain InlinedMain
 # Launch ghcid for instant-feedback type-checking
