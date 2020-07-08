@@ -25,6 +25,7 @@ import Data.IORef
 import GHC.Types.Unique.DFM
 import System.IO.Unsafe
 import Data.Maybe
+import GHC.Data.Maybe
 
 
 {-
@@ -58,7 +59,7 @@ install args todos = return $ join [plutusPass, todos, bindsPass, printerPass, s
     printerPass    | elem "print"      args = [CoreDoPluginPass "printer" printer]
                    | otherwise              = []
     bindsPass                               = [CoreDoPluginPass "binds" bindsPlug]
-    serialiserPass | elem "serialiser" args = [CoreDoPluginPass "serialiser" serialiser]
+    serialiserPass | elem "inline" args     = [CoreDoPluginPass "serialiser" serialiser]
                    | otherwise              = []
 
 
@@ -176,7 +177,7 @@ for this - giving us an `IO` function mapping `Name`s to `Bind Id`s.
 plutus :: ModGuts -> CoreM ModGuts
 plutus guts = do
   env    <- getHscEnv
-  lookup <- liftIO $ newLoadBind env
+  lookup <- liftIO $ newLoadBind env guts
   binds' <- liftIO $ mapM (inlineCore lookup) (mg_binds guts)
   return guts{ mg_binds = binds' }
 
@@ -256,13 +257,22 @@ loadCoreBindings iface@ModIface{mi_module = mod} = do
 Initialise a stateful `IO` function for loading core bindings by loading the
 relevant `ModIface` from disk. Each interface that is loaded has its bindings
 cached within an `IORef (ModuleEnv (Maybe (NameEnv (Bind CoreBndr))))`.
+
+The current module doesn't have an interface file yet, so we recover its binds
+from the `ModGuts` instead. However, since we're running this plugin early in
+the core pipeline, the current module's binds won't have passed through the
+core optimisation phases yet, so if we're inlining `Name`s from this module
+we'll have to rely on the optimisations being run on our already inlined ASTs.
 -}
-newLoadBind :: HscEnv -> IO (Name -> IO (Maybe (Bind CoreBndr)))
-newLoadBind hscEnv = do
-  modBindsR <- newIORef emptyModuleEnv
+newLoadBind :: HscEnv -> ModGuts -> IO (Name -> IO (Maybe (Bind CoreBndr)))
+newLoadBind hscEnv guts = do
+  let binds = mkNameEnvWith nameOf (mg_binds guts)
+  modBindsR <- newIORef (extendModuleEnv emptyModuleEnv (mg_module guts) (Just binds))
   return (loadBind modBindsR hscEnv)
 
-
+{-
+Return the `Bind` for the given `Name`. Cache the results of disk lookups.
+-}
 loadBind :: IORef (ModuleEnv (Maybe (NameEnv (Bind CoreBndr))))
          -> HscEnv
          -> Name
@@ -271,7 +281,7 @@ loadBind modBindsR env name = do
   eps      <- hscEPS env
   modBinds <- readIORef modBindsR
   case nameModule_maybe name of
-   Just mod | Just iface <- lookupIfaceByModule (hsc_HPT env) (eps_PIT eps) mod ->
+   Just mod | Just iface <- lookupIfaceByModule (hsc_HPT env) (eps_PIT eps) mod -> do
       case lookupModuleEnv modBinds mod of
         Just Nothing -> return Nothing -- We've already checked this module, and it doesn't have bindings
                                        -- serialised - probably because it's from an external package,
@@ -286,69 +296,37 @@ loadBind modBindsR env name = do
                  let binds' = mkNameEnvWith nameOf bds
                  writeIORef modBindsR (extendModuleEnv modBinds mod (Just binds'))
                  return $ lookupNameEnv binds' name
-               Nothing -> return Nothing
+               Nothing -> do
+                 writeIORef modBindsR (extendModuleEnv modBinds mod Nothing)
+                 return Nothing
    _ -> return Nothing
 
 -------------------------------------------------------------------------------
 -- Interface loading for top-level bindings
 -------------------------------------------------------------------------------
 
+{-
+Certain RHSs fail to typecheck due to the error `Iface id out of scope: ...`.
+In particular, this workaround is used to exclude GHC's special type reflection
+bindings from causing problems in loading.
+
+In theory, we should be removing them during serialisation, but they are structured
+as real bindings, so we would have to do a fragile test on the `Name`.
+-}
 tcIfaceBinding :: Module -> SrcSpan -> IfaceBinding -> IfL (Maybe (Bind Id))
-tcIfaceBinding mod loc ibind = do
-  bind <- tryAllM $ tcIfaceBinding' mod loc ibind
-  case bind of
-    Left _ -> return Nothing
-    Right b -> do
-        let (NonRec n _) = b
-        liftIO $ putStrLn (nameStableString $ idName n)
-        return $ Just b
+tcIfaceBinding mod loc ibind =
+  rightToMaybe <$> tryAllM (tcIfaceBinding' mod loc ibind)
 
 tcIfaceBinding' :: Module -> SrcSpan -> IfaceBinding -> IfL (Bind Id)
-tcIfaceBinding' _   _    (IfaceRec _) = panic "tcIfaceBinding: expected NonRec at top level"
-tcIfaceBinding' mod loc b@(IfaceNonRec (IfLetBndr fs ty info ji) rhs) = do
-  name <- lookupIfaceTop (mkVarOccFS fs)
+tcIfaceBinding' mod loc b =
+  case b of
+    IfaceNonRec letbndr rhs -> uncurry NonRec <$> go letbndr rhs
+    IfaceRec    pairs       -> Rec <$> mapM (uncurry go) pairs
+  where
+    go (IfLetBndr fs ty info ji) rhs = do
+        name <- lookupIfaceTop (mkVarOccFS fs)
+        ty'  <- tcIfaceType ty
+        rhs' <- tcIfaceExpr rhs
+        let id = mkExportedVanillaId name ty' `asJoinId_maybe` tcJoinInfo ji
+        return (id, rhs')
 
-
-  -- name    <- newGlobalBinder mod (mkVarOccFS fs) loc
-
-  ty'     <- tcIfaceType ty
-  -- id_info <- tcIdInfo False TopLevel name ty' info
-  let id = mkExportedVanillaId name ty'
-             `asJoinId_maybe` tcJoinInfo ji
-
-
-  liftIO $ putStrLn "-----------------------------"
-  liftIO $ print (nameStableString name, isInternalName name, isExternalName name, isSystemName name, isWiredInName name)
-  liftIO $ putStrLn "------------"
-  dflags <- getDynFlags
-  -- Env env _ _ _ <- getEnv
-  -- liftIO $ do
-  --   nc <- readIORef $ hsc_NC env
-  --   putStrLn $ showSDoc dflags (ppr $ nsNames nc)
-  --   return ()
-
-
-  liftIO $ putStrLn $ showSDoc dflags (ppr rhs)
-  rhs' <- tcIfaceExpr rhs
-  liftIO $ putStrLn "------------"
-  liftIO $ putStrLn $ showSDoc dflags (ppr rhs')
-  -- liftIO $ putStrLn "------------"
-  -- liftIO $ print (b == toIfaceBinding (NonRec id rhs'))
-  liftIO $ putStrLn "-----------------------------"
-  return (NonRec id rhs')
-
--- tcIfaceBinding' (IfaceRec pairs)
---   = do { ids <- mapM tc_rec_bndr (map fst pairs)
---        ; extendIfaceIdEnv ids $ do
---        { pairs' <- zipWithM tc_pair pairs ids
---        ; return (Rec pairs') } }
---  where
---    tc_rec_bndr (IfLetBndr fs ty _ ji)
---      = do { name <- newIfaceName (mkVarOccFS fs)
---           ; ty'  <- tcIfaceType ty
---           ; return (mkLocalId name ty' `asJoinId_maybe` tcJoinInfo ji) }
---    tc_pair (IfLetBndr _ _ info _, rhs) id
---      = do { rhs' <- tcIfaceExpr rhs
---           ; id_info <- tcIdInfo False {- Don't ignore prags; we are inside one! -}
---                                 NotTopLevel (idName id) (idType id) info
---           ; return (setIdInfo id id_info, rhs') }
