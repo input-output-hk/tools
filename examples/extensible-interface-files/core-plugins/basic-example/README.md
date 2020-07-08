@@ -74,7 +74,7 @@ operates gives us access to other environment data that we require to load inter
 
 ### GHC
 
-With https://gitlab.haskell.org/ghc/ghc/-/tree/wip/coreField run:
+With https://gitlab.haskell.org/ghc/ghc/-/tree/wip/pluginExtFields run:
 
 ```
 ./boot
