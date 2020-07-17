@@ -9,7 +9,7 @@ let
   # and also the haskell.nix functionality itself as an overlay.
   nixpkgsArgs = haskellNix.nixpkgsArgs;
 in
-{ nativePkgs ? import nixpkgsSrc nixpkgsArgs
+{ nativePkgs ? import nixpkgsSrc (nixpkgsArgs // { overlays = nixpkgsArgs.overlays ++ [(final: prev: { libsodium = final.callPackage ./libsodium.nix {}; })]; })
 , haskellCompiler ? "ghc865"
 , cardano-node-json
 , cardano-node-info ? __fromJSON (__readFile cardano-node-json)
@@ -96,7 +96,8 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
         # and broken for cross compilers!
         { doHaddock = false; }
         { compiler.nix-name = haskellCompiler; }
-        { packages.cardano-config.flags.systemd = false; }
+        { packages.cardano-config.flags.systemd = false;
+          packages.cardano-node.flags.systemd = false; }
         { packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
           packages.unix-bytestring.patches = [ ./cardano-node-patches/unix-bytestring-0.3.7.3.patch ];
           packages.typerep-map.patches = [ ./cardano-node-patches/typerep-map-PR82.patch ];
@@ -104,7 +105,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           packages.byron-spec-ledger.patches = [ ./cardano-node-patches/byron-ledger-spec-no-goblins.patch ];
           packages.byron-spec-ledger.flags.goblins = false;
           # this one will disable gitRev; which fails (due to a linker bug) for armv7
-          packages.cardano-config.patches = [ ./cardano-node-patches/1036.patch ];
+          # packages.cardano-config.patches = [ ./cardano-node-patches/1036.patch ];
 
           # Disable cabal-doctest tests by turning off custom setups
           packages.comonad.package.buildType = nativePkgs.lib.mkForce "Simple";
@@ -133,7 +134,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
       buildPhase = ''
         mkdir -p cardano-node
         cp ${cardano-cli}/bin/*cardano-cli* cardano-node/
-        cp ${cardano-node}/bin/*cardano-node* cardano-node/
+        cp ${cardano-node.override { enableDebugRTS = true; }}/bin/*cardano-node* cardano-node/
       '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && !pkgs.stdenv.targetPlatform.isMusl) ''
         for bin in cardano-node/*; do
           patchelf --set-interpreter /lib/ld-linux-armhf.so.3 $bin
