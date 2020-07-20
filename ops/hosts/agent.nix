@@ -16,6 +16,7 @@
       ../modules/web-services.nix
       ../modules/web-service-nix-cache.nix
     #  ../modules/web-service-hokey-pokey.nix
+    #  ../modules/web-service-zeus-ci.nix
       ../modules/monitoring.nix
     ];
 }

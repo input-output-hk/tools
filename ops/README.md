@@ -14,10 +14,14 @@
 
 1. Put the secrets in `./secrets` (don't check in to git).
    They can be found on the agent machine at `/var/lib/hercules-ci-agent/secrets/` and `/var/lib/nix-serve/`
+   ```
+   scp root@88.99.0.251:"/var/lib/hercules-ci-agent/secrets/*" secrets
+   scp root@88.99.0.251:"/var/lib/nix-serve/*" secrets
+   ```
 
 2. (First time) Set up the nixops deployment:
    ```
-   ./deploy.sh create hercules-ci-agents-target.nix network.nix
+   ./deploy.sh create tools-agents-target.nix network.nix
    ```
 
 3. Deploy:
@@ -26,7 +30,7 @@
    ```
    from macOS, you likely want something like:
    ```
-   ./deploy.sh deploy --option builders "ssh://root@88.99.0.251 x86_64-linux $HOME/.ssh/id_rsa 16 5"
+   ./deploy.sh deploy --option builders "ssh://root@88.99.0.251 x86_64-linux $HOME/.ssh/id_rsa 16 5" --option builders-use-substitutes true --cores 0
    ```
 
    Note: *If you get `ssh` issues from nixops, nuke the nixops state: `rm secrets/state.nixops` and recreate the deployment.*

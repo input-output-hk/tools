@@ -28,6 +28,9 @@
     sysstat
     socat
 
+    # for visual studio remote
+    nodejs
+
     # nix-tools
     nix
     nix-prefetch-scripts

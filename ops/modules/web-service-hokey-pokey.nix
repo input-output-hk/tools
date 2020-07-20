@@ -13,7 +13,7 @@ in
 
     services.hokey-pokey.enable = true;
 
-    services.nginxvirtualHosts."hokey-pokey.loony-tools.dev.iohkdev.io" = {
+    services.nginx.virtualHosts."hokey-pokey.loony-tools.dev.iohkdev.io" = {
         enableACME = true;
         default = true;
         locations."/".proxyPass = "http://127.0.0.1:8080";
