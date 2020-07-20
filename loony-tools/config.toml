@@ -1,0 +1,14 @@
+baseURL = "https://input-output-hk.github.io/tools"
+languageCode = "en-us"
+title = "Loony Tools Team"
+enableGitInfo = true
+
+staticDir = [ "static" ]
+
+[params]
+  BookRepo = "https://github.com/input-output-hk/loony-tools/"
+  BookEditPath = "edit/master/loony-tools/content"
+  BookDateFormat = "2006-02-01"
+
+[markup.goldmark.renderer]
+  unsafe = true
