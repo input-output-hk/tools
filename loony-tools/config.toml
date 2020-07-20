@@ -6,7 +6,7 @@ enableGitInfo = true
 staticDir = [ "static" ]
 
 [params]
-  BookRepo = "https://github.com/input-output-hk/loony-tools/"
+  BookRepo = "https://github.com/input-output-hk/tools/"
   BookEditPath = "edit/master/loony-tools/content"
   BookDateFormat = "2006-02-01"
 
