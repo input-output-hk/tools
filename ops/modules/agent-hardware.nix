@@ -21,6 +21,15 @@
   boot.supportedFilesystems = [ "zfs" ];
   networking.hostId = "eca0dea2"; # required for zfs use
 
+  networking.interfaces.eno1.ipv6.addresses = [
+    { address = "2a01:4f8:173:27c4::1"; prefixLength = 64; }
+  ];
+
+  networking.defaultGateway6 = {
+    address = "fe80::1";
+    interface = "eno1";
+  };
+
   fileSystems."/" =
     { device = "tank/root";
       fsType = "zfs";
