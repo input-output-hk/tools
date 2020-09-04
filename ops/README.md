@@ -21,7 +21,7 @@
 
 2. (First time) Set up the nixops deployment:
    ```
-   ./deploy.sh create tools-agents-target.nix network.nix
+   ./deploy.sh create x86_64-builder.nix aarch64-builder.nix network.nix
    ```
 
 3. Deploy:

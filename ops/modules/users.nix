@@ -66,9 +66,17 @@
 
   users.users.michaelpj = {
     isNormalUser = true;
-    home = "/home/reactormonk";
+    home = "/home/michaelpj";
     description = "Michael Peyton Jones";
     extraGroups = [ "wheel" "docker" ];
     openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC3Xw/OJSqbbcKoG2/FtiGrLlLcgB6gWb0OEN3fIfYMTMtMiDpknDliNoRdDZl794FicFmgvvdLtG40ITrxfxxxufP15uD/0yXLL+pA3IavKmV7g5Xn35cKtVEoIm/fIiWh1oLmHgyrC49Op19OxilCSsrJhaJjIE2cj3KFqCOsTMG/p2UjSdrYVSns7PxCUHTMZ/5uF/n9K7nbcHTvYUMBWnsBSaHRmdTDHQWeIuEIg730kIeFjqCNydZX/XeDjXoBAsJuH3YzRvjvneXyZqw4agS1cXQEye843/8SB76PgeSqGU6xxSaXegVE35JqWpO0tlfQ6Rx4aDq8fD23mJYGl3JTuARgVizk7Ot3I2kBEzn9Bm8VUgV+NW16oQjfYKjB0045G6+94e+N9bJKglHxrvZyMVjhGgWY7fqSblRckvYUkpK0C8NB5473J3kH+a59L4jcoelqU0rHe44x0t/RNHkf1gJ5kSHyz5+bmDDSa1pkNxcoxDWvP8c+t9ckFuYSt+7pPLBN99S1Ue3X5Vf/a5MYfel1n9fip/WL6K26RYmsifpYkqJRdpX2/1V13q+ZX7NrLNomvP4zQRpYCUK997K3hLUAVhhftLh/j78gNbmHcBdHVYiYSVAsw9WSf1FPnUPi42Bjx4vAc2WDoHFEmXSGeH/+b/jVvoNKXPTmrQ== michaelpj@gmail.com" ];
+  };
+
+  users.users.neil = {
+    isNormalUser = true;
+    home = "/home/neil";
+    description = "Neil Davies";
+    extraGroups = [ "wheel" "docker" ];
+    openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLur/c3K8lPo9UqYI+QeSXmUHlmlXoVmBY3Y1ftQV7wVFCZkCv6OZbC2ZLj5RCwx0oc6B3zebz9oI0qhdZsRrA7tKwC4v9PGdKu9mT8pLzsIB1leGYbd6j5S9CpMQ0cdaInnz5/ob8JiR8yju9mw89k+fbf7lDKoRIYCjFCwCJS3lzx34EQqD2c0+Hqh2qhjg6kmpaXg1trIUbOzDUA+3Lkg6yzaMLPgcoURwNML/m0E8/JfObWvK52gztsNzQ32RtdCgiadPLh/FuO6onyAY+qV4h4CIiVF48buN/QoV01zc0oLOke6HUvelEPkVL88Jlu4ar+UAr3b4jd8vKt9az neil" ];
   };
 }

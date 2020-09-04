@@ -1,7 +1,11 @@
 {
-  network.description = "Hercules CI agents";
+  network.description = "Tools Builder";
 
-  agent = {
-    imports = [ ./hosts/agent.nix ];
+  x86_64-builder = {
+    imports = [ ./hosts/x86_64-builder.nix ];
+  };
+
+  aarch64-builder = {
+    imports = [ ./hosts/aarch64-builder.nix ];
   };
 }

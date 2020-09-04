@@ -100,6 +100,9 @@
       # if the .drv is a GC root.
       keep-outputs = true
       keep-derivations = true
+
+      min-free = ${toString (1024*1024*1024*20)}
+      max-free = ${toString (1024*1024*1024*40)}
     '';
   };
 }

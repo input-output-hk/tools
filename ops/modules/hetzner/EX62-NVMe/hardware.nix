@@ -10,8 +10,9 @@
     ];
   # ensure we build for x86_64-linux. This is important
   # to prevent nixops to try tand build this configuration
-  # for `currentSystem`, which is x86_64-dsarwin on macOS>
+  # for `currentSystem`, which is x86_64-darwin on macOS>
   nixpkgs.localSystem.system = "x86_64-linux";
+  nixpkgs.config.allowUnfree = true;
 
   boot.initrd.availableKernelModules = [ "ahci" "nvme" ];
   boot.initrd.kernelModules = [ ];
@@ -55,10 +56,4 @@
     ];
 
   nix.maxJobs = lib.mkDefault 16;
-  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
-
-  # The default max inotify watches is 8192.
-  # Nowadays most apps require a good number of inotify watches,
-  # the value below is used by default on several other distros.
-  boot.kernel.sysctl."fs.inotify.max_user_watches" = lib.mkDefault 524288;
 }

@@ -13,7 +13,7 @@ stdenv.mkDerivation rec {
     shellHook = ''
         export NIX_PATH="nixpkgs=${niv-sources.nixpkgs}"
         export NIXOPS_STATE="./secrets/state.nixops"
-        export NIXOPS_DEPLOYMENT=hercules-ci-agents
+        export NIXOPS_DEPLOYMENT=loony-tools-builder
 
         function nixops () {
             if [ $1 == "deploy" ]; then
