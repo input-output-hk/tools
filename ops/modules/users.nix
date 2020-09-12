@@ -79,4 +79,12 @@
     extraGroups = [ "wheel" "docker" ];
     openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLur/c3K8lPo9UqYI+QeSXmUHlmlXoVmBY3Y1ftQV7wVFCZkCv6OZbC2ZLj5RCwx0oc6B3zebz9oI0qhdZsRrA7tKwC4v9PGdKu9mT8pLzsIB1leGYbd6j5S9CpMQ0cdaInnz5/ob8JiR8yju9mw89k+fbf7lDKoRIYCjFCwCJS3lzx34EQqD2c0+Hqh2qhjg6kmpaXg1trIUbOzDUA+3Lkg6yzaMLPgcoURwNML/m0E8/JfObWvK52gztsNzQ32RtdCgiadPLh/FuO6onyAY+qV4h4CIiVF48buN/QoV01zc0oLOke6HUvelEPkVL88Jlu4ar+UAr3b4jd8vKt9az neil" ];
   };
+
+  users.users.karl = {
+    isNormalUser = true;
+    home = "/home/karl";
+    description = "Karl Knutsson";
+    extraGroups = [ "wheel" "docker" ];
+    openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDDNrO0NpTr5Rp8R/lq3a+nzBPUWkWdxzMof8d8QTBr63sL/uY59iNAsJuvl2zeIHrBAdKPaVETHn1Irj86hIbJJTt96rmXqpYNfK9dO7v8nzUV6c9EvYtGhMLJmIlZ8BNM1EV3INAOs1CmJL1Piz0aR2dFINkoqA2v1L6G9dMVrVyqTIr/9yN927/YwhxRsEnZz/5B+/YzMpewZqDj3onVTP0PpkHFr3EEmyWGVtAB+AoqOaXagc4w97hot1qvCu6vAE0lFDJfRZH1t/218JyMrZCKV8s5L4cxoYmZpsZlYnhyRwuU2cbD7h/yhjJL1GhwfMNwyMUyUpHi/C2IaZqXDir/xXk/4Uz/lx0qSFipBnGw576Li8Eid4THM6elllPl7zVFFwwaRYyehVof8+tWsUsB5aJZh0nmNOqdU1q8x+S056akwCQcXPVHtd15juvJW63nMY73+mYK9CsGX109nosugr4OluivLXdBGMo6fZ7m7+s/F2FFuvDGix8lzv+P1mrqM+zXdYOu775j+OX3JuAaSq2fjs5dE5TnW+DiFZ/ax+55f8ntk0qnN9DDi7btHnpLFfq9W/YH7xFR0xBbx7qA9UJ6y55guItGDA26PMaTCoVNyBgaN6q/9IWWMQShbCcvGGJxzBvLFcpk9Hl61GuXkEWVrNPhhtwLiZGTuQ== karknu@iohk" ];
+  };
 }
