@@ -8,20 +8,14 @@ let
   # cross system settings
   mingwW64 = pkgs.lib.systems.examples.mingwW64;
 
-  # import iohk-nix with the same pin as the nixpkgs above.
-  config = { allowUnfree = false; inHydra = true; allowUnsupportedSystem = true; };
+  leksah-src = pkgs.fetchgit {
+      url = "https://github.com/leksah/leksah";
+      rev = "c179b31ecfa305044a2fd233aace0d48e7aa3a77";
+      sha256 = "19fqr00rg2mx9dpy20brkviz2gfnvamccaln99svbjxmdfyjfklx";
+      fetchSubmodules = true;
+    };
 
-  # linux packages
-  x86_64-linux = importPinned "iohk-nix"
-    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-linux"; };
-
-  # macos packages
-  x86_64-macos = importPinned "iohk-nix"
-    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-darwin"; };
-
-  # windows cross compiled on linux
-  x86_64-mingw32 = importPinned "iohk-nix"
-    { inherit config; nixpkgsJsonOverride = ./pins/nixpkgs-src.json; system = "x86_64-linux"; crossSystem = mingwW64; };
+  leksah-mingw32 = import leksah-src { system = "x86_64-linux"; crossSystem = mingwW64; };
 
   # jobs contain a key -> value mapping that tells hydra which
   # derivations to build.  There are some predefined helpers in
@@ -30,23 +24,19 @@ let
   #
   # It is however not necessary to use those.
   #
-  jobs = rec {
-    # a very simple job. All it does is call a shell script that print Hello World.
-    hello-world = import ./jobs/trivial-hello-world { inherit pkgs; };
-
-    # this should give us our patched compiler. (e.g. the one
-    # from the pinned nixpkgs set with all the iohk-nix
-    # patches applied.
-
-    # linux
-    ghc864.x86_64-linux = x86_64-linux.pkgs.haskell.compiler.ghc864;
-
-    # macOS
-    ghc864.x86_64-macos = x86_64-macos.pkgs.haskell.compiler.ghc864;
-
-    # linux -> win32
-    # Note: we want to build the cross-compiler. As such we want something from the buildPackages!
-    "${mingwW64.config}-ghc864".x86_64-linux = x86_64-mingw32.pkgs.buildPackages.haskell.compiler.ghc864;
-  };
+  jobs = builtins.mapAttrs (_: args:
+    let leksah = import leksah-src args;
+    in builtins.mapAttrs (_: pkgs.recurseIntoAttrs) {
+      leksah-plan-nix = leksah.pkgs.haskell-nix.withInputs leksah.plan-nix;
+    
+      wrapped-leksah = leksah.wrapped-leksah;
+      leksah-shells = leksah.shells;
+      leksah-haskell-nix-roots = leksah.pkgs.haskell-nix.haskellNixRoots;
+    }) {
+      linux-ghc865 = { system = "x86_64-linux"; haskellCompiler = "ghc865"; };
+      linux-ghc883 = { system = "x86_64-linux"; haskellCompiler = "ghc883"; };
+      macos-ghc865 = { system = "x86_64-darwin"; haskellCompiler = "ghc865"; };
+      macos-ghc883 = { system = "x86_64-darwin"; haskellCompiler = "ghc883"; };
+    };
 in
   jobs
