@@ -1,6 +1,8 @@
 let
   inherit (import ./lib.nix) importPinned;
 
+  arm-test = import ./arm-test {};
+
   # fetch nixpkgs. iohk hydra doesn't provide <nixpkgs>, so we'll have to use
   # a pinned one.
   pkgs = importPinned "nixpkgs" {};
@@ -48,7 +50,8 @@ let
     # Note: we want to build the cross-compiler. As such we want something from the buildPackages!
     "${mingwW64.config}-ghc864".x86_64-linux = x86_64-mingw32.pkgs.buildPackages.haskell.compiler.ghc864;
 
-    inherit (import ./arm-test {}) x86-musl64.tarball rpi64-musl.tarball;
+    x86-musl64.tarball = arm-test.x86-musl64.tarball;
+    rpi64-musl.tarball = arm-test.rpi64-musl.tarball;
   };
 in
   jobs
