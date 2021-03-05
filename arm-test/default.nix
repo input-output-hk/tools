@@ -1,7 +1,7 @@
 let
-  sources = import ./nix/sources.nix;
+  sources = import ./nix/sources.nix {};
   # Fetch the latest haskell.nix and import its default.nix
-  haskellNix = import ./haskell.nix {}; #(builtins.fetchTarball https://github.com/input-output-hk/haskell.nix/archive/angerman/arm-plus.tar.gz) {};
+  haskellNix = import sources."haskell.nix" {};
   # haskell.nix provides access to the nixpkgs pins which are used by our CI, hence
   # you will be more likely to get cache hits when using these.
   # But you can also just use your own, e.g. '<nixpkgs>'
@@ -12,17 +12,16 @@ let
 
 in
 { nativePkgs ? import nixpkgsSrc (nixpkgsArgs // { overlays = [(import ./rust.nix)] ++ nixpkgsArgs.overlays ++ [(final: prev: { libsodium = final.callPackage ./libsodium.nix {}; })]; })
-, haskellCompiler ? "ghc8103"
-, cardano-node-json
-, cardano-node-info ? __fromJSON (__readFile cardano-node-json)
-, cardano-node-src ? nativePkgs.fetchgit (removeAttrs cardano-node-info [ "date" ])
-, cardano-rt-view-json
-, cardano-rt-view-info ? __fromJSON (__readFile cardano-rt-view-json)
-, cardano-rt-view-src ? nativePkgs.fetchgit (removeAttrs cardano-rt-view-info [ "date" ])
-, wstunnel-json
-, wstunnel-info ? __fromJSON (__readFile wstunnel-json)
-, wstunnel-src ? nativePkgs.fetchgit (removeAttrs wstunnel-info [ "date" ])
-, ghcup-src ? ./ghcup-hs
+, haskellCompiler ? "ghc8104"
+, cardano-node-info ? sources.cardano-node
+, cardano-node-src ? nativePkgs.fetchgit { inherit (cardano-node-info) url rev sha256; }
+# , cardano-rt-view-json
+# , cardano-rt-view-info ? __fromJSON (__readFile cardano-rt-view-json)
+# , cardano-rt-view-src ? nativePkgs.fetchgit (removeAttrs cardano-rt-view-info [ "date" ])
+# , wstunnel-json
+# , wstunnel-info ? __fromJSON (__readFile wstunnel-json)
+# , wstunnel-src ? nativePkgs.fetchgit (removeAttrs wstunnel-info [ "date" ])
+# , ghcup-src ? ./ghcup-hs
 }:
 let toBuild = with nativePkgs.pkgsCross; {
   # x86-gnu32 = gnu32;
@@ -158,62 +157,62 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
       ];
     });
 
-    __cardano-rt-view = (pkgs.haskell-nix.cabalProject {
-      compiler-nix-name = haskellCompiler;
-      src = cardano-rt-view-src;
-      modules = [];
-    });
+    # __cardano-rt-view = (pkgs.haskell-nix.cabalProject {
+    #   compiler-nix-name = haskellCompiler;
+    #   src = cardano-rt-view-src;
+    #   modules = [];
+    # });
 
-    __wstunnel = (pkgs.haskell-nix.cabalProject {
-      compiler-nix-name = haskellCompiler;
-      src = wstunnel-src;
-      modules = [{ dontStrip = false; }];
-    });
+    # __wstunnel = (pkgs.haskell-nix.cabalProject {
+    #   compiler-nix-name = haskellCompiler;
+    #   src = wstunnel-src;
+    #   modules = [{ dontStrip = false; }];
+    # });
 
     inherit (__cardano-node.cardano-node.components.exes) cardano-node;
     inherit (__cardano-node.cardano-cli.components.exes)  cardano-cli;
 
     inherit (__cardano-rt-view.cardano-rt-view.components.exes) cardano-rt-view;
 
-    inherit (__wstunnel.wstunnel.components.exes) wstunnel;
+    # inherit (__wstunnel.wstunnel.components.exes) wstunnel;
 
-    inherit (__ghcup.ghcup.components.exes) ghcup;
+    # inherit (__ghcup.ghcup.components.exes) ghcup;
 
-    wstunnel-tarball = nativePkgs.stdenv.mkDerivation {
-      name = "${pkgs.stdenv.targetPlatform.config}-tarball";
-      buildInputs = with nativePkgs; [ patchelf zip ];
+    # wstunnel-tarball = nativePkgs.stdenv.mkDerivation {
+    #   name = "${pkgs.stdenv.targetPlatform.config}-tarball";
+    #   buildInputs = with nativePkgs; [ patchelf zip ];
 
-      phases = [ "buildPhase" "installPhase" ];
-      buildPhase = ''
-        mkdir -p wstunnel
-        cp ${wstunnel}/bin/*wstunnel* wstunnel/
-      '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && !pkgs.stdenv.targetPlatform.isMusl) ''
-        for bin in wstunnel/*; do
-          mode=$(stat -c%a $bin)
-          chmod +w $bin
-          patchelf --set-interpreter /lib/ld-linux-armhf.so.3 $bin
-          chmod $mode $bin
-        done
-      '';
-      installPhase = ''
-        mkdir -p $out/
-        zip -r -9 $out/${pkgs.stdenv.hostPlatform.config}-wstunnel-${wstunnel-info.rev or "unknown"}.zip wstunnel
-      '';
-    };
+    #   phases = [ "buildPhase" "installPhase" ];
+    #   buildPhase = ''
+    #     mkdir -p wstunnel
+    #     cp ${wstunnel}/bin/*wstunnel* wstunnel/
+    #   '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && !pkgs.stdenv.targetPlatform.isMusl) ''
+    #     for bin in wstunnel/*; do
+    #       mode=$(stat -c%a $bin)
+    #       chmod +w $bin
+    #       patchelf --set-interpreter /lib/ld-linux-armhf.so.3 $bin
+    #       chmod $mode $bin
+    #     done
+    #   '';
+    #   installPhase = ''
+    #     mkdir -p $out/
+    #     zip -r -9 $out/${pkgs.stdenv.hostPlatform.config}-wstunnel-${wstunnel-info.rev or "unknown"}.zip wstunnel
+    #   '';
+    # };
 
-    cncli = (pkgs.rust-nix.buildPackage {
-      root = ./cncli;
-      buildInputs = (with nativePkgs; [ autoconf m4 file ]) ++ (with pkgs; [ libsodium libsodium.dev ]);
-      # cargoOptions = (opts: opts ++ [ "--verbose" ]);
-      # cargoBuildOptions = (opts: opts ++ [ "-L ${pkgs.libsodium}/lib" ]);
-      override = x: x // {
-        NIX_LDFLAGS_BEFORE_x86_64_unknown_linux_musl = "-lgcc";
-        OPENSSL_INCLUDE_DIR = "${pkgs.pkgsStatic.openssl.dev}/include";
-        OPENSSL_LIB_DIR = "${pkgs.pkgsStatic.openssl.out}/lib";
-        SODIUM_LIB_DIR = "${pkgs.libsodium.out}/lib";
-        buildInputs = x.buildInputs ++ (with nativePkgs; [ autoconf m4 file ]) ++ (with pkgs.pkgsStatic; [ gmp gmp.dev mpfr mpfr.dev libmpc ]);
-      };
-    }).overrideAttrs (oldAttrs: oldAttrs // { NIX_DEBUG=7; });
+    # cncli = (pkgs.rust-nix.buildPackage {
+    #   root = ./cncli;
+    #   buildInputs = (with nativePkgs; [ autoconf m4 file ]) ++ (with pkgs; [ libsodium libsodium.dev ]);
+    #   # cargoOptions = (opts: opts ++ [ "--verbose" ]);
+    #   # cargoBuildOptions = (opts: opts ++ [ "-L ${pkgs.libsodium}/lib" ]);
+    #   override = x: x // {
+    #     NIX_LDFLAGS_BEFORE_x86_64_unknown_linux_musl = "-lgcc";
+    #     OPENSSL_INCLUDE_DIR = "${pkgs.pkgsStatic.openssl.dev}/include";
+    #     OPENSSL_LIB_DIR = "${pkgs.pkgsStatic.openssl.out}/lib";
+    #     SODIUM_LIB_DIR = "${pkgs.libsodium.out}/lib";
+    #     buildInputs = x.buildInputs ++ (with nativePkgs; [ autoconf m4 file ]) ++ (with pkgs.pkgsStatic; [ gmp gmp.dev mpfr mpfr.dev libmpc ]);
+    #   };
+    # }).overrideAttrs (oldAttrs: oldAttrs // { NIX_DEBUG=7; });
 
     tarball = nativePkgs.stdenv.mkDerivation {
       name = "${pkgs.stdenv.targetPlatform.config}-tarball";

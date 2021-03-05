@@ -1,4 +1,28 @@
 {
+    "cardano-node": {
+        "branch": "master",
+        "description": "The core component that is used to participate in a Cardano decentralised blockchain.",
+        "homepage": "https://cardano.org",
+        "owner": "input-output-hk",
+        "repo": "cardano-node",
+        "rev": "1.25.1",
+        "sha256": "1scffi7igv4kj93bpjf8yibcaq0sskfikmm00f7r6q031l53y50c",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/1.25.1.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "haskell.nix": {
+        "branch": "master",
+        "description": "Alternative Haskell Infrastructure for Nixpkgs",
+        "homepage": "https://input-output-hk.github.io/haskell.nix",
+        "owner": "input-output-hk",
+        "repo": "haskell.nix",
+        "rev": "abe9243c255232a1ae1c93a03a0d3c79ed420ca0",
+        "sha256": "1vvwsr0klshzbvp88a45gpmx0lmm61cw8a046pmbbcsxyy08wf4m",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/haskell.nix/archive/abe9243c255232a1ae1c93a03a0d3c79ed420ca0.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "niv": {
         "branch": "master",
         "description": "Easy dependency management for Nix projects",
