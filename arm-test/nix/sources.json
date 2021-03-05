@@ -1,0 +1,38 @@
+{
+    "niv": {
+        "branch": "master",
+        "description": "Easy dependency management for Nix projects",
+        "homepage": "https://github.com/nmattia/niv",
+        "owner": "nmattia",
+        "repo": "niv",
+        "rev": "af958e8057f345ee1aca714c1247ef3ba1c15f5e",
+        "sha256": "1qjavxabbrsh73yck5dcq8jggvh3r2jkbr6b5nlz5d9yrqm9255n",
+        "type": "tarball",
+        "url": "https://github.com/nmattia/niv/archive/af958e8057f345ee1aca714c1247ef3ba1c15f5e.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "nixpkgs-unstable",
+        "description": "DEPRECATED! Use NixOS/nixpkgs repository instead.",
+        "homepage": "https://github.com/NixOS/nixpkgs",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "870dbb751f4d851a3dfb554835a0c2f528386982",
+        "sha256": "0ydgjvwspfspm0fg7jhc5yxpm47lh4scqhwswranm82hk668cxzl",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/870dbb751f4d851a3dfb554835a0c2f528386982.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "rust.nix": {
+        "branch": "master",
+        "description": "Build rust crates in Nix. No configuration, no code generation, no IFD. Sandbox friendly.",
+        "homepage": "",
+        "owner": "input-output-hk",
+        "repo": "rust.nix",
+        "rev": "6959812b844b1cb98dc61fe1cbc8a83fd761cc8c",
+        "sha256": "1qhnzqp1d0zs2f9vkbscccmzyhh4nkq902xzvsphfgv15ismjk54",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/rust.nix/archive/6959812b844b1cb98dc61fe1cbc8a83fd761cc8c.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}

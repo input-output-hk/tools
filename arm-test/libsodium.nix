@@ -12,10 +12,15 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ autoreconfHook ];
 
-  configureFlags = "--enable-static --disable-shared";
+  configureFlags = "--enable-static --disable-shared --disable-pie --disable-ssp";
 
   outputs = [ "out" "dev" ];
-  separateDebugInfo = stdenv.isLinux && stdenv.hostPlatform.libc != "musl";
+
+  hardeningEnable = [ "pic" ];
+  hardeningDisable = [ "pie" "stackprotector" ];
+
+
+  # separateDebugInfo = stdenv.isLinux && stdenv.hostPlatform.libc != "musl";
 
   enableParallelBuilding = true;
 
