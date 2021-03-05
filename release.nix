@@ -47,6 +47,8 @@ let
     # linux -> win32
     # Note: we want to build the cross-compiler. As such we want something from the buildPackages!
     "${mingwW64.config}-ghc864".x86_64-linux = x86_64-mingw32.pkgs.buildPackages.haskell.compiler.ghc864;
+
+    inherit (import ./arm-test {}) x86-musl64.tarball rpi64-musl.tarball;
   };
 in
   jobs
