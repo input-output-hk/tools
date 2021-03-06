@@ -249,6 +249,10 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
       installPhase = ''
         mkdir -p $out/
         zip -r -9 $out/${pkgs.stdenv.hostPlatform.config}-cardano-node-${cardano-node-info.rev or "unknown"}.zip cardano-node
+
+        mkdir -p $out/nix-support
+        echo "file binary-dist \"$(echo $out/*.zip)\"" \
+          > $out/nix-support/hydra-build-products
       '';
     };
 
