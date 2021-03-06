@@ -11,7 +11,12 @@ let
   nixpkgsArgs = haskellNix.nixpkgsArgs;
 
 in
-{ nativePkgs ? import nixpkgsSrc (nixpkgsArgs // { overlays = [(import ./rust.nix)] ++ nixpkgsArgs.overlays ++ [(final: prev: { libsodium = final.callPackage ./libsodium.nix {}; })]; })
+{ nativePkgs ? import nixpkgsSrc (nixpkgsArgs // { overlays = [
+    # (import ./rust.nix)] ++
+    nixpkgsArgs.overlays ++
+    [(final: prev: { libsodium = final.callPackage ./libsodium.nix {}; })]
+    ;
+    })
 , haskellCompiler ? "ghc8104"
 , cardano-node-info ? sources.cardano-node
 , cardano-node-src ? nativePkgs.fetchgit { inherit (cardano-node-info) url rev sha256; }
