@@ -11,8 +11,8 @@ let
   nixpkgsArgs = haskellNix.nixpkgsArgs;
 
 in
-{ nativePkgs ? import nixpkgsSrc (nixpkgsArgs // { overlays = [
-    # (import ./rust.nix)] ++
+{ nativePkgs ? import nixpkgsSrc (nixpkgsArgs // { overlays =
+    # [ (import ./rust.nix)] ++
     nixpkgsArgs.overlays ++
     [(final: prev: { libsodium = final.callPackage ./libsodium.nix {}; })]
     ;
