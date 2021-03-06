@@ -172,7 +172,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
     inherit (__cardano-node.cardano-node.components.exes) cardano-node;
     inherit (__cardano-node.cardano-cli.components.exes)  cardano-cli;
 
-    inherit (__cardano-rt-view.cardano-rt-view.components.exes) cardano-rt-view;
+    # inherit (__cardano-rt-view.cardano-rt-view.components.exes) cardano-rt-view;
 
     # inherit (__wstunnel.wstunnel.components.exes) wstunnel;
 
