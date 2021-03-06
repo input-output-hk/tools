@@ -79,31 +79,31 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
       ];
     }).components.exes.cabal;
 
-  __ghcup = (pkgs.haskell-nix.cabalProject {
-      compiler-nix-name = haskellCompiler;
-      src = ghcup-src;
+  # __ghcup = (pkgs.haskell-nix.cabalProject {
+  #     compiler-nix-name = haskellCompiler;
+  #     src = ghcup-src;
 
 
-      configureArgs = "--disable-tests";
+  #     configureArgs = "--disable-tests";
 
-      modules = [
-        { doHaddock = false; }
-      ];
-  });
+  #     modules = [
+  #       { doHaddock = false; }
+  #     ];
+  # });
 
 
-  __cardano-db-sync = (pkgs.haskell-nix.cabalProject {
-      compiler-nix-name = haskellCompiler;
-      # pkgs.haskell-nix.haskellLib.cleanGit { name = "cardano-node"; src = ... } <- this doesn't work with fetchgit results
-      src = ./cardano-db-sync;
-      modules = [
-        { doHaddock = false; }
-        { compiler.nix-name = haskellCompiler; }
-        { packages.cardano-config.flags.systemd = false;
-          packages.cardano-node.flags.systemd = false; }
+  # __cardano-db-sync = (pkgs.haskell-nix.cabalProject {
+  #     compiler-nix-name = haskellCompiler;
+  #     # pkgs.haskell-nix.haskellLib.cleanGit { name = "cardano-node"; src = ... } <- this doesn't work with fetchgit results
+  #     src = ./cardano-db-sync;
+  #     modules = [
+  #       { doHaddock = false; }
+  #       { compiler.nix-name = haskellCompiler; }
+  #       { packages.cardano-config.flags.systemd = false;
+  #         packages.cardano-node.flags.systemd = false; }
 
-      ];
-  });
+  #     ];
+  # });
 
   __cardano-node = (pkgs.haskell-nix.cabalProject {
       compiler-nix-name = haskellCompiler;
