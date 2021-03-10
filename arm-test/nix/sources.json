@@ -47,6 +47,18 @@
         "url": "https://github.com/NixOS/nixpkgs/archive/870dbb751f4d851a3dfb554835a0c2f528386982.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "nixpkgs-m1": {
+        "branch": "apple-silicon",
+        "description": "Nix Packages collection",
+        "homepage": null,
+        "owner": "thefloweringash",
+        "repo": "nixpkgs",
+        "rev": "abe9007e043ee5f3722e256c9a8e991ce39cb693",
+        "sha256": "1s9jnyiyfvrqxrb4pisbg924hmjkv98hcc4hk0pivi24k63dkdsa",
+        "type": "tarball",
+        "url": "https://github.com/thefloweringash/nixpkgs/archive/abe9007e043ee5f3722e256c9a8e991ce39cb693.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "rust.nix": {
         "branch": "master",
         "description": "Build rust crates in Nix. No configuration, no code generation, no IFD. Sandbox friendly.",
