@@ -9,13 +9,15 @@ let
   # haskell.nix provides some arguments to be passed to nixpkgs, including some patches
   # and also the haskell.nix functionality itself as an overlay.
   nixpkgsArgs = haskellNix.nixpkgsArgs;
-
+  #
+  system ? __currentSystem
 in
 { nativePkgs ? import nixpkgsSrc (nixpkgsArgs // { overlays =
     # [ (import ./rust.nix)] ++
     nixpkgsArgs.overlays ++
     [(final: prev: { libsodium = final.callPackage ./libsodium.nix {}; })]
     ;
+    inherit system;
     })
 , haskellCompiler ? "ghc8104"
 , cardano-node-info ? sources.cardano-node
@@ -30,7 +32,7 @@ in
 }:
 let toBuild = with nativePkgs.pkgsCross; {
   # x86-gnu32 = gnu32;
-  x86-gnu64 = nativePkgs; #gnu64; # should be == nativePkgs
+  native = nativePkgs; #gnu64; # should be == nativePkgs
   # x86-musl32 = musl32;
   x86-musl64 = musl64;
   x86-win64 = mingwW64;
