@@ -9,10 +9,9 @@ let
   # haskell.nix provides some arguments to be passed to nixpkgs, including some patches
   # and also the haskell.nix functionality itself as an overlay.
   nixpkgsArgs = haskellNix.nixpkgsArgs;
-  #
-  system ? __currentSystem
 in
-{ nativePkgs ? import nixpkgsSrc (nixpkgsArgs // { overlays =
+{ system ? __currentSystem
+, nativePkgs ? import nixpkgsSrc (nixpkgsArgs // { overlays =
     # [ (import ./rust.nix)] ++
     nixpkgsArgs.overlays ++
     [(final: prev: { libsodium = final.callPackage ./libsodium.nix {}; })]
