@@ -22,5 +22,17 @@
         "type": "tarball",
         "url": "https://github.com/NixOS/nixpkgs-channels/archive/e23e05452c67ce406debffa831290fb3abaabf0e.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs-m1": {
+        "branch": "apple-silicon",
+        "description": "Nix Packages collection",
+        "homepage": null,
+        "owner": "thefloweringash",
+        "repo": "nixpkgs",
+        "rev": "abe9007e043ee5f3722e256c9a8e991ce39cb693",
+        "sha256": "1s9jnyiyfvrqxrb4pisbg924hmjkv98hcc4hk0pivi24k63dkdsa",
+        "type": "tarball",
+        "url": "https://github.com/thefloweringash/nixpkgs/archive/abe9007e043ee5f3722e256c9a8e991ce39cb693.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
