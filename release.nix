@@ -3,7 +3,7 @@ let
 
   arm-test = import ./arm-test {};
   x86_64-darwin-arm-test = import ./arm-test { system = "x86_64-darwin"; };
-  aarch64-darwin-arm-test = import ./arm-test { system = "aarch64-darwin"; };
+  # aarch64-darwin-arm-test = import ./arm-test { system = "aarch64-darwin"; };
 
   # fetch nixpkgs. iohk hydra doesn't provide <nixpkgs>, so we'll have to use
   # a pinned one.
