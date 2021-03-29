@@ -5,10 +5,10 @@
         "homepage": "https://cardano.org",
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "1.26.1",
+        "rev": "62f3847",
         "sha256": "0ws2lgpl88p6bbrim43dczm19an9nba97sr483abq32b1xh4m3qh",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/1.26.1.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/62f3847.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "1.26.1"
     },
