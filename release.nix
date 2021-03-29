@@ -54,7 +54,7 @@ let
 
     x86_64-unknown-linux-musl-cardano-node.tarball = arm-test.x86-musl64.tarball;
     aarch64-unknown-linux-musl-cardano-node-musl.tarball = arm-test.rpi64-musl.tarball;
-    x86_64-windows-cardano-node.tarball = arm-test.x86-win64.tarball;
+    # x86_64-windows-cardano-node.tarball = arm-test.x86-win64.tarball;
     x86_64-apple-darwin-cardano-node.tarball = x86_64-darwin-arm-test.native.tarball;
     # aarch64-apple-darwin-cardano-node.tarball = aarch64-darwin-arm-test.native.tarball;
   };
