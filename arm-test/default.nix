@@ -20,8 +20,8 @@ in
     inherit system;
     })
 , haskellCompiler ? "ghc8104"
-, cardano-node-src ? sources.cardano-node
-# , cardano-node-src ? nativePkgs.fetchurl { inherit (cardano-node-info) url rev sha256; }
+, cardano-node-info ? sources.cardano-node
+, cardano-node-src ? cardano-node-info
 # , cardano-rt-view-json
 # , cardano-rt-view-info ? __fromJSON (__readFile cardano-rt-view-json)
 # , cardano-rt-view-src ? nativePkgs.fetchgit (removeAttrs cardano-rt-view-info [ "date" ])
