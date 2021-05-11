@@ -5,12 +5,12 @@
         "homepage": "https://cardano.org",
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "1.26.2",
-        "sha256": "17zr2lhnrly6gqb1hxf3cjwfw1iz8s85hhhdiivb5ax7fkrrp8pp",
+        "rev": "1.27.0",
+        "sha256": "1c9zc899wlgicrs49i33l0bwb554acsavzh1vcyhnxmpm0dmy8vj",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/1.26.2.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/1.27.0.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
-        "version": "1.26.2"
+        "version": "1.27.0"
     },
     "haskell.nix": {
         "branch": "master",
