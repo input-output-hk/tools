@@ -142,6 +142,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           packages.cardano-node.flags.systemd = false; }
         { packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
           packages.unix-bytestring.patches = [ ./cardano-node-patches/unix-bytestring-0.3.7.3.patch ];
+          packages.plutus-core.patches = [ ./cardano-node-patches/plutus-core.patch ];
           # packages.typerep-map.patches = [ ./cardano-node-patches/typerep-map-PR82.patch ];
           # packages.streaming-bytestring.patches = [ ./cardano-node-patches/streaming-bytestring-0.1.6.patch ];
           # packages.byron-spec-ledger.patches = [ ./cardano-node-patches/byron-ledger-spec-no-goblins.patch ];

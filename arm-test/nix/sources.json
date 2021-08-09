@@ -5,10 +5,10 @@
         "homepage": "https://cardano.org",
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "1.27.0",
-        "sha256": "1c9zc899wlgicrs49i33l0bwb554acsavzh1vcyhnxmpm0dmy8vj",
+        "rev": "alonzo-purple-1.0.1",
+        "sha256": "0147jsz1rywma71vq5yqswr3gwv9vrndf73b989dwxcn4zn92iwv",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/1.27.0.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/alonzo-purple-1.0.1.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "1.27.0"
     },
@@ -18,10 +18,10 @@
         "homepage": "https://input-output-hk.github.io/haskell.nix",
         "owner": "input-output-hk",
         "repo": "haskell.nix",
-        "rev": "9ce7bf1e0276a9f71440ab6f74b044908647bcfc",
-        "sha256": "1353ss0i1s2yfwajprwfiz8g8q2rij9sdvfvzh403zk7rpkvx865",
+        "rev": "d5d304d5b50db1e584ce62915c48fc8c0c8b626a",
+        "sha256": "0j70lnw99v62qshdd0a03ph37d0zyb9lqiiq48av3iw5g2f6h44z",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/haskell.nix/archive/9ce7bf1e0276a9f71440ab6f74b044908647bcfc.tar.gz",
+        "url": "https://github.com/input-output-hk/haskell.nix/archive/d5d304d5b50db1e584ce62915c48fc8c0c8b626a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
