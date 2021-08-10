@@ -111,152 +111,156 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
 
   #     ];
   # });
+  cardano-node = nativePkgs.lib.mapAttrs (_: cardano-node-info:
+    let cardano-node-src = cardano-node-info; in rec {
+    __cardano-node = (pkgs.haskell-nix.cabalProject {
+        compiler-nix-name = haskellCompiler;
+        # pkgs.haskell-nix.haskellLib.cleanGit { name = "cardano-node"; src = ... } <- this doesn't work with fetchgit results
+        src = cardano-node-src;
+        # ghc = pkgs.buildPackages.pkgs.haskell-nix.compiler.${haskellCompiler};
+        modules = [
+          # Allow reinstallation of Win32
+          { nonReinstallablePkgs =
+            [ "rts" "ghc-heap" "ghc-prim" "integer-gmp" "integer-simple" "base"
+              "deepseq" "array" "ghc-boot-th" "pretty" "template-haskell"
+              # ghcjs custom packages
+              "ghcjs-prim" "ghcjs-th"
+              "ghc-boot"
+              "ghc" "array" "binary" "bytestring" "containers"
+              "filepath" "ghc-boot" "ghc-compact" "ghc-prim"
+              # "ghci" "haskeline"
+              "hpc"
+              "mtl" "parsec" "text" "transformers"
+              "xhtml"
+              # "stm" "terminfo"
+            ];
+          }
+          # haddocks are useless (lol);
+          # and broken for cross compilers!
+          { doHaddock = false; }
+          { compiler.nix-name = haskellCompiler; }
+          { packages.cardano-config.flags.systemd = false;
+            packages.cardano-node.flags.systemd = false; }
+          { packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
+            packages.unix-bytestring.patches = [ ./cardano-node-patches/unix-bytestring-0.3.7.3.patch ];
+            packages.plutus-core.patches = [ ./cardano-node-patches/plutus-core.patch ];
+            # packages.typerep-map.patches = [ ./cardano-node-patches/typerep-map-PR82.patch ];
+            # packages.streaming-bytestring.patches = [ ./cardano-node-patches/streaming-bytestring-0.1.6.patch ];
+            # packages.byron-spec-ledger.patches = [ ./cardano-node-patches/byron-ledger-spec-no-goblins.patch ];
+            packages.byron-spec-ledger.flags.goblins = false;
+            # this one will disable gitRev; which fails (due to a linker bug) for armv7
+            # packages.cardano-config.patches = [ ./cardano-node-patches/1036.patch ];
 
-  __cardano-node = (pkgs.haskell-nix.cabalProject {
-      compiler-nix-name = haskellCompiler;
-      # pkgs.haskell-nix.haskellLib.cleanGit { name = "cardano-node"; src = ... } <- this doesn't work with fetchgit results
-      src = cardano-node-src;
-      # ghc = pkgs.buildPackages.pkgs.haskell-nix.compiler.${haskellCompiler};
-      modules = [
-        # Allow reinstallation of Win32
-        { nonReinstallablePkgs =
-          [ "rts" "ghc-heap" "ghc-prim" "integer-gmp" "integer-simple" "base"
-            "deepseq" "array" "ghc-boot-th" "pretty" "template-haskell"
-            # ghcjs custom packages
-            "ghcjs-prim" "ghcjs-th"
-            "ghc-boot"
-            "ghc" "array" "binary" "bytestring" "containers"
-            "filepath" "ghc-boot" "ghc-compact" "ghc-prim"
-            # "ghci" "haskeline"
-            "hpc"
-            "mtl" "parsec" "text" "transformers"
-            "xhtml"
-            # "stm" "terminfo"
-          ];
-        }
-        # haddocks are useless (lol);
-        # and broken for cross compilers!
-        { doHaddock = false; }
-        { compiler.nix-name = haskellCompiler; }
-        { packages.cardano-config.flags.systemd = false;
-          packages.cardano-node.flags.systemd = false; }
-        { packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
-          packages.unix-bytestring.patches = [ ./cardano-node-patches/unix-bytestring-0.3.7.3.patch ];
-          packages.plutus-core.patches = [ ./cardano-node-patches/plutus-core.patch ];
-          # packages.typerep-map.patches = [ ./cardano-node-patches/typerep-map-PR82.patch ];
-          # packages.streaming-bytestring.patches = [ ./cardano-node-patches/streaming-bytestring-0.1.6.patch ];
-          # packages.byron-spec-ledger.patches = [ ./cardano-node-patches/byron-ledger-spec-no-goblins.patch ];
-          packages.byron-spec-ledger.flags.goblins = false;
-          # this one will disable gitRev; which fails (due to a linker bug) for armv7
-          # packages.cardano-config.patches = [ ./cardano-node-patches/1036.patch ];
+            # Disable cabal-doctest tests by turning off custom setups
+            packages.comonad.package.buildType = nativePkgs.lib.mkForce "Simple";
+            packages.distributive.package.buildType = nativePkgs.lib.mkForce "Simple";
+            packages.lens.package.buildType = nativePkgs.lib.mkForce "Simple";
+            packages.nonempty-vector.package.buildType = nativePkgs.lib.mkForce "Simple";
+            packages.semigroupoids.package.buildType = nativePkgs.lib.mkForce "Simple";
 
-          # Disable cabal-doctest tests by turning off custom setups
-          packages.comonad.package.buildType = nativePkgs.lib.mkForce "Simple";
-          packages.distributive.package.buildType = nativePkgs.lib.mkForce "Simple";
-          packages.lens.package.buildType = nativePkgs.lib.mkForce "Simple";
-          packages.nonempty-vector.package.buildType = nativePkgs.lib.mkForce "Simple";
-          packages.semigroupoids.package.buildType = nativePkgs.lib.mkForce "Simple";
+            # Remove hsc2hs build-tool dependencies (suitable version will be available as part of the ghc derivation)
+            packages.Win32.components.library.build-tools = nativePkgs.lib.mkForce [];
+            packages.terminal-size.components.library.build-tools = nativePkgs.lib.mkForce [];
+            packages.network.components.library.build-tools = nativePkgs.lib.mkForce [];
+          }
+        ];
+      });
 
-          # Remove hsc2hs build-tool dependencies (suitable version will be available as part of the ghc derivation)
-          packages.Win32.components.library.build-tools = nativePkgs.lib.mkForce [];
-          packages.terminal-size.components.library.build-tools = nativePkgs.lib.mkForce [];
-          packages.network.components.library.build-tools = nativePkgs.lib.mkForce [];
-        }
-      ];
-    });
+      # __cardano-rt-view = (pkgs.haskell-nix.cabalProject {
+      #   compiler-nix-name = haskellCompiler;
+      #   src = cardano-rt-view-src;
+      #   modules = [];
+      # });
 
-    # __cardano-rt-view = (pkgs.haskell-nix.cabalProject {
-    #   compiler-nix-name = haskellCompiler;
-    #   src = cardano-rt-view-src;
-    #   modules = [];
-    # });
+      # __wstunnel = (pkgs.haskell-nix.cabalProject {
+      #   compiler-nix-name = haskellCompiler;
+      #   src = wstunnel-src;
+      #   modules = [{ dontStrip = false; }];
+      # });
 
-    # __wstunnel = (pkgs.haskell-nix.cabalProject {
-    #   compiler-nix-name = haskellCompiler;
-    #   src = wstunnel-src;
-    #   modules = [{ dontStrip = false; }];
-    # });
+      inherit (__cardano-node.cardano-node.components.exes) cardano-node;
+      inherit (__cardano-node.cardano-cli.components.exes)  cardano-cli;
 
-    inherit (__cardano-node.cardano-node.components.exes) cardano-node;
-    inherit (__cardano-node.cardano-cli.components.exes)  cardano-cli;
+      # inherit (__cardano-rt-view.cardano-rt-view.components.exes) cardano-rt-view;
 
-    # inherit (__cardano-rt-view.cardano-rt-view.components.exes) cardano-rt-view;
+      # inherit (__wstunnel.wstunnel.components.exes) wstunnel;
 
-    # inherit (__wstunnel.wstunnel.components.exes) wstunnel;
+      # inherit (__ghcup.ghcup.components.exes) ghcup;
 
-    # inherit (__ghcup.ghcup.components.exes) ghcup;
+      # wstunnel-tarball = nativePkgs.stdenv.mkDerivation {
+      #   name = "${pkgs.stdenv.targetPlatform.config}-tarball";
+      #   buildInputs = with nativePkgs; [ patchelf zip ];
 
-    # wstunnel-tarball = nativePkgs.stdenv.mkDerivation {
-    #   name = "${pkgs.stdenv.targetPlatform.config}-tarball";
-    #   buildInputs = with nativePkgs; [ patchelf zip ];
+      #   phases = [ "buildPhase" "installPhase" ];
+      #   buildPhase = ''
+      #     mkdir -p wstunnel
+      #     cp ${wstunnel}/bin/*wstunnel* wstunnel/
+      #   '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && !pkgs.stdenv.targetPlatform.isMusl) ''
+      #     for bin in wstunnel/*; do
+      #       mode=$(stat -c%a $bin)
+      #       chmod +w $bin
+      #       patchelf --set-interpreter /lib/ld-linux-armhf.so.3 $bin
+      #       chmod $mode $bin
+      #     done
+      #   '';
+      #   installPhase = ''
+      #     mkdir -p $out/
+      #     zip -r -9 $out/${pkgs.stdenv.hostPlatform.config}-wstunnel-${wstunnel-info.rev or "unknown"}.zip wstunnel
+      #   '';
+      # };
 
-    #   phases = [ "buildPhase" "installPhase" ];
-    #   buildPhase = ''
-    #     mkdir -p wstunnel
-    #     cp ${wstunnel}/bin/*wstunnel* wstunnel/
-    #   '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && !pkgs.stdenv.targetPlatform.isMusl) ''
-    #     for bin in wstunnel/*; do
-    #       mode=$(stat -c%a $bin)
-    #       chmod +w $bin
-    #       patchelf --set-interpreter /lib/ld-linux-armhf.so.3 $bin
-    #       chmod $mode $bin
-    #     done
-    #   '';
-    #   installPhase = ''
-    #     mkdir -p $out/
-    #     zip -r -9 $out/${pkgs.stdenv.hostPlatform.config}-wstunnel-${wstunnel-info.rev or "unknown"}.zip wstunnel
-    #   '';
-    # };
+      # cncli = (pkgs.rust-nix.buildPackage {
+      #   root = ./cncli;
+      #   buildInputs = (with nativePkgs; [ autoconf m4 file ]) ++ (with pkgs; [ libsodium libsodium.dev ]);
+      #   # cargoOptions = (opts: opts ++ [ "--verbose" ]);
+      #   # cargoBuildOptions = (opts: opts ++ [ "-L ${pkgs.libsodium}/lib" ]);
+      #   override = x: x // {
+      #     NIX_LDFLAGS_BEFORE_x86_64_unknown_linux_musl = "-lgcc";
+      #     OPENSSL_INCLUDE_DIR = "${pkgs.pkgsStatic.openssl.dev}/include";
+      #     OPENSSL_LIB_DIR = "${pkgs.pkgsStatic.openssl.out}/lib";
+      #     SODIUM_LIB_DIR = "${pkgs.libsodium.out}/lib";
+      #     buildInputs = x.buildInputs ++ (with nativePkgs; [ autoconf m4 file ]) ++ (with pkgs.pkgsStatic; [ gmp gmp.dev mpfr mpfr.dev libmpc ]);
+      #   };
+      # }).overrideAttrs (oldAttrs: oldAttrs // { NIX_DEBUG=7; });
 
-    # cncli = (pkgs.rust-nix.buildPackage {
-    #   root = ./cncli;
-    #   buildInputs = (with nativePkgs; [ autoconf m4 file ]) ++ (with pkgs; [ libsodium libsodium.dev ]);
-    #   # cargoOptions = (opts: opts ++ [ "--verbose" ]);
-    #   # cargoBuildOptions = (opts: opts ++ [ "-L ${pkgs.libsodium}/lib" ]);
-    #   override = x: x // {
-    #     NIX_LDFLAGS_BEFORE_x86_64_unknown_linux_musl = "-lgcc";
-    #     OPENSSL_INCLUDE_DIR = "${pkgs.pkgsStatic.openssl.dev}/include";
-    #     OPENSSL_LIB_DIR = "${pkgs.pkgsStatic.openssl.out}/lib";
-    #     SODIUM_LIB_DIR = "${pkgs.libsodium.out}/lib";
-    #     buildInputs = x.buildInputs ++ (with nativePkgs; [ autoconf m4 file ]) ++ (with pkgs.pkgsStatic; [ gmp gmp.dev mpfr mpfr.dev libmpc ]);
-    #   };
-    # }).overrideAttrs (oldAttrs: oldAttrs // { NIX_DEBUG=7; });
+      tarball = nativePkgs.stdenv.mkDerivation {
+        name = "${pkgs.stdenv.targetPlatform.config}-tarball";
+        buildInputs = with nativePkgs; [ patchelf zip ];
 
-    tarball = nativePkgs.stdenv.mkDerivation {
-      name = "${pkgs.stdenv.targetPlatform.config}-tarball";
-      buildInputs = with nativePkgs; [ patchelf zip ];
+        phases = [ "buildPhase" "installPhase" ];
 
-      phases = [ "buildPhase" "installPhase" ];
+        buildPhase = ''
+          mkdir -p cardano-node
+          cp ${cardano-cli}/bin/*cardano-cli* cardano-node/
+          cp ${cardano-node.override { enableTSanRTS = false; }}/bin/*cardano-node* cardano-node/
+        '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && !pkgs.stdenv.targetPlatform.isMusl) ''
+          for bin in cardano-node/*; do
+            mode=$(stat -c%a $bin)
+            chmod +w $bin
+            patchelf --set-interpreter /lib/ld-linux-armhf.so.3 $bin
+            chmod $mode $bin
+          done
+        '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isWindows) ''
+          cp ${pkgs.libffi}/bin/*.dll cardano-node/
+        '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && !pkgs.stdenv.targetPlatform.isMusl) ''
+          cp ${pkgs.libffi}/lib/*.so* cardano-node/
+          cp ${pkgs.gmp}/lib/*.so* cardano-node/
+          cp ${pkgs.ncurses}/lib/*.so* cardano-node/
+          cp ${pkgs.zlib}/lib/*.so* cardano-node/
+          echo ${pkgs.stdenv.cc}/lib
+          ls cardano-node/
+        '';
+        installPhase = ''
+          mkdir -p $out/
+          zip -r -9 $out/${pkgs.stdenv.hostPlatform.config}-cardano-node-${cardano-node-info.rev or "unknown"}.zip cardano-node
 
-      buildPhase = ''
-        mkdir -p cardano-node
-        cp ${cardano-cli}/bin/*cardano-cli* cardano-node/
-        cp ${cardano-node.override { enableTSanRTS = false; }}/bin/*cardano-node* cardano-node/
-      '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && !pkgs.stdenv.targetPlatform.isMusl) ''
-        for bin in cardano-node/*; do
-          mode=$(stat -c%a $bin)
-          chmod +w $bin
-          patchelf --set-interpreter /lib/ld-linux-armhf.so.3 $bin
-          chmod $mode $bin
-        done
-      '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isWindows) ''
-        cp ${pkgs.libffi}/bin/*.dll cardano-node/
-      '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && !pkgs.stdenv.targetPlatform.isMusl) ''
-        cp ${pkgs.libffi}/lib/*.so* cardano-node/
-        cp ${pkgs.gmp}/lib/*.so* cardano-node/
-        cp ${pkgs.ncurses}/lib/*.so* cardano-node/
-        cp ${pkgs.zlib}/lib/*.so* cardano-node/
-        echo ${pkgs.stdenv.cc}/lib
-        ls cardano-node/
-      '';
-      installPhase = ''
-        mkdir -p $out/
-        zip -r -9 $out/${pkgs.stdenv.hostPlatform.config}-cardano-node-${cardano-node-info.rev or "unknown"}.zip cardano-node
-
-        mkdir -p $out/nix-support
-        echo "file binary-dist \"$(echo $out/*.zip)\"" \
-          > $out/nix-support/hydra-build-products
-      '';
-    };
+          mkdir -p $out/nix-support
+          echo "file binary-dist \"$(echo $out/*.zip)\"" \
+            > $out/nix-support/hydra-build-products
+        '';
+      };
+    }) { "alonzo-purple" = sources.cardano-node;
+         "mainnet" = sources.cardano-node-mainnet;
+      };
 
 }) toBuild

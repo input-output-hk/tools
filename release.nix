@@ -52,11 +52,16 @@ let
     # Note: we want to build the cross-compiler. As such we want something from the buildPackages!
     # "${mingwW64.config}-ghc864".x86_64-linux = x86_64-mingw32.pkgs.buildPackages.haskell.compiler.ghc864;
 
-    x86_64-unknown-linux-musl-cardano-node.tarball = arm-test.x86-musl64.tarball;
-    aarch64-unknown-linux-musl-cardano-node-musl.tarball = arm-test.rpi64-musl.tarball;
+    x86_64-unknown-linux-musl-cardano-node.tarball = arm-test.x86-musl64.cardano-node.mainnet.tarball;
+    aarch64-unknown-linux-musl-cardano-node-musl.tarball = arm-test.rpi64-musl.cardano-node.mainnet.tarball;
     # x86_64-windows-cardano-node.tarball = arm-test.x86-win64.tarball;
-    x86_64-apple-darwin-cardano-node.tarball = x86_64-darwin-arm-test.native.tarball;
+    x86_64-apple-darwin-cardano-node.tarball = x86_64-darwin-arm-test.native.cardano-node.mainnet.tarball;
     # aarch64-apple-darwin-cardano-node.tarball = aarch64-darwin-arm-test.native.tarball;
+
+    x86_64-unknown-linux-musl-cardano-node-alonzo-purple.tarball = arm-test.x86-musl64.cardano-node.alonzo-purple.tarball;
+    aarch64-unknown-linux-musl-cardano-node-alonzo-purple-musl.tarball = arm-test.rpi64-musl.cardano-node.alonzo-purple.tarball;
+    x86_64-apple-darwin-cardano-node-alonzo-purple.tarball = x86_64-darwin-arm-test.native.cardano-node.alonzo-purple.tarball;
+
   };
 in
   jobs

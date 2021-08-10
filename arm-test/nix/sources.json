@@ -12,6 +12,18 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "1.27.0"
     },
+    "cardano-node-mainnet": {
+        "branch": "master",
+        "description": "The core component that is used to participate in a Cardano decentralised blockchain.",
+        "homepage": "https://cardano.org",
+        "owner": "input-output-hk",
+        "repo": "cardano-node",
+        "rev": "1.28.0",
+        "sha256": "0arhmmxb86ggfc73rbyz1fj43glj9z2f8w5416cix2wxkvlm8bys",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/1.28.0.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "haskell.nix": {
         "branch": "master",
         "description": "Alternative Haskell Infrastructure for Nixpkgs",
