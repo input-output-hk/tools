@@ -114,6 +114,11 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
   cardano-node = nativePkgs.lib.mapAttrs (_: cardano-node-info:
     let cardano-node-src = cardano-node-info; in rec {
     __cardano-node = (pkgs.haskell-nix.cabalProject {
+        cabalProjectLocal  =  pkgs.lib.optionalString (pkgs.stdenv.targetPlatform != pkgs.stdenv.buildPlatform) ''
+    -- When cross compiling we don't have a `ghc` package
+    package plutus-tx-plugin
+      flags: +use-ghc-stub
+    '';
         compiler-nix-name = haskellCompiler;
         # pkgs.haskell-nix.haskellLib.cleanGit { name = "cardano-node"; src = ... } <- this doesn't work with fetchgit results
         src = cardano-node-src;
