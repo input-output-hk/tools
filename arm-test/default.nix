@@ -19,7 +19,7 @@ in
     ;
     inherit system;
     })
-, haskellCompiler ? "ghc8104"
+, haskellCompiler ? "ghc8107"
 , cardano-node-info ? sources.cardano-node
 , cardano-node-src ? cardano-node-info
 # , cardano-rt-view-json
