@@ -5,7 +5,7 @@ let
   # haskell.nix provides access to the nixpkgs pins which are used by our CI, hence
   # you will be more likely to get cache hits when using these.
   # But you can also just use your own, e.g. '<nixpkgs>'
-  nixpkgsSrc = haskellNix.sources.nixpkgs-2111;
+  nixpkgsSrc = haskellNix.sources.nixpkgs-2105;
   #nixpkgsSrc = sources.nixpkgs-m1; #haskellNix.sources.nixpkgs-2009; #sources.nixpkgs; #
   # haskell.nix provides some arguments to be passed to nixpkgs, including some patches
   # and also the haskell.nix functionality itself as an overlay.
