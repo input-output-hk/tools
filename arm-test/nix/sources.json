@@ -60,6 +60,18 @@
         "url": "https://github.com/NixOS/nixpkgs/archive/870dbb751f4d851a3dfb554835a0c2f528386982.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "nixpkgs-2111-patched": {
+        "branch": "patch-1",
+        "description": "Nix Packages collection",
+        "homepage": null,
+        "owner": "angerman",
+        "repo": "nixpkgs",
+        "rev": "0cddd4485bfb446a16066fc4219b38480c778a95",
+        "sha256": "103jwq7pvah6i2bmawqzpsgykw0mgdjs1i59686i9zwxb4yzczb3",
+        "type": "tarball",
+        "url": "https://github.com/angerman/nixpkgs/archive/0cddd4485bfb446a16066fc4219b38480c778a95.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "nixpkgs-m1": {
         "branch": "apple-silicon",
         "description": "Nix Packages collection",
