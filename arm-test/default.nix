@@ -16,6 +16,9 @@ in
     # [ (import ./rust.nix)] ++
     nixpkgsArgs.overlays ++
     [(final: prev: { libsodium = final.callPackage ./libsodium.nix {}; })]
+    [(final: prev: { llvmPackages_13.compiler-rt-libc = prev.llvmPackages_13.compiler-rt-libc.overrideAttrs (old: {
+      cmakeFlags = with old.stdenv.hostPlatform; old.cmakeFlags ++ if isMusl && isAarch64 then [ "-DCOMPILER_RT_BUILD_MEMPROF=OFF" ] else [];
+    }); })]
     ;
     inherit system;
     })
