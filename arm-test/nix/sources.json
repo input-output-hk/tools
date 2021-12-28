@@ -30,10 +30,10 @@
         "homepage": "https://input-output-hk.github.io/haskell.nix",
         "owner": "input-output-hk",
         "repo": "haskell.nix",
-        "rev": "8d13ab246aa1f795124c081bc306a5e811eac0a6",
-        "sha256": "0z0y5pbd3bpa9f07n78s33sfyxfh9ijkyh96rml92w18dmr5bjmx",
+        "rev": "cecbf86b19715382ffa862cf0549ce9d27697401",
+        "sha256": "0v6csccncifj20d3f1vkd1ny6h64wcgbix4mkhzyr9hdhj8azf6m",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/haskell.nix/archive/8d13ab246aa1f795124c081bc306a5e811eac0a6.tar.gz",
+        "url": "https://github.com/input-output-hk/haskell.nix/archive/cecbf86b19715382ffa862cf0549ce9d27697401.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
@@ -42,10 +42,10 @@
         "homepage": "https://github.com/nmattia/niv",
         "owner": "nmattia",
         "repo": "niv",
-        "rev": "af958e8057f345ee1aca714c1247ef3ba1c15f5e",
-        "sha256": "1qjavxabbrsh73yck5dcq8jggvh3r2jkbr6b5nlz5d9yrqm9255n",
+        "rev": "5830a4dd348d77e39a0f3c4c762ff2663b602d4c",
+        "sha256": "1d3lsrqvci4qz2hwjrcnd8h5vfkg8aypq3sjd4g3izbc8frwz5sm",
         "type": "tarball",
-        "url": "https://github.com/nmattia/niv/archive/af958e8057f345ee1aca714c1247ef3ba1c15f5e.tar.gz",
+        "url": "https://github.com/nmattia/niv/archive/5830a4dd348d77e39a0f3c4c762ff2663b602d4c.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {
@@ -66,10 +66,10 @@
         "homepage": null,
         "owner": "angerman",
         "repo": "nixpkgs",
-        "rev": "0cddd4485bfb446a16066fc4219b38480c778a95",
-        "sha256": "103jwq7pvah6i2bmawqzpsgykw0mgdjs1i59686i9zwxb4yzczb3",
+        "rev": "c90f5f79200b48acd0a81eadfe5a3844f4afc92e",
+        "sha256": "1l34419sa15dljj7ika8f9i9dxn40sri1hb73grx5cid4xn15yiy",
         "type": "tarball",
-        "url": "https://github.com/angerman/nixpkgs/archive/0cddd4485bfb446a16066fc4219b38480c778a95.tar.gz",
+        "url": "https://github.com/angerman/nixpkgs/archive/c90f5f79200b48acd0a81eadfe5a3844f4afc92e.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs-m1": {
@@ -78,10 +78,10 @@
         "homepage": null,
         "owner": "thefloweringash",
         "repo": "nixpkgs",
-        "rev": "abe9007e043ee5f3722e256c9a8e991ce39cb693",
-        "sha256": "1s9jnyiyfvrqxrb4pisbg924hmjkv98hcc4hk0pivi24k63dkdsa",
+        "rev": "56fcbcd1543188fcc855df7e79fee0a8df259681",
+        "sha256": "0n249ix2vwvv85157drv3myv7adc3c7364i8jm8k5ikrchcd78zr",
         "type": "tarball",
-        "url": "https://github.com/thefloweringash/nixpkgs/archive/abe9007e043ee5f3722e256c9a8e991ce39cb693.tar.gz",
+        "url": "https://github.com/thefloweringash/nixpkgs/archive/56fcbcd1543188fcc855df7e79fee0a8df259681.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "rust.nix": {
@@ -90,10 +90,10 @@
         "homepage": "",
         "owner": "input-output-hk",
         "repo": "rust.nix",
-        "rev": "6959812b844b1cb98dc61fe1cbc8a83fd761cc8c",
-        "sha256": "1qhnzqp1d0zs2f9vkbscccmzyhh4nkq902xzvsphfgv15ismjk54",
+        "rev": "69a1b038ae9e247a5d8066762552eb11ed26ed4a",
+        "sha256": "1cna8aa5fygcd7hgnvfqkymj2iaw334khli4snir3m7qb2lz0j2n",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/rust.nix/archive/6959812b844b1cb98dc61fe1cbc8a83fd761cc8c.tar.gz",
+        "url": "https://github.com/input-output-hk/rust.nix/archive/69a1b038ae9e247a5d8066762552eb11ed26ed4a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
