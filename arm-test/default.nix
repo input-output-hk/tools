@@ -165,7 +165,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             #    |
             # 33 |         fromGit = T.strip (T.pack $(gitRevFromGit))
             #    |                   
-            poackage.cardano-config.patches = [ ./cardano-node-patches/cardano-config-no-git-rev.patch ];
+            packages.cardano-config.patches = [ ./cardano-node-patches/cardano-config-no-git-rev.patch ];
             # packages.typerep-map.patches = [ ./cardano-node-patches/typerep-map-PR82.patch ];
             # packages.streaming-bytestring.patches = [ ./cardano-node-patches/streaming-bytestring-0.1.6.patch ];
             # packages.byron-spec-ledger.patches = [ ./cardano-node-patches/byron-ledger-spec-no-goblins.patch ];
