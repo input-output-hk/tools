@@ -7,7 +7,7 @@ index 02ced07..b6c60ef 100644
          -- Git revision found during compilation by running git. If
          -- git could not be run, then this will be empty.
 -#if defined(arm_HOST_ARCH)
-+#if defined(arm_HOST_ARCH) || defined(aarch64_HOST_ARCH)
++#if defined(arm_HOST_ARCH) || defined(aarch64_HOST_ARCH) || defined(darwin_HOST_OS)
          -- cross compiling to arm fails; due to a linker bug
          fromGit = ""
  #else
