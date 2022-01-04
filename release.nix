@@ -62,6 +62,7 @@ let
     aarch64-unknown-linux-musl-cardano-node-alonzo-purple-musl.tarball = arm-test.rpi64-musl.cardano-node.alonzo-purple.tarball;
     x86_64-apple-darwin-cardano-node-alonzo-purple.tarball = x86_64-darwin-arm-test.native.cardano-node.alonzo-purple.tarball;
 
+    aarch64-unknown-linux-musl-cardano-wallet-musl = arm-test.rpi64-musl.cardano-wallet.mainnet;
   };
 in
   jobs
