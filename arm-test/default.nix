@@ -28,6 +28,7 @@ in
 , haskellCompiler ? "ghc8107"
 , cardano-node-info ? sources.cardano-node
 , cardano-node-src ? cardano-node-info
+, cardano-wallet-src ? sources.cardano-wallet
 # , cardano-rt-view-json
 # , cardano-rt-view-info ? __fromJSON (__readFile cardano-rt-view-json)
 # , cardano-rt-view-src ? nativePkgs.fetchgit (removeAttrs cardano-rt-view-info [ "date" ])
