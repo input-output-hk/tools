@@ -187,6 +187,28 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           }
         ];
       });
+      __cardano-wallet = (pkgs.haskell-nix.cabalProject {
+        compiler-nix-name = haskellCompiler;
+        src = cardano-wallet-src;
+        modules = [
+          { doHaddock = false; }
+          {
+            # Disable cabal-doctest tests by turning off custom setups
+            packages.comonad.package.buildType = nativePkgs.lib.mkForce "Simple";
+            packages.distributive.package.buildType = nativePkgs.lib.mkForce "Simple";
+            packages.lens.package.buildType = nativePkgs.lib.mkForce "Simple";
+            packages.nonempty-vector.package.buildType = nativePkgs.lib.mkForce "Simple";
+            packages.semigroupoids.package.buildType = nativePkgs.lib.mkForce "Simple";
+
+            # Remove hsc2hs build-tool dependencies (suitable version will be available as part of the ghc derivation)
+            packages.Win32.components.library.build-tools = nativePkgs.lib.mkForce [];
+            packages.terminal-size.components.library.build-tools = nativePkgs.lib.mkForce [];
+            packages.network.components.library.build-tools = nativePkgs.lib.mkForce [];
+          }
+        ];
+      });
+
+      inherit (__cardano-wallet.cardano-wallet.components.exes) cardano-wallet;
 
       # __cardano-rt-view = (pkgs.haskell-nix.cabalProject {
       #   compiler-nix-name = haskellCompiler;
