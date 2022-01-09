@@ -165,7 +165,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             #     • In the untyped splice: $(gitRevFromGit)
             #    |
             # 33 |         fromGit = T.strip (T.pack $(gitRevFromGit))
-            #    |                   
+            #    |
             packages.cardano-config.patches = [ ./cardano-node-patches/cardano-config-no-git-rev.patch ];
             # packages.typerep-map.patches = [ ./cardano-node-patches/typerep-map-PR82.patch ];
             # packages.streaming-bytestring.patches = [ ./cardano-node-patches/streaming-bytestring-0.1.6.patch ];
@@ -189,10 +189,39 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
         ];
       });
       __cardano-wallet = (pkgs.haskell-nix.cabalProject {
+        cabalProjectLocal  =  pkgs.lib.optionalString (pkgs.stdenv.targetPlatform != pkgs.stdenv.buildPlatform) ''
+    -- When cross compiling we don't have a `ghc` package
+    package plutus-tx-plugin
+      flags: +use-ghc-stub
+    '';
         compiler-nix-name = haskellCompiler;
         src = cardano-wallet-src;
         modules = [
+          # Allow reinstallation of Win32
+          { nonReinstallablePkgs =
+            [ "rts" "ghc-heap" "ghc-prim" "integer-gmp" "integer-simple" "base"
+              "deepseq" "array" "ghc-boot-th" "pretty" "template-haskell"
+              # ghcjs custom packages
+              "ghcjs-prim" "ghcjs-th"
+              "ghc-boot"
+              "ghc" "array" "binary" "bytestring" "containers"
+              "filepath" "ghc-boot" "ghc-compact" "ghc-prim"
+              # "ghci" "haskeline"
+              "hpc"
+              "mtl" "parsec" "text" "transformers"
+              "xhtml"
+              # "stm" "terminfo"
+            ];
+          }
           { doHaddock = false; }
+          { compiler.nix-name = haskellCompiler; }
+          { packages.cardano-config.flags.systemd = false;
+            packages.cardano-node.flags.systemd = false; }
+          { packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
+            packages.unix-bytestring.patches = [ ./cardano-node-patches/unix-bytestring-0.3.7.3.patch ];
+            packages.plutus-core.patches = [ ./cardano-node-patches/plutus-core.patch ];
+            packages.scrypt.patches = [ ./cardano-wallet-patches/scrypt-0.5.0.patch ];
+          }
           {
             # Disable cabal-doctest tests by turning off custom setups
             packages.comonad.package.buildType = nativePkgs.lib.mkForce "Simple";
@@ -304,8 +333,6 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             > $out/nix-support/hydra-build-products
         '';
       };
-    }) { "alonzo-purple" = sources.cardano-node;
-         "mainnet" = sources.cardano-node-mainnet;
-      };
+    }) { "mainnet" = sources.cardano-node-mainnet; };
 
 }) toBuild

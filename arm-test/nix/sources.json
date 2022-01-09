@@ -1,17 +1,4 @@
 {
-    "cardano-node": {
-        "branch": "master",
-        "description": "The core component that is used to participate in a Cardano decentralised blockchain.",
-        "homepage": "https://cardano.org",
-        "owner": "input-output-hk",
-        "repo": "cardano-node",
-        "rev": "alonzo-purple-1.0.1",
-        "sha256": "0147jsz1rywma71vq5yqswr3gwv9vrndf73b989dwxcn4zn92iwv",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/alonzo-purple-1.0.1.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
-        "version": "1.27.0"
-    },
     "cardano-node-mainnet": {
         "branch": "master",
         "description": "The core component that is used to participate in a Cardano decentralised blockchain.",
