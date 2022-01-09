@@ -52,6 +52,8 @@ let toBuild = with nativePkgs.pkgsCross; {
                   // { config = "armv7l-unknown-linux-musleabihf"; }; });
   rpi64-gnu = aarch64-multiplatform;
   rpi64-musl = aarch64-multiplatform-musl;
+
+  inherit ghcjs aarch64-android;
 }; in
 # 'cabalProject' generates a package set based on a cabal.project (and the corresponding .cabal files)
 nativePkgs.lib.mapAttrs (_: pkgs: rec {
@@ -93,31 +95,6 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
       ];
     }).components.exes.cabal;
 
-  # __ghcup = (pkgs.haskell-nix.cabalProject {
-  #     compiler-nix-name = haskellCompiler;
-  #     src = ghcup-src;
-
-
-  #     configureArgs = "--disable-tests";
-
-  #     modules = [
-  #       { doHaddock = false; }
-  #     ];
-  # });
-
-
-  # __cardano-db-sync = (pkgs.haskell-nix.cabalProject {
-  #     compiler-nix-name = haskellCompiler;
-  #     # pkgs.haskell-nix.haskellLib.cleanGit { name = "cardano-node"; src = ... } <- this doesn't work with fetchgit results
-  #     src = ./cardano-db-sync;
-  #     modules = [
-  #       { doHaddock = false; }
-  #       { compiler.nix-name = haskellCompiler; }
-  #       { packages.cardano-config.flags.systemd = false;
-  #         packages.cardano-node.flags.systemd = false; }
-
-  #     ];
-  # });
   cardano-node = nativePkgs.lib.mapAttrs (_: cardano-node-info:
     let cardano-node-src = cardano-node-info; in rec {
     __cardano-node = (pkgs.haskell-nix.cabalProject {
@@ -239,63 +216,8 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
       });
 
       inherit (__cardano-wallet.cardano-wallet.components.exes) cardano-wallet;
-
-      # __cardano-rt-view = (pkgs.haskell-nix.cabalProject {
-      #   compiler-nix-name = haskellCompiler;
-      #   src = cardano-rt-view-src;
-      #   modules = [];
-      # });
-
-      # __wstunnel = (pkgs.haskell-nix.cabalProject {
-      #   compiler-nix-name = haskellCompiler;
-      #   src = wstunnel-src;
-      #   modules = [{ dontStrip = false; }];
-      # });
-
       inherit (__cardano-node.cardano-node.components.exes) cardano-node;
       inherit (__cardano-node.cardano-cli.components.exes)  cardano-cli;
-
-      # inherit (__cardano-rt-view.cardano-rt-view.components.exes) cardano-rt-view;
-
-      # inherit (__wstunnel.wstunnel.components.exes) wstunnel;
-
-      # inherit (__ghcup.ghcup.components.exes) ghcup;
-
-      # wstunnel-tarball = nativePkgs.stdenv.mkDerivation {
-      #   name = "${pkgs.stdenv.targetPlatform.config}-tarball";
-      #   buildInputs = with nativePkgs; [ patchelf zip ];
-
-      #   phases = [ "buildPhase" "installPhase" ];
-      #   buildPhase = ''
-      #     mkdir -p wstunnel
-      #     cp ${wstunnel}/bin/*wstunnel* wstunnel/
-      #   '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && !pkgs.stdenv.targetPlatform.isMusl) ''
-      #     for bin in wstunnel/*; do
-      #       mode=$(stat -c%a $bin)
-      #       chmod +w $bin
-      #       patchelf --set-interpreter /lib/ld-linux-armhf.so.3 $bin
-      #       chmod $mode $bin
-      #     done
-      #   '';
-      #   installPhase = ''
-      #     mkdir -p $out/
-      #     zip -r -9 $out/${pkgs.stdenv.hostPlatform.config}-wstunnel-${wstunnel-info.rev or "unknown"}.zip wstunnel
-      #   '';
-      # };
-
-      # cncli = (pkgs.rust-nix.buildPackage {
-      #   root = ./cncli;
-      #   buildInputs = (with nativePkgs; [ autoconf m4 file ]) ++ (with pkgs; [ libsodium libsodium.dev ]);
-      #   # cargoOptions = (opts: opts ++ [ "--verbose" ]);
-      #   # cargoBuildOptions = (opts: opts ++ [ "-L ${pkgs.libsodium}/lib" ]);
-      #   override = x: x // {
-      #     NIX_LDFLAGS_BEFORE_x86_64_unknown_linux_musl = "-lgcc";
-      #     OPENSSL_INCLUDE_DIR = "${pkgs.pkgsStatic.openssl.dev}/include";
-      #     OPENSSL_LIB_DIR = "${pkgs.pkgsStatic.openssl.out}/lib";
-      #     SODIUM_LIB_DIR = "${pkgs.libsodium.out}/lib";
-      #     buildInputs = x.buildInputs ++ (with nativePkgs; [ autoconf m4 file ]) ++ (with pkgs.pkgsStatic; [ gmp gmp.dev mpfr mpfr.dev libmpc ]);
-      #   };
-      # }).overrideAttrs (oldAttrs: oldAttrs // { NIX_DEBUG=7; });
 
       tarball = nativePkgs.stdenv.mkDerivation {
         name = "${pkgs.stdenv.targetPlatform.config}-tarball";
