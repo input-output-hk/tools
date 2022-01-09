@@ -65,10 +65,10 @@
         "homepage": null,
         "owner": "angerman",
         "repo": "nixpkgs",
-        "rev": "c90f5f79200b48acd0a81eadfe5a3844f4afc92e",
-        "sha256": "1l34419sa15dljj7ika8f9i9dxn40sri1hb73grx5cid4xn15yiy",
+        "rev": "7b049e87e9b371f9ea6648aa8f1f2d17b2e31ae5",
+        "sha256": "07wmyqlspkpmirzb6vgsyqzjq4lpmgxiq6wkmhz8lj2x5b2za3bc",
         "type": "tarball",
-        "url": "https://github.com/angerman/nixpkgs/archive/c90f5f79200b48acd0a81eadfe5a3844f4afc92e.tar.gz",
+        "url": "https://github.com/angerman/nixpkgs/archive/7b049e87e9b371f9ea6648aa8f1f2d17b2e31ae5.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs-m1": {
