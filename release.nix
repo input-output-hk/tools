@@ -52,19 +52,19 @@ let
     # Note: we want to build the cross-compiler. As such we want something from the buildPackages!
     # "${mingwW64.config}-ghc864".x86_64-linux = x86_64-mingw32.pkgs.buildPackages.haskell.compiler.ghc864;
 
-    amd64-linux-musl-cardano-node.tarball      = arm-test.x86-musl64.cardano-node.mainnet.tarball;
-    amd64-windows-cardano-node.tarball         = arm-test.x86-win64.tarball;
-    amd64-apple-darwin-cardano-node.tarball    = x86_64-darwin-arm-test.native.cardano-node.mainnet.tarball;
+    cardano-node.x86_64-linux-gnu          = arm-test.native.cardano-node.mainnet.tarball;
+    cardano-node.x86_64-apple-darwin       = x86_64-darwin-arm-test.native.cardano-node.mainnet.tarball;
+    cardano-node.aarch64-apple-darwin      = aarch64-darwin-arm-test.native.cardano-node.mainnet.tarball;
 
-    arm64-linux-musl-cardano-node-musl.tarball = arm-test.rpi64-musl.cardano-node.mainnet.tarball;
-    arm64-apple-darwin-cardano-node.tarball    = aarch64-darwin-arm-test.native.cardano-node.mainnet.tarball;
+    cardano-node.x86_64-linux-musl         = arm-test.x86-musl64.cardano-node.mainnet.tarball;
+    cardano-node.x86_64-windows            = arm-test.x86-win64.cardano-node.mainnet.tarball;
 
-    js-ghcjs-cardano-node.tarball              = arm-test.ghcjs.cardano-node.mainnet.tarball;
+    cardano-node.aarch64-linux-musl        = arm-test.rpi64-musl.cardano-node.mainnet.tarball;
 
-    arm64-android-cardano-node.tarball         = arm-test.aarch64-android.cardano-node.mainnet.tarball;
+    cardano-node.js-ghcjs                  = arm-test.ghcjs.cardano-node.mainnet.tarball;
+    cardano-node.aarch64-android           = arm-test.aarch64-android.cardano-node.mainnet.tarball;
 
-
-    aarch64-unknown-linux-musl-cardano-wallet-musl = arm-test.rpi64-musl.cardano-node.mainnet.cardano-wallet;
+    cardano-wallet-musl.aarch64-linux-musl = arm-test.rpi64-musl.cardano-node.mainnet.cardano-wallet;
   };
 in
   jobs

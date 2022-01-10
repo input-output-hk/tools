@@ -229,7 +229,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           mkdir -p cardano-node
           cp ${cardano-cli}/bin/*cardano-cli* cardano-node/
           cp ${cardano-node.override { enableTSanRTS = false; }}/bin/*cardano-node* cardano-node/
-        '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && !pkgs.stdenv.targetPlatform.isMusl) ''
+        '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && pkgs.stdenv.targetPlatform.isGnu) ''
           for bin in cardano-node/*; do
             mode=$(stat -c%a $bin)
             chmod +w $bin
@@ -238,7 +238,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           done
         '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isWindows) ''
           cp ${pkgs.libffi}/bin/*.dll cardano-node/
-        '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && !pkgs.stdenv.targetPlatform.isMusl) ''
+        '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && pkgs.stdenv.targetPlatform.isGnu) ''
           cp ${pkgs.libffi}/lib/*.so* cardano-node/
           cp ${pkgs.gmp}/lib/*.so* cardano-node/
           cp ${pkgs.ncurses}/lib/*.so* cardano-node/
