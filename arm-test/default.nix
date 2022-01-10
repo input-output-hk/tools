@@ -16,7 +16,7 @@ in
     # [ (import ./rust.nix)] ++
     nixpkgsArgs.overlays ++
     [
-      (final: prev: { libsodium = final.callPackage ./libsodium.nix {}; })
+      (final: prev: { libsodium-vrf = final.callPackage ./libsodium.nix {}; })
       (final: prev: { llvmPackages_13 = prev.llvmPackages_13 // {
           compiler-rt-libc = prev.llvmPackages_13.compiler-rt-libc.overrideAttrs (old: {
             cmakeFlags = with old.stdenv.hostPlatform; old.cmakeFlags ++ [ "-DCOMPILER_RT_BUILD_MEMPROF=OFF" ];
@@ -163,6 +163,58 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             packages.terminal-size.components.library.build-tools = nativePkgs.lib.mkForce [];
             packages.network.components.library.build-tools = nativePkgs.lib.mkForce [];
           }
+          ({ pkgs, ... }: lib.mkIf (!pkgs.stdenv.hostPlatform.isGhcjs) {
+            packages = {
+              # See https://github.com/input-output-hk/iohk-nix/pull/488
+              cardano-crypto-praos.components.library.pkgconfig = lib.mkForce [ [ libsodium-vrf ] ];
+              cardano-crypto-class.components.library.pkgconfig = lib.mkForce [ [ libsodium-vrf ] ];
+            };
+          })
+          ({ pkgs, lib, ... }: lib.mkIf (pkgs.stdenv.hostPlatform.isGhcjs) {
+            packages =
+              let libsodium-vrf = pkgs.libsodium-vrf.overrideAttrs (attrs: {
+                    nativeBuildInputs = attrs.nativeBuildInputs or [ ] ++ (with pkgs.buildPackages.buildPackages; [ emscripten python2 ]);
+                    prePatch = ''
+                      export HOME=$(mktemp -d)
+                      export PYTHON=${pkgs.buildPackages.buildPackages.python2}/bin/python
+                    '' + attrs.prePatch or "";
+                    configurePhase = ''
+                      emconfigure ./configure --prefix=$out --enable-minimal --disable-shared --without-pthreads --disable-ssp --disable-asm --disable-pie CFLAGS=-Os
+                    '';
+                    CC = "emcc";
+                  });
+                  emzlib = pkgs.zlib.overrideAttrs (attrs: {
+                    # makeFlags in nixpks zlib derivation depends on stdenv.cc.targetPrefix, which we don't have :(
+                    prePatch = ''
+                      export HOME=$(mktemp -d)
+                      export PYTHON=${pkgs.buildPackages.buildPackages.python2}/bin/python
+                    '' + attrs.prePatch or "";
+                    makeFlags = "PREFIX=js-unknown-ghcjs-";
+                    # We need the same patching as macOS
+                    postPatch = ''
+                      substituteInPlace configure \
+                        --replace '/usr/bin/libtool' 'emar' \
+                        --replace 'AR="libtool"' 'AR="emar"' \
+                        --replace 'ARFLAGS="-o"' 'ARFLAGS="-r"'
+                    '';
+                    configurePhase = ''
+                      emconfigure ./configure --prefix=$out --static
+                    '';
+
+                    nativeBuildInputs = (attrs.nativeBuildInputs or [ ]) ++ (with pkgs.buildPackages.buildPackages; [ emscripten python2 ]);
+
+                    CC = "emcc";
+                    AR = "emar";
+
+                    # prevent it from passing `-lc`, which emcc doesn't like.
+                    LDSHAREDLIBC = "";
+                  });
+              in {
+                cardano-crypto-praos.components.library.pkgconfig = lib.mkForce [ [ libsodium-vrf ] ];
+                cardano-crypto-class.components.library.pkgconfig = lib.mkForce [ [ libsodium-vrf ] ];
+                digest.components.library.libs = lib.mkForce [ emzlib.static emzlib ];
+              };
+          })
         ];
       });
       __cardano-wallet = (pkgs.haskell-nix.cabalProject {
