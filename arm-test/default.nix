@@ -166,8 +166,8 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           ({ pkgs, lib, ... }: lib.mkIf (!pkgs.stdenv.hostPlatform.isGhcjs) {
             packages = {
               # See https://github.com/input-output-hk/iohk-nix/pull/488
-              cardano-crypto-praos.components.library.pkgconfig = lib.mkForce [ [ libsodium-vrf ] ];
-              cardano-crypto-class.components.library.pkgconfig = lib.mkForce [ [ libsodium-vrf ] ];
+              cardano-crypto-praos.components.library.pkgconfig = lib.mkForce [ [ pkgs.libsodium-vrf ] ];
+              cardano-crypto-class.components.library.pkgconfig = lib.mkForce [ [ pkgs.libsodium-vrf ] ];
             };
           })
           ({ pkgs, lib, ... }: lib.mkIf (pkgs.stdenv.hostPlatform.isGhcjs) {
