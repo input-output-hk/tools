@@ -167,6 +167,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             packages.iohk-monitoring.patches = [ ./cardano-node-patches/iohk-monitoring-framework-625.diff ];
             # android default inlining threshold seems to be too high for closure_sizeW to be inlined properly.
             packages.cardano-prelude.ghcOptions = [ "-optc=-mllvm" "-optc-inlinehint-threshold=500" ];
+            packages.cardano-node.ghcOptions = [ "-optc=-fPIE" "-fPIE" ];
           })
           ({ pkgs, lib, ... }: lib.mkIf (!pkgs.stdenv.hostPlatform.isGhcjs) {
             packages = {
