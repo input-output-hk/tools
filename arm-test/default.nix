@@ -221,6 +221,10 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
                 digest.components.library.libs = lib.mkForce [ emzlib.static emzlib ];
               };
           })
+          # {
+          #   packages.cardano-node-capi.components.library = {
+          #   };
+          # }
         ];
       });
       __cardano-wallet = (pkgs.haskell-nix.cabalProject {
@@ -270,8 +274,13 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             packages.terminal-size.components.library.build-tools = nativePkgs.lib.mkForce [];
             packages.network.components.library.build-tools = nativePkgs.lib.mkForce [];
           }
-          {
-            packages.cardano-node-capi.components.library = {
+        ];
+      });
+
+      inherit (__cardano-wallet.cardano-wallet.components.exes) cardano-wallet;
+      inherit (__cardano-node.cardano-node.components.exes) cardano-node;
+      inherit (__cardano-node.cardano-cli.components.exes)  cardano-cli;
+      cardano-node-capi = __cardano-node.cardano-node-capi.components.library.override {
               ghcOptions = [ "-staticlib" ];
               postInstall = ''
                 ${nativePkgs.tree}/bin/tree $out
@@ -293,15 +302,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
                 echo "file binary-dist \"$(echo $out/*.zip)\"" \
                     > $out/nix-support/hydra-build-products
               '';
-            };
-          }
-        ];
-      });
-
-      inherit (__cardano-wallet.cardano-wallet.components.exes) cardano-wallet;
-      inherit (__cardano-node.cardano-node.components.exes) cardano-node;
-      inherit (__cardano-node.cardano-cli.components.exes)  cardano-cli;
-      cardano-node-capi = __cardano-node.cardano-node-capi.components.library;
+      };
 
       tarball = nativePkgs.stdenv.mkDerivation {
         name = "${pkgs.stdenv.targetPlatform.config}-tarball";
