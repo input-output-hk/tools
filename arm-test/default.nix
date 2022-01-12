@@ -294,8 +294,8 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
                 find ${pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; })}/lib -name "*.a" -exec cp {} $out/_pkg \;
                 find ${pkgs.gmp6.override { withStatic = true; }}/lib -name "*.a" -exec cp {} $out/_pkg \;
 
-                ${pkgs.tree}/bin/tree $out/_pkg
-                (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
+                ${nativePkgs.tree}/bin/tree $out/_pkg
+                (cd $out/_pkg; ${nativePkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
                 rm -fR $out/_pkg
 
                 mkdir -p $out/nix-support
