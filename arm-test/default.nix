@@ -281,6 +281,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
       inherit (__cardano-node.cardano-node.components.exes) cardano-node;
       inherit (__cardano-node.cardano-cli.components.exes)  cardano-cli;
       cardano-node-capi = __cardano-node.cardano-node-capi.components.library.override {
+              smallAddressSpace = true; enableShared = false;
               ghcOptions = [ "-staticlib" ];
               postInstall = ''
                 ${nativePkgs.tree}/bin/tree $out
