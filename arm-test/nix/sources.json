@@ -1,14 +1,14 @@
 {
     "cardano-node-mainnet": {
-        "branch": "master",
+        "branch": "angerman/node-capi",
         "description": "The core component that is used to participate in a Cardano decentralised blockchain.",
         "homepage": "https://cardano.org",
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "1.33.0",
-        "sha256": "1hr00wqzmcyc3x0kp2hyw78rfmimf6z4zd4vv85b9zv3nqbjgrik",
+        "rev": "c930c107c3acef4f1bd06bf83d8dacd7ebf6379a",
+        "sha256": "0aqp5v1pj6zim74ymcsb0sy2n7xh4hkwx96arn5gpkjwrnq36l5c",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/1.33.0.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/c930c107c3acef4f1bd06bf83d8dacd7ebf6379a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {

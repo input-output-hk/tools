@@ -63,6 +63,7 @@ let
 
     cardano-node.js-ghcjs                  = arm-test.ghcjs.cardano-node.mainnet.tarball;
     cardano-node.aarch64-android           = arm-test.aarch64-android.cardano-node.mainnet.tarball;
+    cardano-node-capi.aarch64-android           = arm-test.aarch64-android.cardano-node.mainnet.cardano-node-capi;
 
     cardano-wallet-musl.aarch64-linux-musl = arm-test.rpi64-musl.cardano-node.mainnet.cardano-wallet;
   };
