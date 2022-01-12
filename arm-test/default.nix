@@ -271,7 +271,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             packages.network.components.library.build-tools = nativePkgs.lib.mkForce [];
           }
           {
-            packages.cardano-node-capi = {
+            packages.cardano-node-capi.components.library = {
               ghcOptions = [ "-staticlib" ];
               postInstall = ''
                 ${nativePkgs.tree}/bin/tree $out
