@@ -270,6 +270,31 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             packages.terminal-size.components.library.build-tools = nativePkgs.lib.mkForce [];
             packages.network.components.library.build-tools = nativePkgs.lib.mkForce [];
           }
+          {
+            packages.cardano-node-capi = {
+              ghcOptions = [ "-staticlib" ];
+              postInstall = ''
+                ${nativePkgs.tree}/bin/tree $out
+                mkdir -p $out/_pkg
+                # copy over includes, we might want those, but maybe not.
+                # cp -r $out/lib/*/*/include $out/_pkg/
+                # find the libHS...ghc-X.Y.Z.a static library; this is the
+                # rolled up one with all dependencies included.
+                find ./dist -name "libHS*-ghc*.a" -exec cp {} $out/_pkg \;
+
+                find ${pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; })}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                find ${pkgs.gmp6.override { withStatic = true; }}/lib -name "*.a" -exec cp {} $out/_pkg \;
+
+                ${pkgs.tree}/bin/tree $out/_pkg
+                (cd $out/_pkg; ${pkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
+                rm -fR $out/_pkg
+
+                mkdir -p $out/nix-support
+                echo "file binary-dist \"$(echo $out/*.zip)\"" \
+                    > $out/nix-support/hydra-build-products
+              '';
+            }
+          }
         ];
       });
 
