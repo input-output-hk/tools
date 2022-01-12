@@ -293,7 +293,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
                 echo "file binary-dist \"$(echo $out/*.zip)\"" \
                     > $out/nix-support/hydra-build-products
               '';
-            }
+            };
           }
         ];
       });
