@@ -280,9 +280,19 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
       inherit (__cardano-wallet.cardano-wallet.components.exes) cardano-wallet;
       inherit (__cardano-node.cardano-node.components.exes) cardano-node;
       inherit (__cardano-node.cardano-cli.components.exes)  cardano-cli;
+      inherit (__cardano-node.cardano-submit-api.components.exes) cardano-submit-api;
       cardano-node-capi = __cardano-node.cardano-node-capi.components.library.override {
               smallAddressSpace = true; enableShared = false;
-              ghcOptions = [ "-staticlib" ];
+              ghcOptions = [ "-shared" "-v" "-optl-Wl,--version-script=${nativePkgs.writeText "libcardano-node-capi.version" ''
+              CN_CAPI_1.0 {
+                global:
+                  hs_init;
+                  setLineBuffering;
+                  runNode;
+                local: *;
+              };
+              ''}" "-lHSrts_thr" ];
+              # NIX_LD_FLAGS="";
               postInstall = ''
                 ${nativePkgs.tree}/bin/tree $out
                 mkdir -p $out/_pkg
@@ -290,16 +300,22 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
                 # cp -r $out/lib/*/*/include $out/_pkg/
                 # find the libHS...ghc-X.Y.Z.a static library; this is the
                 # rolled up one with all dependencies included.
+                ${nativePkgs.tree}/bin/tree
                 find ./dist -name "libHS*-ghc*.a" -exec cp {} $out/_pkg \;
 
-                find ${pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; })}/lib -name "*.a" -exec cp {} $out/_pkg \;
-                find ${pkgs.gmp6.override { withStatic = true; }}/lib -name "*.a" -exec cp {} $out/_pkg \;
-                find ${pkgs.libiconv}/lib -name "*.a" -exec cp {} $out/_pkg \;
-                find ${pkgs.libffi}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                cp a.out $out/cardano-node-capi.so
+                ${nativePkgs.patchelf}/bin/patchelf --set-soname "cardano-node-capi.so" $out/cardano-node-capi.so
+                for x in $(${nativePkgs.patchelf}/bin/patchelf --print-needed $out/cardano-node-capi.so |grep -v "so$"|xargs); do
+                  ${nativePkgs.patchelf}/bin/patchelf --replace-needed $x ''${x%%.so.*}.so $out/cardano-node-capi.so;
+                done
+                # find ${pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; })}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                # find ${pkgs.gmp6.override { withStatic = true; }}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                # find ${pkgs.libiconv}/lib -name "*.a" -exec cp {} $out/_pkg \;
+                # find ${pkgs.libffi}/lib -name "*.a" -exec cp {} $out/_pkg \;
 
-                ${nativePkgs.tree}/bin/tree $out/_pkg
-                (cd $out/_pkg; ${nativePkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
-                rm -fR $out/_pkg
+                # ${nativePkgs.tree}/bin/tree $out/_pkg
+                # (cd $out/_pkg; ${nativePkgs.zip}/bin/zip -r -9 $out/pkg.zip *)
+                # rm -fR $out/_pkg
 
                 mkdir -p $out/nix-support
                 echo "file binary-dist \"$(echo $out/*.zip)\"" \
@@ -317,6 +333,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           mkdir -p cardano-node
           cp ${cardano-cli}/bin/*cardano-cli* cardano-node/
           cp ${cardano-node.override { enableTSanRTS = false; }}/bin/*cardano-node* cardano-node/
+          cp ${cardano-submit-api}/bin/*cardano-submit* cardano-node/
         '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && pkgs.stdenv.targetPlatform.isGnu) ''
           for bin in cardano-node/*; do
             mode=$(stat -c%a $bin)
