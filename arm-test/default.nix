@@ -588,7 +588,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           #!/bin/sh
 
           /var/packages/cardano-submit-api/target/bin/cardano-submit-api \
-            --socket-path /var/packages/cardano-node/tmp/node.socket
+            --socket-path /var/packages/cardano-node/tmp/node.socket \
             --config /var/packages/cardano-submit-api/target/etc/tx-submit-mainnet-config.yaml \
             --port 8090 \
             --listen-address 0.0.0.0 \
