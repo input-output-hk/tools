@@ -360,6 +360,216 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             > $out/nix-support/hydra-build-products
         '';
       };
+
+      # Synology package
+
+      # This is the synology package structure:
+      # spk
+      # ├ ─ ─  INFO                          -- Properties File
+      # ├ ─ ─  package.tgz                   -- compress package contents
+      # ├ ─ ─  scripts                       -- lifecycle scripts
+      # │    ├ ─ ─  preinst                  -- It can be used to check conditions before installation but not to make side effects onto the system. Package installation will be aborted for non-zero returned value.
+      # │    ├ ─ ─  postinst                 -- It can be used to prepare environment for package after installed. Package status will become corrupted for non-zero returned value.
+      # │    ├ ─ ─  preuninst                -- It can be used to check conditions before uninstallation but not to make side effects onto the system. Package uninstallation will be aborted for non-zero returned value.
+      # │    ├ ─ ─  postuninst               -- It can be used to cleanup environment for package after uninstalled.
+      # │    ├ ─ ─  preupgrade               -- It can be used to check conditions before upgrade but not to make side effects onto the system. Package upgrade will be aborted for non-zero returned value.
+      # │    ├ ─ ─  postupgrade              -- It can be used to prepare environment for package after upgraded. Package status will become corrupted for non-zero returned value.
+      # │    ├ ─ ─  prereplace               -- (optional) It can be used to do data migration when install_replace_packages is defined in INFO for package replacement. Package replacement will be aborted for non-zero returned value.
+      # │    ├ ─ ─  postreplace              -- (optional) It can be used to do data migration when install_replace_packages is defined in INFO for package replacement. Package replacement will be aborted for non-zero returned value.
+      # │    └ ─ ─  start-stop-status        -- It can be used to control package lifecycle.
+      # ├ ─ ─  conf                          -- additional configurations
+      # │    ├ ─ ─  privilege                -- Define file privilege and execution privilege to secure the package.
+      # │    └ ─ ─  resource                 -- (optional) Define system resources that can be used in the lifecycle of package.
+      # ├ ─ ─  LICENSE                       -- (optional)
+      # ├ ─ ─  PACKAGE_ICON.PNG              -- 64 x 64 png image for Package Center
+      # └ ─ ─  PACKAGE_ICON_256.PNG          -- 256 x 256 png image to show in Package Center
+      #
+      synology = rec {
+        info = nativePkgs.writeTextFile {
+          name = "INFO";
+          text = ''
+            package="cardano-node"
+            version="${cardano-node-info.rev or "unknown"}"
+            os_min_ver="7.0-40000"
+            description="The cardano full node"
+            arch="${pkgs.stdenv.hostPlatform.linuxArch}"
+            maintainer="zw3rk"
+          '';
+        };
+        license = nativePkgs.writeTextFile {
+          name = "LICENSE";
+          text = ''
+          cardano-node synology package (alpha)
+
+          THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+          '';
+        };
+        icon64 = ./synology/PACKAGE_ICON.png;
+        icon256 = ./synology/PACKAGE_ICON_256.png;
+
+        scripts =
+          # default file as per Synology documentation, this file does nothing.
+          let defaultFile = name: nativePkgs.writeTextFile {
+            inherit name;
+            executable = true;
+            text = ''
+              #!/bin/sh
+
+              exit 0
+            '';
+          }; in {
+            preinst = defaultFile "preinst";
+            postinst = defaultFile "postinst";
+            preuninst = defaultFile "preuinst";
+            postuninst = defaultFile "postuninst";
+            preupgrade = defaultFile "preupgrade";
+            postupgrade = defaultFile "postupgrade";
+            start-stop-status = nativePkgs.writeTextFile {
+              name = "start-stop-status";
+              executable = true;
+              text = ''
+                #!/bin/sh
+
+                case "$1" in
+                    # this requires precheckstartstop in INFO to be yes.
+                    prestart)
+                        ;;
+                    start)
+                      synosystemctl start pkg-cardano-node.service
+                        ;;
+                    prestop)
+                        ;;
+                    stop)
+                      synosystemctl stop pkg-cardano-node.service
+                        ;;
+                    status)
+                        ;;
+                esac
+
+                exit 0
+              '';
+            };
+          };
+
+          conf = {
+            systemd = {
+              service = nativePkgs.writeTextFile {
+                name = "pkg-cardano-node.service";
+                text = ''
+                  [Unit]
+                  Description=cardano-node
+                  After=network-online.target
+                  Wants=network-online.target
+
+                  [Service]
+                  Type=simple
+                  ExecStart=/var/packages/cardano-node/target/bin/run.sh
+                  KillMode=process
+                  StandardOutput=journal
+                  StandardError=journal
+                  SyslogIdentifier=cardano-node
+                  Restart=on-failure
+                  RestartSec=15s
+                '';
+              };
+            };
+
+            privilege = nativePkgs.writeTextFile {
+              name = "privilege";
+              text = builtins.toJSON {
+                defaults = {
+                  run-as = "package";
+                };
+              };
+            };
+            resource = nativePkgs.writeTextFile {
+              name = "resource";
+              text = builtins.toJSON {
+                # systemd-user-unit = {};
+                # data-share = {
+                #   shared = [{
+                #     name = "cardano-node";
+                #     permission.rw = [ "cardano-node" ];
+                #   }];
+                # };
+              };
+            };
+          };
+
+        launcher = nativePkgs.writeTextFile {
+          name = "run.sh"; executable = true;
+          text = ''
+            #!/bin/sh
+
+            /var/packages/cardano-node/target/bin/cardano-node run \
+              --topology /var/packages/cardano-node/target/etc/mainnet-topology.json \
+              --config /var/packages/cardano-node/target/etc/mainnet-config.json \
+              --port 3001 \
+              --host-addr 0.0.0.0 \
+              --database-path /var/packages/cardano-node/var/db \
+              --socket-path /var/packages/cardano-node/tmp/node.socket
+          '';
+        };
+
+        package = nativePkgs.stdenv.mkDerivation {
+          name = "${pkgs.stdenv.targetPlatform.config}-package.tgz";
+          buildInputs = with nativePkgs; [ gnutar gzip ];
+
+          phases = [ "buildPhase" "installPhase" ];
+
+          buildPhase = ''
+            mkdir -p {bin,etc}
+            cp ${cardano-cli}/bin/*cardano-cli*            bin
+            cp ${cardano-node}/bin/*cardano-node*          bin
+            cp ${cardano-submit-api}/bin/*cardano-submit*  bin
+            cp ${launcher}                                 bin/run.sh
+            cp ${./synology}/*.json                        etc
+            tar -czf package.tgz *
+          '';
+
+          installPhase = ''
+            mkdir -p $out/
+            cp package.tgz $out/
+          '';
+        };
+
+        spk = nativePkgs.stdenv.mkDerivation {
+          name = "${pkgs.stdenv.targetPlatform.config}-cardano-node.spk";
+          buildInputs = with nativePkgs; [ gnutar gzip ];
+
+          phases = [ "buildPhase" "installPhase" ];
+
+          buildPhase = ''
+            mkdir -p pkg/{scripts,conf/systemd}
+            cp ${info}                       pkg/INFO
+            cp ${icon64}                     pkg/PACKAGE_ICON.PNG
+            cp ${icon256}                    pkg/PACKAGE_ICON_256.PNG
+            cp ${license}                    pkg/LICENSE
+            cp ${scripts.preinst}            pkg/scripts/preinst
+            cp ${scripts.postinst}           pkg/scripts/postinst
+            cp ${scripts.preuninst}          pkg/scripts/preuninst
+            cp ${scripts.postuninst}         pkg/scripts/postuninst
+            cp ${scripts.preupgrade}         pkg/scripts/preupgrade
+            cp ${scripts.postupgrade}        pkg/scripts/postupgrade
+            cp ${scripts.start-stop-status}  pkg/scripts/start-stop-status
+            cp ${conf.systemd.service}       pkg/conf/systemd/pkg-cardano-node.service
+            cp ${conf.privilege}             pkg/conf/privilege
+            cp ${package}/package.tgz        pkg/
+            # contrary to other documentaiton online, an spk is just a tarball.
+            # gziped or xz'd will throw the synology off, and prevent installation.
+            (cd pkg && tar -cf cardano-node.spk *)
+          '';
+          installPhase = ''
+            mkdir -p $out/
+            mv pkg/cardano-node.spk $out/
+
+            mkdir -p $out/nix-support
+            echo "file binary-dist \"$(echo $out/*.spk)\"" \
+              > $out/nix-support/hydra-build-products
+          '';
+        };
+      };
+
     }) { "mainnet" = sources.cardano-node-mainnet; };
 
 }) toBuild
