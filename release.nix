@@ -63,9 +63,12 @@ let
 
     cardano-node.js-ghcjs                  = arm-test.ghcjs.cardano-node.mainnet.tarball;
     cardano-node.aarch64-android           = arm-test.aarch64-android.cardano-node.mainnet.tarball;
-    cardano-node-capi.aarch64-android           = arm-test.aarch64-android.cardano-node.mainnet.cardano-node-capi;
+    cardano-node-capi.aarch64-android      = arm-test.aarch64-android.cardano-node.mainnet.cardano-node-capi;
 
     cardano-wallet-musl.aarch64-linux-musl = arm-test.rpi64-musl.cardano-node.mainnet.cardano-wallet;
+
+    cardano-node-syno-spk.aarch64           = arm-test.rpi64-musl.cardano-node.mainnet.synology.spk;
+    cardano-node-syno-spk.x86_64            = arm-test.x86-musl64.cardano-node.mainnet.synology.spk;
   };
 in
   jobs
