@@ -384,12 +384,17 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
       # ├ ─ ─  PACKAGE_ICON.PNG              -- 64 x 64 png image for Package Center
       # └ ─ ─  PACKAGE_ICON_256.PNG          -- 256 x 256 png image to show in Package Center
       #
-      synology = rec {
+      mkSynologySpk = {
+        name,
+        version,
+        run,
+        pkg
+      }: rec {
         info = nativePkgs.writeTextFile {
           name = "INFO";
           text = ''
-            package="cardano-node"
-            version="${cardano-node-info.rev or "unknown"}"
+            package="${name}"
+            version="${version}"
             os_min_ver="7.0-40000"
             description="The cardano full node"
             arch="${pkgs.stdenv.hostPlatform.linuxArch}"
@@ -399,7 +404,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
         license = nativePkgs.writeTextFile {
           name = "LICENSE";
           text = ''
-          cardano-node synology package (alpha)
+          ${name} synology package (alpha)
 
           THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
           '';
@@ -435,12 +440,12 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
                     prestart)
                         ;;
                     start)
-                      synosystemctl start pkg-cardano-node.service
+                      synosystemctl start pkg-${name}.service
                         ;;
                     prestop)
                         ;;
                     stop)
-                      synosystemctl stop pkg-cardano-node.service
+                      synosystemctl stop pkg-${name}.service
                         ;;
                     status)
                         ;;
@@ -454,20 +459,20 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           conf = {
             systemd = {
               service = nativePkgs.writeTextFile {
-                name = "pkg-cardano-node.service";
+                name = "pkg-${name}.service";
                 text = ''
                   [Unit]
-                  Description=cardano-node
+                  Description=${name}
                   After=network-online.target
                   Wants=network-online.target
 
                   [Service]
                   Type=simple
-                  ExecStart=/var/packages/cardano-node/target/bin/run.sh
+                  ExecStart=/var/packages/${name}/target/bin/run.sh
                   KillMode=process
                   StandardOutput=journal
                   StandardError=journal
-                  SyslogIdentifier=cardano-node
+                  SyslogIdentifier=${name}
                   Restart=on-failure
                   RestartSec=15s
                 '';
@@ -498,17 +503,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
 
         launcher = nativePkgs.writeTextFile {
           name = "run.sh"; executable = true;
-          text = ''
-            #!/bin/sh
-
-            /var/packages/cardano-node/target/bin/cardano-node run \
-              --topology /var/packages/cardano-node/target/etc/mainnet-topology.json \
-              --config /var/packages/cardano-node/target/etc/mainnet-config.json \
-              --port 3001 \
-              --host-addr 0.0.0.0 \
-              --database-path /var/packages/cardano-node/var/db \
-              --socket-path /var/packages/cardano-node/tmp/node.socket
-          '';
+          text = run;
         };
 
         package = nativePkgs.stdenv.mkDerivation {
@@ -519,11 +514,10 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
 
           buildPhase = ''
             mkdir -p {bin,etc}
-            cp ${cardano-cli}/bin/*cardano-cli*            bin
-            cp ${cardano-node}/bin/*cardano-node*          bin
-            cp ${cardano-submit-api}/bin/*cardano-submit*  bin
+            cp ${pkg}/bin/*                                bin
             cp ${launcher}                                 bin/run.sh
             cp ${./synology}/*.json                        etc
+            cp ${./synology}/*.yaml                        etc
             tar -czf package.tgz *
           '';
 
@@ -534,7 +528,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
         };
 
         spk = nativePkgs.stdenv.mkDerivation {
-          name = "${pkgs.stdenv.targetPlatform.config}-cardano-node.spk";
+          name = "${pkgs.stdenv.targetPlatform.config}-${name}.spk";
           buildInputs = with nativePkgs; [ gnutar gzip ];
 
           phases = [ "buildPhase" "installPhase" ];
@@ -552,16 +546,16 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             cp ${scripts.preupgrade}         pkg/scripts/preupgrade
             cp ${scripts.postupgrade}        pkg/scripts/postupgrade
             cp ${scripts.start-stop-status}  pkg/scripts/start-stop-status
-            cp ${conf.systemd.service}       pkg/conf/systemd/pkg-cardano-node.service
+            cp ${conf.systemd.service}       pkg/conf/systemd/pkg-${name}.service
             cp ${conf.privilege}             pkg/conf/privilege
             cp ${package}/package.tgz        pkg/
             # contrary to other documentaiton online, an spk is just a tarball.
             # gziped or xz'd will throw the synology off, and prevent installation.
-            (cd pkg && tar -cf cardano-node.spk *)
+            (cd pkg && tar -cf ${name}.spk *)
           '';
           installPhase = ''
             mkdir -p $out/
-            mv pkg/cardano-node.spk $out/
+            mv pkg/${name}.spk $out/
 
             mkdir -p $out/nix-support
             echo "file binary-dist \"$(echo $out/*.spk)\"" \
@@ -569,6 +563,43 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           '';
         };
       };
+      cardano-node-spk = (mkSynologySpk {
+        name = "cardano-node";
+        version = cardano-node-info.rev or "unknown";
+        pkg = cardano-node;
+        run = ''
+          #!/bin/sh
+
+          /var/packages/cardano-node/target/bin/cardano-node run \
+            --topology /var/packages/cardano-node/target/etc/mainnet-topology.json \
+            --config /var/packages/cardano-node/target/etc/mainnet-config.json \
+            --port 3001 \
+            --host-addr 0.0.0.0 \
+            --database-path /var/packages/cardano-node/var/db \
+            --socket-path /var/packages/cardano-node/tmp/node.socket
+          '';
+      }).spk;
+
+      cardano-submit-api-spk = (mkSynologySpk {
+        name = "cardano-submit-api";
+        version = cardano-node-info.rev or "unknown";
+        pkg = cardano-submit-api;
+        run = ''
+          #!/bin/sh
+
+          /var/packages/cardano-submit-api/target/bin/cardano-submit-api \
+            --socket-path /var/packages/cardano-node/tmp/node.socket
+            --config /var/packages/cardano-submit-api/target/etc/tx-submit-mainnet-config.yaml \
+            --port 8090 \
+            --listen-address 0.0.0.0 \
+            --mainnet
+          '';
+      }).spk;
+
+            # cp ${cardano-cli}/bin/*cardano-cli*            bin
+            # cp ${cardano-node}/bin/*cardano-node*          bin
+            # cp ${cardano-submit-api}/bin/*cardano-submit*  bin
+
 
     }) { "mainnet" = sources.cardano-node-mainnet; };
 

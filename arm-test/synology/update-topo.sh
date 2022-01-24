@@ -6,3 +6,4 @@ for net in mainnet testnet; do
     done
 done
 curl -LO "${BASE}/rest-config.json"
+curl -LO "https://raw.githubusercontent.com/input-output-hk/cardano-node/master/cardano-submit-api/config/tx-submit-mainnet-config.yaml"
