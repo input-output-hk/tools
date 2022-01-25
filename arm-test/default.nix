@@ -344,13 +344,10 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
         '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isWindows) ''
           ${nativePkgs.tree}/bin/tree ${pkgs.libffi}
           cp ${pkgs.libffi}/bin/*.dll cardano-node/
-          cp ${pkgs.libffi}/lib/*.dll cardano-node/
           ${nativePkgs.tree}/bin/tree ${pkgs.gmp}
           cp ${pkgs.gmp}/bin/*.dll* cardano-node/
-          cp ${pkgs.gmp}/lib/*.dll* cardano-node/
           ${nativePkgs.tree}/bin/tree ${pkgs.zlib}
           cp ${pkgs.zlib}/bin/*.dll* cardano-node/
-          cp ${pkgs.zlib}/lib/*.dll* cardano-node/
         '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && pkgs.stdenv.targetPlatform.isGnu) ''
           cp ${pkgs.libffi}/lib/*.so* cardano-node/
           cp ${pkgs.gmp}/lib/*.so* cardano-node/
