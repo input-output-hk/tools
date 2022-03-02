@@ -132,7 +132,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             packages.cardano-node.flags.systemd = false; }
           { packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
             packages.unix-bytestring.patches = [ ./cardano-node-patches/unix-bytestring-0.3.7.3.patch ];
-            #packages.plutus-core.patches = [ ./cardano-node-patches/plutus-core.patch ];
+            packages.plutus-core.patches = [ ./cardano-node-patches/plutus-core.patch ];
 
             # We need the following patch to work around this grat failure :(
             # src/Cardano/Config/Git/Rev.hs:33:35: error:
