@@ -5,7 +5,7 @@ let
   # haskell.nix provides access to the nixpkgs pins which are used by our CI, hence
   # you will be more likely to get cache hits when using these.
   # But you can also just use your own, e.g. '<nixpkgs>'
-  nixpkgsSrc = sources.nixpkgs-2111-patched; #haskellNix.sources.nixpkgs-2111;
+  nixpkgsSrc = sources.nixpkgs; #-2111-patched; #haskellNix.sources.nixpkgs-2111;
   #nixpkgsSrc = sources.nixpkgs-m1; #haskellNix.sources.nixpkgs-2009; #sources.nixpkgs; #
   # haskell.nix provides some arguments to be passed to nixpkgs, including some patches
   # and also the haskell.nix functionality itself as an overlay.
@@ -41,7 +41,7 @@ in
 let toBuild = with nativePkgs.pkgsCross; {
   # x86-gnu32 = gnu32;
   native = nativePkgs; #gnu64; # should be == nativePkgs
-  # x86-musl32 = musl32;
+  # x86-musl32 = musl32;``
   x86-musl64 = musl64;
   x86-win64 = mingwW64;
   rpi1-gnu = raspberryPi;
