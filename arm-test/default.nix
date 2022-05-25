@@ -29,6 +29,7 @@ in
 , cardano-node-info ? sources.cardano-node
 , cardano-node-src ? cardano-node-info
 , cardano-wallet-src ? sources.cardano-wallet
+, ogmios-src ? sources.ogmios
 # , cardano-rt-view-json
 # , cardano-rt-view-info ? __fromJSON (__readFile cardano-rt-view-json)
 # , cardano-rt-view-src ? nativePkgs.fetchgit (removeAttrs cardano-rt-view-info [ "date" ])
@@ -95,14 +96,83 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
       ];
     }).components.exes.cabal;
 
+  __ogmios = (pkgs.haskell-nix.cabalProject {
+    cabalProjectLocal  =  pkgs.lib.optionalString (pkgs.stdenv.targetPlatform != pkgs.stdenv.buildPlatform) ''
+    package unix-bytestring
+      ghc-options: -Wno-error
+    package plutus-core
+      ghc-options: -Wno-error
+    '';
+    compiler-nix-name = haskellCompiler;
+    src = nativePkgs.stdenv.mkDerivation {
+      name = "cleaned-source";
+      phases = [ "unpackPhase" "installPhase" ];
+      src = ogmios-src;
+      nativeBuildInputs = [ nativePkgs.rsync ];
+      installPhase = ''
+        mkdir -p $out/
+        rsync -a $src/server/ $out/ --exclude "package.yaml"
+      '';
+    };
+    modules = [
+      {
+        packages.unix-bytestring.patches = [ ./cardano-node-patches/unix-bytestring-0.3.7.3.patch ];
+        packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
+        packages.plutus-core.patches = [ ./cardano-node-patches/plutus-core.patch ];
+      }
+    ];
+  });
+  inherit (__ogmios.ogmios.components.exes) ogmios;
+
+  ogmios-tarball = nativePkgs.stdenv.mkDerivation {
+    name = "${pkgs.stdenv.targetPlatform.config}-tarball";
+    buildInputs = with nativePkgs; [ patchelf zip ];
+
+    phases = [ "buildPhase" "installPhase" ];
+
+    buildPhase = ''
+      mkdir -p ogmios
+      cp ${ogmios}/bin/*ogmios* ogmios/
+    '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && pkgs.stdenv.targetPlatform.isGnu) ''
+      for bin in ogmios/*; do
+        mode=$(stat -c%a $bin)
+        chmod +w $bin
+        patchelf --set-interpreter /lib/ld-linux-armhf.so.3 $bin
+        chmod $mode $bin
+      done
+    '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isWindows) ''
+      cp ${pkgs.libffi}/bin/*.dll ogmios/
+      ${nativePkgs.tree}/bin/tree ${pkgs.gmp}
+      cp ${pkgs.gmp}/bin/*.dll* ogmios/
+      ${nativePkgs.tree}/bin/tree ${pkgs.zlib}
+      cp ${pkgs.zlib}/bin/*.dll* ogmios/
+    '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && pkgs.stdenv.targetPlatform.isGnu) ''
+      cp ${pkgs.libffi}/lib/*.so* ogmios/
+      cp ${pkgs.gmp}/lib/*.so* ogmios/
+      cp ${pkgs.ncurses}/lib/*.so* ogmios/
+      cp ${pkgs.zlib}/lib/*.so* ogmios/
+      echo ${pkgs.stdenv.cc}/lib
+      ls ogmios/
+    '';
+    installPhase = ''
+      mkdir -p $out/
+      zip -r -9 $out/${pkgs.stdenv.hostPlatform.config}-ogmios-${ogmios-src.rev or "unknown"}.zip ogmios
+
+      mkdir -p $out/nix-support
+      echo "file binary-dist \"$(echo $out/*.zip)\"" \
+        > $out/nix-support/hydra-build-products
+    '';
+  };
+
+
   cardano-node = nativePkgs.lib.mapAttrs (_: cardano-node-info:
     let cardano-node-src = cardano-node-info; in rec {
     __cardano-node = (pkgs.haskell-nix.cabalProject {
         cabalProjectLocal  =  pkgs.lib.optionalString (pkgs.stdenv.targetPlatform != pkgs.stdenv.buildPlatform) ''
-    -- When cross compiling we don't have a `ghc` package
-    package plutus-tx-plugin
-      flags: +use-ghc-stub
-    '';
+          -- When cross compiling we don't have a `ghc` package
+          package plutus-tx-plugin
+            flags: +use-ghc-stub
+          '';
         compiler-nix-name = haskellCompiler;
         # pkgs.haskell-nix.haskellLib.cleanGit { name = "cardano-node"; src = ... } <- this doesn't work with fetchgit results
         src = cardano-node-src;
@@ -229,10 +299,10 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
       });
       __cardano-wallet = (pkgs.haskell-nix.cabalProject {
         cabalProjectLocal  =  pkgs.lib.optionalString (pkgs.stdenv.targetPlatform != pkgs.stdenv.buildPlatform) ''
-    -- When cross compiling we don't have a `ghc` package
-    package plutus-tx-plugin
-      flags: +use-ghc-stub
-    '';
+          -- When cross compiling we don't have a `ghc` package
+          package plutus-tx-plugin
+            flags: +use-ghc-stub
+          '';
         compiler-nix-name = haskellCompiler;
         src = cardano-wallet-src;
         modules = [
@@ -606,6 +676,6 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             # cp ${cardano-submit-api}/bin/*cardano-submit*  bin
 
 
-    }) { "mainnet" = sources.cardano-node-mainnet; };
+    }) { "mainnet" = sources.cardano-node-mainnet; "vasil" = sources.cardano-node-vasil; };
 
 }) toBuild

@@ -71,6 +71,29 @@ let
     cardano-node-syno-spk.x86_64            = arm-test.x86-musl64.cardano-node.mainnet.cardano-node-spk;
     cardano-submit-api-syno-spk.aarch64     = arm-test.rpi64-musl.cardano-node.mainnet.cardano-submit-api-spk;
     cardano-submit-api-syno-spk.x86_64      = arm-test.x86-musl64.cardano-node.mainnet.cardano-submit-api-spk;
+
+    cardano-node-vasil.x86_64-linux-gnu          = arm-test.native.cardano-node.vasil.tarball;
+    cardano-node-vasil.x86_64-apple-darwin       = x86_64-darwin-arm-test.native.cardano-node.vasil.tarball;
+    cardano-node-vasil.aarch64-apple-darwin      = aarch64-darwin-arm-test.native.cardano-node.vasil.tarball;
+
+    cardano-node-vasil.x86_64-linux-musl         = arm-test.x86-musl64.cardano-node.vasil.tarball;
+    cardano-node-vasil.x86_64-windows            = arm-test.x86-win64.cardano-node.vasil.tarball;
+
+    cardano-node-vasil.aarch64-linux-musl        = arm-test.rpi64-musl.cardano-node.vasil.tarball;
+
+    cardano-node-vasil.js-ghcjs                  = arm-test.ghcjs.cardano-node.vasil.tarball;
+    cardano-node-vasil.aarch64-android           = arm-test.aarch64-android.cardano-node.vasil.tarball;
+    cardano-node-vasil-capi.aarch64-android      = arm-test.aarch64-android.cardano-node.vasil.cardano-node-capi;
+
+    cardano-wallet-vasil-musl.aarch64-linux-musl = arm-test.rpi64-musl.cardano-node.vasil.cardano-wallet;
+
+    cardano-node-vasil-syno-spk.aarch64           = arm-test.rpi64-musl.cardano-node.vasil.cardano-node-spk;
+    cardano-node-vasil-syno-spk.x86_64            = arm-test.x86-musl64.cardano-node.vasil.cardano-node-spk;
+    cardano-submit-api-vasil-syno-spk.aarch64     = arm-test.rpi64-musl.cardano-node.vasil.cardano-submit-api-spk;
+    cardano-submit-api-vasil-syno-spk.x86_64      = arm-test.x86-musl64.cardano-node.vasil.cardano-submit-api-spk;
+
+
+    ogmios.aarch64                          = arm-test.rpi64-musl.ogmios-tarball;
   };
 in
   jobs

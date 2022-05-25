@@ -1,14 +1,26 @@
 {
     "cardano-node-mainnet": {
-        "branch": "1.34.1",
+        "branch": "1.35.0-rc1",
         "description": "The core component that is used to participate in a Cardano decentralised blockchain.",
         "homepage": "https://cardano.org",
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "73f9a746362695dc2cb63ba757fbcabb81733d23",
-        "sha256": "1hh53whcj5y9kw4qpkiza7rmkniz18r493vv4dzl1a8r5fy3b2bv",
+        "rev": "82067b797c3f53a9d8adb982622ac58f9d675d24",
+        "sha256": "09widqxlrkga3p170qd6da63mzb7gdjsl9qv83s59b206a0xn9fa",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/73f9a746362695dc2cb63ba757fbcabb81733d23.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/82067b797c3f53a9d8adb982622ac58f9d675d24.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "cardano-node-vasil": {
+        "branch": "vasil-testnet-v1",
+        "description": "The core component that is used to participate in a Cardano decentralised blockchain.",
+        "homepage": "https://cardano.org",
+        "owner": "input-output-hk",
+        "repo": "cardano-node",
+        "rev": "d0b0fa10ac83dc1d0d40aaf294cfded1b455a0a4",
+        "sha256": "0dli80jjmakjzzwp39iacjzqlia9apqrwqmfvvhghx6fhi60cykv",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/d0b0fa10ac83dc1d0d40aaf294cfded1b455a0a4.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
@@ -29,10 +41,10 @@
         "homepage": "https://input-output-hk.github.io/haskell.nix",
         "owner": "input-output-hk",
         "repo": "haskell.nix",
-        "rev": "96a067122657f39a649ef266486f655261f5d34d",
-        "sha256": "1b1x33726wl5flyfg2k78kxv9aa02l02rjxc8vigl8pfd1s2qg6m",
+        "rev": "b1661f08e3d6337b11bf7152bc02e314a76cc557",
+        "sha256": "1hda979y2kbmgpg7pzaibff2rv13ych4f523wdr0yc8q98vxi8gb",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/haskell.nix/archive/96a067122657f39a649ef266486f655261f5d34d.tar.gz",
+        "url": "https://github.com/input-output-hk/haskell.nix/archive/b1661f08e3d6337b11bf7152bc02e314a76cc557.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
@@ -81,6 +93,18 @@
         "sha256": "0n249ix2vwvv85157drv3myv7adc3c7364i8jm8k5ikrchcd78zr",
         "type": "tarball",
         "url": "https://github.com/thefloweringash/nixpkgs/archive/56fcbcd1543188fcc855df7e79fee0a8df259681.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "ogmios": {
+        "branch": "master",
+        "description": "❇️ A WebSocket JSON/RPC bridge for Cardano",
+        "homepage": "https://ogmios.dev",
+        "owner": "CardanoSolutions",
+        "repo": "ogmios",
+        "rev": "v5.2.0",
+        "sha256": "1rhhb6ddzcah91slmfygd56y5v0jcwci91wxdr6rsmlwc7xr1w5i",
+        "type": "tarball",
+        "url": "https://github.com/CardanoSolutions/ogmios/archive/v5.2.0.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "rust.nix": {
