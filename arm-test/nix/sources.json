@@ -5,10 +5,10 @@
         "homepage": "https://cardano.org",
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "1.35.0-rc3",
-        "sha256": "1xq2m40wgl6aw9zygzkvzcxxakcwd3p62q9j671r99i4c4x36z8g",
+        "rev": "1.35.0-rc4",
+        "sha256": "0g2m1gj0jqsk8gwx19n1h6kh3xjywwvxzw5caqj4jwz5m2z1cmml",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/1.35.0-rc3.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/1.35.0-rc4.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-node-vasil": {
