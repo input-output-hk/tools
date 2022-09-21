@@ -1,4 +1,16 @@
 {
+    "bech32": {
+        "branch": "master",
+        "description": "Haskell implementation of the Bech32 address format (BIP 0173).",
+        "homepage": "",
+        "owner": "input-output-hk",
+        "repo": "bech32",
+        "rev": "d1e4a38c18b944e6ef82383055bb18aefee525f4",
+        "sha256": "148543gfr82rsl4y34frfp0vj03pjk6nm97y13iwk5l9xsllafwn",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/bech32/archive/d1e4a38c18b944e6ef82383055bb18aefee525f4.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "cardano-node-mainnet": {
         "branch": "master",
         "description": "The core component that is used to participate in a Cardano decentralised blockchain.",

@@ -30,6 +30,7 @@ in
 , cardano-node-src ? cardano-node-info
 , cardano-wallet-src ? sources.cardano-wallet
 , ogmios-src ? sources.ogmios
+, bech32-src ? sources.bech32
 # , cardano-rt-view-json
 # , cardano-rt-view-info ? __fromJSON (__readFile cardano-rt-view-json)
 # , cardano-rt-view-src ? nativePkgs.fetchgit (removeAttrs cardano-rt-view-info [ "date" ])
@@ -297,6 +298,14 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           # }
         ];
       });
+      __bech32 = (pkgs.haskell-nix.cabalProject {
+        compiler-nix-name = haskellCompiler;
+        src = bech32-src;
+        modules = [];
+      });
+
+      inherit (__bech32.bech32.components.exes) bech32;
+
       __cardano-wallet = (pkgs.haskell-nix.cabalProject {
         cabalProjectLocal  =  pkgs.lib.optionalString (pkgs.stdenv.targetPlatform != pkgs.stdenv.buildPlatform) ''
           -- When cross compiling we don't have a `ghc` package
@@ -351,6 +360,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
       inherit (__cardano-node.cardano-node.components.exes) cardano-node;
       inherit (__cardano-node.cardano-cli.components.exes)  cardano-cli;
       inherit (__cardano-node.cardano-submit-api.components.exes) cardano-submit-api;
+
       cardano-node-capi = __cardano-node.cardano-node-capi.components.library.override {
               smallAddressSpace = true; enableShared = false;
               ghcOptions = [ "-shared" "-v" "-optl-Wl,--version-script=${nativePkgs.writeText "libcardano-node-capi.version" ''
@@ -404,6 +414,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           cp ${cardano-cli}/bin/*cardano-cli* cardano-node/
           cp ${cardano-node.override { enableTSanRTS = false; }}/bin/*cardano-node* cardano-node/
           cp ${cardano-submit-api}/bin/*cardano-submit* cardano-node/
+          cp ${bech32}/bin/bech* cardano-node/
         '' + pkgs.lib.optionalString (pkgs.stdenv.targetPlatform.isLinux && pkgs.stdenv.targetPlatform.isGnu) ''
           for bin in cardano-node/*; do
             mode=$(stat -c%a $bin)
