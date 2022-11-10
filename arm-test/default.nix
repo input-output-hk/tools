@@ -118,7 +118,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
     modules = [
       {
         packages.unix-bytestring.patches = [ ./cardano-node-patches/unix-bytestring-0.3.7.3.patch ];
-        packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
+#        packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
         packages.plutus-core.patches = [ ./cardano-node-patches/plutus-core.patch ];
       }
     ];
