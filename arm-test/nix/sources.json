@@ -11,6 +11,18 @@
         "url": "https://github.com/input-output-hk/bech32/archive/d1e4a38c18b944e6ef82383055bb18aefee525f4.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "cardano-haskell-packages": {
+        "branch": "main",
+        "description": "Metadata for Cardano's Haskell package repository",
+        "homepage": "https://input-output-hk.github.io/cardano-haskell-packages/",
+        "owner": "input-output-hk",
+        "repo": "cardano-haskell-packages",
+        "rev": "2cfad1b2237ee2dc7aed1c99eace12334039309c",
+        "sha256": "0kjp2zwj3i7glx89nxdcbjqdpqkswlnh1zxchgajzwwbd1rg3ad0",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-haskell-packages/archive/2cfad1b2237ee2dc7aed1c99eace12334039309c.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "cardano-node-mainnet": {
         "branch": "master",
         "description": "The core component that is used to participate in a Cardano decentralised blockchain.",
