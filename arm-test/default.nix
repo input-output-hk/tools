@@ -202,7 +202,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           { compiler.nix-name = haskellCompiler; }
           { packages.cardano-config.flags.systemd = false;
             packages.cardano-node.flags.systemd = false; }
-          { packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
+          { # packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
             packages.unix-bytestring.patches = [ ./cardano-node-patches/unix-bytestring-0.3.7.3.patch ];
             packages.plutus-core.patches = [ ./cardano-node-patches/plutus-core.patch ];
 
@@ -336,7 +336,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
           { compiler.nix-name = haskellCompiler; }
           { packages.cardano-config.flags.systemd = false;
             packages.cardano-node.flags.systemd = false; }
-          { packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
+          { # packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
             packages.unix-bytestring.patches = [ ./cardano-node-patches/unix-bytestring-0.3.7.3.patch ];
             packages.plutus-core.patches = [ ./cardano-node-patches/plutus-core.patch ];
             packages.scrypt.patches = [ ./cardano-wallet-patches/scrypt-0.5.0.patch ];
