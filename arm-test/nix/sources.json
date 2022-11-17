@@ -60,15 +60,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "haskell.nix": {
-        "branch": "master",
+        "branch": "angerman/mmap-next-2",
         "description": "Alternative Haskell Infrastructure for Nixpkgs",
         "homepage": "https://input-output-hk.github.io/haskell.nix",
         "owner": "input-output-hk",
         "repo": "haskell.nix",
-        "rev": "a88458a496c5e2d3ae889bb22c24f1b4d8e7fa5a",
-        "sha256": "0lqhhyhz2ha1dnx8kk2drbj6v0mk5cnibm45v1nk44wlkxq058gc",
+        "rev": "814543110003e2ee7e388940011e41357f6cef5c",
+        "sha256": "108pqypa72nps0z0ch7lb3ycn9xwvk0rlrz6ys72h42ixphw43h2",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/haskell.nix/archive/a88458a496c5e2d3ae889bb22c24f1b4d8e7fa5a.tar.gz",
+        "url": "https://github.com/input-output-hk/haskell.nix/archive/814543110003e2ee7e388940011e41357f6cef5c.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
