@@ -17,10 +17,10 @@
         "homepage": "https://input-output-hk.github.io/cardano-haskell-packages/",
         "owner": "input-output-hk",
         "repo": "cardano-haskell-packages",
-        "rev": "68573df40b914c5f5e25ef981fe8a99a142e3495",
-        "sha256": "168nq98kw2dq7sd8hrz02ldjacfw1z9mvp822yqcj7h1wlf2lzj0",
+        "rev": "bedbed3bcca19ef64b8a776bceeea052c2b69ea5",
+        "sha256": "0mf00cghh5qfphdz4mz118b7sap0q168a63kg1p5v0ypanlhgmvr",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-haskell-packages/archive/68573df40b914c5f5e25ef981fe8a99a142e3495.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-haskell-packages/archive/bedbed3bcca19ef64b8a776bceeea052c2b69ea5.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-node-mainnet": {
@@ -60,15 +60,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "haskell.nix": {
-        "branch": "angerman/mmap-next-2",
+        "branch": "master",
         "description": "Alternative Haskell Infrastructure for Nixpkgs",
         "homepage": "https://input-output-hk.github.io/haskell.nix",
         "owner": "input-output-hk",
         "repo": "haskell.nix",
-        "rev": "0939e78c5094325b5f928fb5997ac4383da8a95a",
-        "sha256": "0hmdqh9hqicm10canq54cihmk8rkivslfh438k4s6v9bf55ggi76",
+        "rev": "880b7e5f5fde278559a809acb601cc27f13a745b",
+        "sha256": "14g7rs1ls4wkzj9mj7wa2l62kk4ixabk3xqcj2ds237psbl6wiv5",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/haskell.nix/archive/0939e78c5094325b5f928fb5997ac4383da8a95a.tar.gz",
+        "url": "https://github.com/input-output-hk/haskell.nix/archive/880b7e5f5fde278559a809acb601cc27f13a745b.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
