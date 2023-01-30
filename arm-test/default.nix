@@ -688,6 +688,8 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             # cp ${cardano-submit-api}/bin/*cardano-submit*  bin
 
 
-    }) { "mainnet" = sources.cardano-node-mainnet; "vasil" = sources.cardano-node-vasil; };
+    }) { "mainnet" = sources.cardano-node-mainnet;
+         # "vasil" = sources.cardano-node-vasil;
+       };
 
 }) toBuild
