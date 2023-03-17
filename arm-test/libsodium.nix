@@ -12,7 +12,7 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ autoreconfHook ];
 
-  configureFlags = "--enable-static --disable-shared --disable-pie --disable-ssp";
+  configureFlags = [ "--enable-static" "--disable-shared" "--disable-pie" "--disable-ssp" ];
 
   outputs = [ "out" "dev" ];
 
