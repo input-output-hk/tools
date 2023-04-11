@@ -17,10 +17,10 @@
         "homepage": "https://input-output-hk.github.io/cardano-haskell-packages/",
         "owner": "input-output-hk",
         "repo": "cardano-haskell-packages",
-        "rev": "fbbd2ae156ae0199af41a178503a0ce9a89c5473",
-        "sha256": "1nfxca6f592a9snqh5zg66lbgk9dvik3lsmbqm374jn94g6dad8z",
+        "rev": "603f6c823cbc8e7ffe35f7fc5b284df92023ba3c",
+        "sha256": "08bk3yafgjhy0rmx732akvwqpc4hyb0rwfkjmq9zq5g3k47z8wp8",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-haskell-packages/archive/fbbd2ae156ae0199af41a178503a0ce9a89c5473.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-haskell-packages/archive/603f6c823cbc8e7ffe35f7fc5b284df92023ba3c.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-node-mainnet": {
@@ -29,10 +29,10 @@
         "homepage": "https://cardano.org",
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "1.35.6",
-        "sha256": "05adi58qm1fwlzwd4yw62k7rfs41a2ycbs1sm87gmhq3nvpd8cdy",
+        "rev": "1.35.7",
+        "sha256": "0s2jkj4mwl03hxg4ff9kyw41s32xbf31rnhag2m1qrglgsh8wzw9",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/1.35.6.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/1.35.7.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-node-vasil": {
@@ -65,10 +65,10 @@
         "homepage": "https://input-output-hk.github.io/haskell.nix",
         "owner": "input-output-hk",
         "repo": "haskell.nix",
-        "rev": "880b7e5f5fde278559a809acb601cc27f13a745b",
-        "sha256": "14g7rs1ls4wkzj9mj7wa2l62kk4ixabk3xqcj2ds237psbl6wiv5",
+        "rev": "c0011f6eb3e83dbe48810c59c09b2b2b65ab16a9",
+        "sha256": "1q9950q64xz8hvyq32f42b26m5vxpy47wa5426150019vmw0zq2a",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/haskell.nix/archive/880b7e5f5fde278559a809acb601cc27f13a745b.tar.gz",
+        "url": "https://github.com/input-output-hk/haskell.nix/archive/c0011f6eb3e83dbe48810c59c09b2b2b65ab16a9.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
