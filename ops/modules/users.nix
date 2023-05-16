@@ -13,7 +13,7 @@
     home = "/home/hamish";
     description = "Hamish Mackenzie";
     extraGroups = [ "wheel" "docker" ];
-    openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEAqpSYY0nJIaKaH1/HiwQzwMiqde6RF8T6FOEaMFb86hc76TjBODpP+klS+rpVge4a2Ew/2z3KYz+A2rAWRl1u3FBYuPua+B44xKeEz9+TWdUhkDu8Jubpy0oY5YYqR4MFV0UYoag+/2LD/Kcok82sSDMkccAoAak/4B840sUUD8E= hamish@hamish-mackenzies-computer-2.local" ];
+    openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILIkkzkzCsIB5mz0ev1USWW6YNo97wQYVJc0n4MCxiFs hamish@Hamishs-MBP.hub" ];
   };
 
   users.users.josh = {
