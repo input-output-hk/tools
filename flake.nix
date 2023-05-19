@@ -35,7 +35,6 @@
             cardano-node-syno-spk.x86_64            = arm-test.x86-musl64.cardano-node.mainnet.cardano-node-spk;
             cardano-submit-api-syno-spk.aarch64     = arm-test.rpi64-musl.cardano-node.mainnet.cardano-submit-api-spk;
             cardano-submit-api-syno-spk.x86_64      = arm-test.x86-musl64.cardano-node.mainnet.cardano-submit-api-spk;
-            inherit (arm-test.rpi64-musl) pkgs;
         };
     };
 }
