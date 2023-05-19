@@ -1,36 +1,35 @@
+inputs:
 let
-  sources = import ./nix/sources.nix {};
   # Fetch the latest haskell.nix and import its default.nix
-  haskellNix = import sources."haskell.nix" {};
+  haskellNix = inputs.haskell-nix; #import ../haskell.nix {}; #import sources."haskell.nix" {};
+  iohkNix = inputs.iohk-nix;
   # haskell.nix provides access to the nixpkgs pins which are used by our CI, hence
   # you will be more likely to get cache hits when using these.
   # But you can also just use your own, e.g. '<nixpkgs>'
-  nixpkgsSrc = haskellNix.sources.nixpkgs-2211;
+  nixpkgsSrc = haskellNix.nixpkgs-2211;
   #nixpkgsSrc = sources.nixpkgs-m1; #haskellNix.sources.nixpkgs-2009; #sources.nixpkgs; #
   # haskell.nix provides some arguments to be passed to nixpkgs, including some patches
   # and also the haskell.nix functionality itself as an overlay.
   nixpkgsArgs = haskellNix.nixpkgsArgs;
 in
-{ system ? __currentSystem
-, nativePkgs ? import nixpkgsSrc (nixpkgsArgs // { overlays =
-    # [ (import ./rust.nix)] ++
-    nixpkgsArgs.overlays ++
+{ system ? "x86_64-linux"
+, nativePkgs ? import inputs.nixpkgs ({ inherit (haskellNix) config; overlays =
     [
-      (final: prev: { libsodium-vrf = final.callPackage ./libsodium.nix {}; })
-      (final: prev: { llvmPackages_13 = prev.llvmPackages_13 // {
-          compiler-rt-libc = prev.llvmPackages_13.compiler-rt-libc.overrideAttrs (old: {
-            cmakeFlags = with old.stdenv.hostPlatform; old.cmakeFlags ++ [ "-DCOMPILER_RT_BUILD_MEMPROF=OFF" ];
-          });}; })
+        iohkNix.overlays.crypto
+        haskellNix.overlay
+        iohkNix.overlays.haskell-nix-extra
+        iohkNix.overlays.utils
+        iohkNix.overlays.cardano-lib
     ]
     ;
     inherit system;
     })
 , haskellCompiler ? "ghc8107"
-, cardano-node-info ? sources.cardano-node
+, cardano-node-info ? inputs.cardano-node
 , cardano-node-src ? cardano-node-info
-, cardano-wallet-src ? sources.cardano-wallet
-, ogmios-src ? sources.ogmios
-, bech32-src ? sources.bech32
+, cardano-wallet-src ? inputs.cardano-wallet
+, ogmios-src ? inputs.ogmios
+, bech32-src ? inputs.bech32
 # , cardano-rt-view-json
 # , cardano-rt-view-info ? __fromJSON (__readFile cardano-rt-view-json)
 # , cardano-rt-view-src ? nativePkgs.fetchgit (removeAttrs cardano-rt-view-info [ "date" ])
@@ -60,6 +59,7 @@ let toBuild = with nativePkgs.pkgsCross; {
 # 'cabalProject' generates a package set based on a cabal.project (and the corresponding .cabal files)
 nativePkgs.lib.mapAttrs (_: pkgs: rec {
   # nativePkgs.lib.recurseIntoAttrs, just a bit more explicilty.
+  inherit pkgs;
   recurseForDerivations = true;
 
   hello = (pkgs.haskell-nix.hackage-package {
@@ -169,11 +169,16 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
   cardano-node = nativePkgs.lib.mapAttrs (_: cardano-node-info:
     let cardano-node-src = cardano-node-info; in rec {
     __cardano-node = (pkgs.haskell-nix.cabalProject {
-        inputMap = { "https://input-output-hk.github.io/cardano-haskell-packages" = sources.cardano-haskell-packages; };
-        cabalProjectLocal  =  pkgs.lib.optionalString (pkgs.stdenv.targetPlatform != pkgs.stdenv.buildPlatform) ''
+        inputMap = { "https://input-output-hk.github.io/cardano-haskell-packages" = inputs.cardano-haskell-packages; };
+        cabalProjectLocal  = pkgs.lib.optionalString (pkgs.stdenv.targetPlatform != pkgs.stdenv.buildPlatform)
+          ''
           -- When cross compiling we don't have a `ghc` package
           package plutus-tx-plugin
             flags: +use-ghc-stub
+
+          -- stop putting U __gxx_personality_v0 into the library!
+          package double-conversion
+            ghc-options: -optcxx-fno-rtti -optcxx-fno-exceptions
           '';
         compiler-nix-name = haskellCompiler;
         # pkgs.haskell-nix.haskellLib.cleanGit { name = "cardano-node"; src = ... } <- this doesn't work with fetchgit results
@@ -181,21 +186,21 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
         # ghc = pkgs.buildPackages.pkgs.haskell-nix.compiler.${haskellCompiler};
         modules = [
           # Allow reinstallation of Win32
-          # { nonReinstallablePkgs =
-          #  [ "rts" "ghc-heap" "ghc-prim" "integer-gmp" "integer-simple" "base"
-          #    "deepseq" "array" "ghc-boot-th" "pretty" "template-haskell"
-          #    # ghcjs custom packages
-          #    "ghcjs-prim" "ghcjs-th"
-          #    "ghc-boot"
-          #    "ghc" "array" "binary" "bytestring" "containers"
-          #    "filepath" "ghc-boot" "ghc-compact" "ghc-prim"
-          #    # "ghci" "haskeline"
-          #    "hpc"
-          #    "mtl" "parsec" "text" "transformers"
-          #    "xhtml"
-          #    # "stm" "terminfo"
-          #  ];
-          # }
+          { nonReinstallablePkgs =
+           [ "rts" "ghc-heap" "ghc-prim" "integer-gmp" "integer-simple" "base"
+             "deepseq" "array" "ghc-boot-th" "pretty" "template-haskell"
+             # ghcjs custom packages
+             "ghcjs-prim" "ghcjs-th"
+             "ghc-boot"
+             "ghc" "array" "binary" "bytestring" "containers" "directory" "time" "unix" "process" "terminfo"
+             "filepath" "ghc-boot" "ghc-compact" "ghc-prim"
+             # "ghci" "haskeline"
+             "hpc"
+             "mtl" "parsec" "text" "transformers"
+             "xhtml"
+             # "stm" "terminfo"
+           ];
+          }
           # haddocks are useless (lol);
           # and broken for cross compilers!
           { doHaddock = false; }
@@ -240,6 +245,15 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             # android default inlining threshold seems to be too high for closure_sizeW to be inlined properly.
             packages.cardano-prelude.ghcOptions = [ "-optc=-mllvm" "-optc-inlinehint-threshold=500" ];
             packages.cardano-node.ghcOptions = [ "-pie" ];
+          })
+          ({ pkgs, lib, ... }: lib.mkIf (pkgs.stdenv.targetPlatform != pkgs.stdenv.buildPlatform) {
+            packages.double-conversion.ghcOptions = [
+            # stop putting U __gxx_personality_v0 into the library!
+              "-optcxx-fno-rtti" "-optcxx-fno-exceptions"
+            # stop putting U __cxa_guard_release into the library!
+              "-optcxx-std=gnu++98" "-optcxx-fno-threadsafe-statics"
+            ];
+            # -fno-threadsafe-statics
           })
           ({ pkgs, lib, ... }: lib.mkIf (!pkgs.stdenv.hostPlatform.isGhcjs) {
             packages = {
@@ -288,8 +302,8 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
                     LDSHAREDLIBC = "";
                   });
               in {
-                cardano-crypto-praos.components.library.pkgconfig = lib.mkForce [ [ libsodium-vrf pkgs.secp256k1 ] ];
-                cardano-crypto-class.components.library.pkgconfig = lib.mkForce [ [ libsodium-vrf pkgs.secp256k1 ] ];
+                # cardano-crypto-praos.components.library.pkgconfig = lib.mkForce [ [ libsodium-vrf pkgs.secp256k1 ] ];
+                # cardano-crypto-class.components.library.pkgconfig = lib.mkForce [ [ libsodium-vrf pkgs.secp256k1 ] ];
                 digest.components.library.libs = lib.mkForce [ emzlib.static emzlib ];
               };
           })
@@ -307,57 +321,57 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
 
       inherit (__bech32.bech32.components.exes) bech32;
 
-      __cardano-wallet = (pkgs.haskell-nix.cabalProject {
-        cabalProjectLocal  =  pkgs.lib.optionalString (pkgs.stdenv.targetPlatform != pkgs.stdenv.buildPlatform) ''
-          -- When cross compiling we don't have a `ghc` package
-          package plutus-tx-plugin
-            flags: +use-ghc-stub
-          '';
-        compiler-nix-name = haskellCompiler;
-        src = cardano-wallet-src;
-        modules = [
-          # Allow reinstallation of Win32
-          { nonReinstallablePkgs =
-            [ "rts" "ghc-heap" "ghc-prim" "integer-gmp" "integer-simple" "base"
-              "deepseq" "array" "ghc-boot-th" "pretty" "template-haskell"
-              # ghcjs custom packages
-              "ghcjs-prim" "ghcjs-th"
-              "ghc-boot"
-              "ghc" "array" "binary" "bytestring" "containers"
-              "filepath" "ghc-boot" "ghc-compact" "ghc-prim"
-              # "ghci" "haskeline"
-              "hpc"
-              "mtl" "parsec" "text" "transformers"
-              "xhtml"
-              # "stm" "terminfo"
-            ];
-          }
-          { doHaddock = false; }
-          { compiler.nix-name = haskellCompiler; }
-          { packages.cardano-config.flags.systemd = false;
-            packages.cardano-node.flags.systemd = false; }
-          { # packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
-            # packages.unix-bytestring.patches = [ ./cardano-node-patches/unix-bytestring-0.3.7.3.patch ];
-            packages.plutus-core.patches = [ ./cardano-node-patches/plutus-core.patch ];
-            packages.scrypt.patches = [ ./cardano-wallet-patches/scrypt-0.5.0.patch ];
-          }
-          {
-            # Disable cabal-doctest tests by turning off custom setups
-            packages.comonad.package.buildType = nativePkgs.lib.mkForce "Simple";
-            packages.distributive.package.buildType = nativePkgs.lib.mkForce "Simple";
-            packages.lens.package.buildType = nativePkgs.lib.mkForce "Simple";
-            packages.nonempty-vector.package.buildType = nativePkgs.lib.mkForce "Simple";
-            packages.semigroupoids.package.buildType = nativePkgs.lib.mkForce "Simple";
+      # __cardano-wallet = (pkgs.haskell-nix.cabalProject {
+      #   cabalProjectLocal  =  pkgs.lib.optionalString (pkgs.stdenv.targetPlatform != pkgs.stdenv.buildPlatform) ''
+      #     -- When cross compiling we don't have a `ghc` package
+      #     package plutus-tx-plugin
+      #       flags: +use-ghc-stub
+      #     '';
+      #   compiler-nix-name = haskellCompiler;
+      #   src = cardano-wallet-src;
+      #   modules = [
+      #     # Allow reinstallation of Win32
+      #     { nonReinstallablePkgs =
+      #       [ "rts" "ghc-heap" "ghc-prim" "integer-gmp" "integer-simple" "base"
+      #         "deepseq" "array" "ghc-boot-th" "pretty" "template-haskell"
+      #         # ghcjs custom packages
+      #         "ghcjs-prim" "ghcjs-th"
+      #         "ghc-boot"
+      #         "ghc" "array" "binary" "bytestring" "containers"
+      #         "filepath" "ghc-boot" "ghc-compact" "ghc-prim"
+      #         # "ghci" "haskeline"
+      #         "hpc"
+      #         "mtl" "parsec" "text" "transformers"
+      #         "xhtml"
+      #         # "stm" "terminfo"
+      #       ];
+      #     }
+      #     { doHaddock = false; }
+      #     { compiler.nix-name = haskellCompiler; }
+      #     { packages.cardano-config.flags.systemd = false;
+      #       packages.cardano-node.flags.systemd = false; }
+      #     { # packages.terminal-size.patches = [ ./cardano-node-patches/terminal-size-0.3.2.1.patch ];
+      #       # packages.unix-bytestring.patches = [ ./cardano-node-patches/unix-bytestring-0.3.7.3.patch ];
+      #       packages.plutus-core.patches = [ ./cardano-node-patches/plutus-core.patch ];
+      #       packages.scrypt.patches = [ ./cardano-wallet-patches/scrypt-0.5.0.patch ];
+      #     }
+      #     {
+      #       # Disable cabal-doctest tests by turning off custom setups
+      #       packages.comonad.package.buildType = nativePkgs.lib.mkForce "Simple";
+      #       packages.distributive.package.buildType = nativePkgs.lib.mkForce "Simple";
+      #       packages.lens.package.buildType = nativePkgs.lib.mkForce "Simple";
+      #       packages.nonempty-vector.package.buildType = nativePkgs.lib.mkForce "Simple";
+      #       packages.semigroupoids.package.buildType = nativePkgs.lib.mkForce "Simple";
 
-            # Remove hsc2hs build-tool dependencies (suitable version will be available as part of the ghc derivation)
-            packages.Win32.components.library.build-tools = nativePkgs.lib.mkForce [];
-            packages.terminal-size.components.library.build-tools = nativePkgs.lib.mkForce [];
-            packages.network.components.library.build-tools = nativePkgs.lib.mkForce [];
-          }
-        ];
-      });
+      #       # Remove hsc2hs build-tool dependencies (suitable version will be available as part of the ghc derivation)
+      #       packages.Win32.components.library.build-tools = nativePkgs.lib.mkForce [];
+      #       packages.terminal-size.components.library.build-tools = nativePkgs.lib.mkForce [];
+      #       packages.network.components.library.build-tools = nativePkgs.lib.mkForce [];
+      #     }
+      #   ];
+      # });
 
-      inherit (__cardano-wallet.cardano-wallet.components.exes) cardano-wallet;
+      # inherit (__cardano-wallet.cardano-wallet.components.exes) cardano-wallet;
       inherit (__cardano-node.cardano-node.components.exes) cardano-node;
       inherit (__cardano-node.cardano-cli.components.exes)  cardano-cli;
       inherit (__cardano-node.cardano-submit-api.components.exes) cardano-submit-api;
@@ -688,7 +702,7 @@ nativePkgs.lib.mapAttrs (_: pkgs: rec {
             # cp ${cardano-submit-api}/bin/*cardano-submit*  bin
 
 
-    }) { "mainnet" = sources.cardano-node-mainnet;
+    }) { "mainnet" = inputs.cardano-node-mainnet;
          # "vasil" = sources.cardano-node-vasil;
        };
 
