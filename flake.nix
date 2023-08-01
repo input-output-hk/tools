@@ -5,7 +5,7 @@
         nixpkgs.follows = "haskell-nix/nixpkgs";
         bech32.url = "github:input-output-hk/bech32";
         bech32.flake = false;
-        cardano-node-mainnet.url = "github:input-output-hk/cardano-node?ref=8.1.1";
+        cardano-node-mainnet.url = "github:input-output-hk/cardano-node?ref=8.1.2";
         cardano-node-mainnet.flake = false;
         cardano-haskell-packages.url = "github:input-output-hk/cardano-haskell-packages?ref=repo";
         cardano-haskell-packages.flake = false;
