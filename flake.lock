@@ -103,11 +103,11 @@
     "cardano-haskell-packages": {
       "flake": false,
       "locked": {
-        "lastModified": 1687231368,
-        "narHash": "sha256-ae0xZ/H1d8HhxsPxe7Zut1yTn1RV3EiSpM3kvbGkX4w=",
+        "lastModified": 1690868125,
+        "narHash": "sha256-XWBliPsoJpjGYNwyblvPoiggUgsenYpgjZ2DbKcyR64=",
         "owner": "input-output-hk",
         "repo": "cardano-haskell-packages",
-        "rev": "0f8f90b05dd54f42ebef2d2f22c3734321a649a9",
+        "rev": "4336019a843a577decab4bc02ae0de8eaba657cb",
         "type": "github"
       },
       "original": {
